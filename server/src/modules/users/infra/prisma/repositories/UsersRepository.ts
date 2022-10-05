@@ -6,11 +6,11 @@ import { User } from '../entities/User'
 export class UsersRepository extends AppRepository implements IUsersRepository {
   public async create({
     name,
-    email,
+    username,
     password,
   }: ICreateUserDTO): Promise<User> {
     const createdUser = await this.client.users.create({
-      data: { name, email, password }
+      data: { name, username, password }
     })
 
     return createdUser
