@@ -1,5 +1,7 @@
 import { gql } from 'apollo-server';
 
+import { userTypeDefs } from '@modules/users/infra/apollo/schemas/userTypeDefs';
+
 const rootTypeDefs = gql`
   type Query {
     _empty: Boolean
@@ -11,6 +13,11 @@ const rootTypeDefs = gql`
 
   type Subscription {
     _empty: Boolean
+  }
+
+  input ApiFiltersInput {
+    page: Int!
+    perPage: Int!
   }
 `
 
@@ -25,6 +32,7 @@ const rootResolvers = {
 
 export const typeDefs = [
   rootTypeDefs,
+  userTypeDefs,
 ]
 
 export const resolvers = [
