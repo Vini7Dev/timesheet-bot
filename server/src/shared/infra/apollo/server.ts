@@ -1,6 +1,10 @@
+import 'reflect-metadata'
+
 import { ApolloServer } from 'apollo-server'
 
 import { resolvers, typeDefs } from './schemas'
+
+import '@shared/containers'
 
 const PORT = 4003
 
