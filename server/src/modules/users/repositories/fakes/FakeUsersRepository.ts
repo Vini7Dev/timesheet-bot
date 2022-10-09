@@ -21,6 +21,15 @@ export class FakeUsersRepository implements IUsersRepository {
     return findedUser ?? null
   }
 
+  public async list({
+    page = 1,
+    perPage = 10,
+  }: { page?: number, perPage?: number }): Promise<User[]> {
+    const filteredUsers = this.users.slice(page-1, perPage + page - 1)
+
+    return filteredUsers
+  }
+
   public async create({
     name,
     email,

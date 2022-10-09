@@ -19,6 +19,10 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
     return findedUser
   }
 
+  public async list(filters: { page?: number, perPage?: number }): Promise<User[]> {
+    throw new Error('Method not implemented.');
+  }
+
   public async create({
     name,
     email,
