@@ -21,12 +21,12 @@ export const loginUser = async (
     emailOrUsername, password
   })
 
-  ctx.res.cookie('Multify:Token', authenticationData.token, {
-    secure: false,
+  ctx.res.cookie('multifyToken', authenticationData.token, {
+    secure: true,
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24, // 1 day
     path: '/',
-    sameSite: 'strict',
+    sameSite: 'none',
   })
 
   return authenticationData

@@ -30,7 +30,7 @@ export class CreateUserService {
       throw new Error('This username or email already exists!')
     }
 
-    const cryptPassword = await this.encryptProvider.encrypt(password)
+    const cryptPassword = this.encryptProvider.encrypt(password)
 
     const createdUser = await this.usersRepository.create({
       name,

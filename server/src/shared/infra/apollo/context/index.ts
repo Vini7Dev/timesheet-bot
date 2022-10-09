@@ -1,5 +1,12 @@
 import { ExpressContext } from 'apollo-server-express'
 
-export const context = (ctx: ExpressContext) => {
-  return ctx
+import { getAuthentedUser } from './getAuthentedUser'
+
+export const context = async (ctx: ExpressContext) => {
+  return {
+    ...ctx,
+    authentication: {
+      user_id: await getAuthentedUser(ctx),
+    },
+  }
 }

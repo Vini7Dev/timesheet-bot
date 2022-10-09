@@ -12,6 +12,10 @@ const server = new ApolloServer({
   context,
   resolvers,
   typeDefs,
+  cors: {
+    origin: ['https://studio.apollographql.com'],
+    credentials: true,
+  }
 })
 
 server.listen(SERVER_PORT).then(({ url }) => {
