@@ -10,7 +10,7 @@ export class FakeUsersRepository implements IUsersRepository {
     this.users = []
   }
 
-  async findById(id: string): Promise<User | null> {
+  public async findById(id: string): Promise<User | null> {
     const findedUser = this.users.find(user => user.id === id)
 
     return findedUser ?? null

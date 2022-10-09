@@ -1,7 +1,7 @@
 import { container } from 'tsyringe'
-import { ExpressContext } from 'apollo-server-express'
 
 import { CreateAuthenticationService } from '@modules/users/services/CreateAuthenticationService'
+import { IAppContext } from '@shared/infra/apollo/context'
 
 interface ILoginUserInput {
   data: {
@@ -14,7 +14,7 @@ export const loginUser = async (
   _: any, {
     data: { emailOrUsername, password }
   }: ILoginUserInput,
-  ctx: ExpressContext) => {
+  ctx: IAppContext) => {
   const createAuthenticationService = container.resolve(CreateAuthenticationService)
 
   const authenticationData = await createAuthenticationService.execute({

@@ -4,6 +4,16 @@ import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
 import { User } from '../entities/User'
 
 export class UsersRepository extends AppRepository implements IUsersRepository {
+  public async findById(id: string): Promise<User | null> {
+    const findedUser = await this.client.users.findUnique({
+      where: {
+        id,
+      }
+    })
+
+    return findedUser
+  }
+
   public async findByUsernameOrEmail({
     email, username,
   }: { email: string, username: string }): Promise<User | null> {
