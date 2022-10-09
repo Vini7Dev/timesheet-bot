@@ -6,6 +6,7 @@ import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 
 interface IServiceProps {
   name: string
+  email: string
   username: string
   password: string
 }
@@ -20,17 +21,20 @@ export class CreateUserService {
     private encryptProvider: IEncrypt,
   ) {}
 
-  public async execute({ name, username, password }: IServiceProps): Promise<User> {
-    const usernameAlreadyExists = await this.usersRepository.findByUsername(username)
+  public async execute({ name, email, username, password }: IServiceProps): Promise<User> {
+    const usernameAlreadyExists = await this.usersRepository.findByUsernameOrEmail({
+      email, username,
+    })
 
     if (usernameAlreadyExists) {
-      throw new Error('This username already exists!')
+      throw new Error('This username or email already exists!')
     }
 
     const cryptPassword = await this.encryptProvider.encrypt(password)
 
     const createdUser = await this.usersRepository.create({
       name,
+      email,
       username,
       password: cryptPassword,
     })

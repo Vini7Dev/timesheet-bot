@@ -15,6 +15,7 @@ export const userTypeDefs = gql`
   type User {
     id: ID!
     name: String!
+    email: String!
     username: String!
     created_at: String!
     updated_at: String!
@@ -22,6 +23,7 @@ export const userTypeDefs = gql`
 
   input CreateUserInput {
     name: String!
+    email: String!
     username: String!
     password: String!
   }
