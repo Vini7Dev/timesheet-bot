@@ -19,8 +19,16 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
     return findedUser
   }
 
-  public async list(filters: { page?: number, perPage?: number }): Promise<User[]> {
-    throw new Error('Method not implemented.');
+  public async list({
+    page = 0,
+    perPage = 10
+  }: { page?: number, perPage?: number }): Promise<User[]> {
+    const userList = await this.client.users.findMany({
+      skip: page,
+      take: perPage,
+    })
+
+    return userList
   }
 
   public async create({

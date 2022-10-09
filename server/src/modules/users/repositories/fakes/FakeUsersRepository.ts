@@ -22,10 +22,10 @@ export class FakeUsersRepository implements IUsersRepository {
   }
 
   public async list({
-    page = 1,
+    page = 0,
     perPage = 10,
   }: { page?: number, perPage?: number }): Promise<User[]> {
-    const filteredUsers = this.users.slice(page-1, perPage + page - 1)
+    const filteredUsers = this.users.slice(page, perPage + page)
 
     return filteredUsers
   }

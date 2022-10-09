@@ -62,7 +62,7 @@ describe('ListUsersService', () => {
     })
 
     const usersList = await listUsersService.execute({
-      page: 2, perPage: 1
+      page: 1, perPage: 1
     })
 
     expect(usersList).toHaveLength(1)

@@ -17,8 +17,8 @@ const rootTypeDefs = gql`
   }
 
   input ApiFiltersInput {
-    page: Int!
-    perPage: Int!
+    page: Int
+    perPage: Int
   }
 `
 
