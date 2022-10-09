@@ -55,4 +55,14 @@ export class FakeUsersRepository implements IUsersRepository {
 
     return createdUser
   }
+
+  public async delete(id: string): Promise<string> {
+    const userToDeleteIndex = this.users.findIndex(user => user.id === id)
+
+    if(userToDeleteIndex !== -1) {
+      this.users.splice(userToDeleteIndex, 1)
+    }
+
+    return id
+  }
 }
