@@ -10,6 +10,7 @@ export const userTypeDefs = gql`
     createUser(data: CreateUserInput!): User!
     updateUser(data: UpdateUserInput!): User!
     deleteUser(id: ID!): Boolean!
+    loginUser(data: LoginUserInput): LoginUserResponse!
   }
 
   type User {
@@ -19,6 +20,11 @@ export const userTypeDefs = gql`
     username: String!
     created_at: String!
     updated_at: String!
+  }
+
+  type LoginUserResponse {
+    token: String!
+    user_id: ID!
   }
 
   input CreateUserInput {
@@ -32,5 +38,10 @@ export const userTypeDefs = gql`
     name: String
     new_password: String
     current_password: String
+  }
+
+  input LoginUserInput {
+    emailOrUsername: String!
+    password: String!
   }
 `

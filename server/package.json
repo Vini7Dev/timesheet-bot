@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.8.1",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
@@ -28,6 +29,7 @@
     "apollo-server": "^3.10.2",
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
+    "jsonwebtoken": "^8.5.1",
     "prisma": "^4.4.0",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0"
