@@ -19,7 +19,7 @@ export class DeleteProfileService {
     authenticatedUserId,
   }: IServiceProps): Promise<string> {
     if (userId !== authenticatedUserId) {
-      throw new Error('You do not have permission to view this profile!')
+      throw new Error('You do not have permission to delete this profile!')
     }
 
     const userIdDeleted = await this.usersRepository.delete(userId)
