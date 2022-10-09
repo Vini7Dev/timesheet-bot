@@ -11,9 +11,9 @@ export class CryptoProvider implements IEncrypt {
 
   private outputEncoding: Encoding = 'hex'
 
-  private cipher = crypto.createCipheriv(this.algorithm, this.secret, '')
+  private cipher = crypto.createCipher(this.algorithm, this.secret)
 
-  private decipher = crypto.createDecipheriv(this.algorithm, this.secret, '')
+  private decipher = crypto.createDecipher(this.algorithm, this.secret)
 
   encrypt(toEncrypt: string): string {
     return this.cipher.update(toEncrypt, this.inputEncoding, this.outputEncoding)
