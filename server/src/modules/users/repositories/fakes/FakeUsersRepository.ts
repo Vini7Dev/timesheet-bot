@@ -1,14 +1,19 @@
 import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO';
-import { User } from '@modules/users/infra/prisma/entities/User';
-import { Users } from '@prisma/client';
+import { User } from '../../infra/prisma/entities/User';
 
 import { IUsersRepository } from '../IUsersRepository';
 
 export class FakeUsersRepository implements IUsersRepository {
-  private users: Users[]
+  private users: User[]
 
   constructor () {
     this.users = []
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const findedUser = this.users.find(user => user.id === id)
+
+    return findedUser ?? null
   }
 
   public async findByUsernameOrEmail({
