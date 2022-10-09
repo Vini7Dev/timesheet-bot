@@ -13,15 +13,15 @@ export class CryptoProvider implements IEncrypt {
 
   private outputEncoding: Encoding = 'hex'
 
-  private cipher = crypto.createCipheriv(this.algorithm, this.secret, this.iv)
-
-  private decipher = crypto.createDecipheriv(this.algorithm, this.secret, this.iv)
-
   encrypt(toEncrypt: string): string {
-    return this.cipher.update(toEncrypt, this.inputEncoding, this.outputEncoding)
+    const cipher = crypto.createCipheriv(this.algorithm, this.secret, this.iv)
+
+    return cipher.update(toEncrypt, this.inputEncoding, this.outputEncoding)
   }
 
   decrypt(toDecrypt: string): string {
-    return this.decipher.update(toDecrypt, this.outputEncoding, this.inputEncoding)
+    const decipher = crypto.createDecipheriv(this.algorithm, this.secret, this.iv)
+
+    return decipher.update(toDecrypt, this.outputEncoding, this.inputEncoding)
   }
 }
