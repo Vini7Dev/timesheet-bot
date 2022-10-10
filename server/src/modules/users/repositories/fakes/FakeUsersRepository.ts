@@ -1,4 +1,5 @@
 import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO';
+import { IUpdateUserDTO } from '@modules/users/dtos/IUpdateUserDTO';
 import { User } from '../../infra/prisma/entities/User';
 
 import { IUsersRepository } from '../IUsersRepository';
@@ -54,6 +55,31 @@ export class FakeUsersRepository implements IUsersRepository {
     this.users.push(createdUser)
 
     return createdUser
+  }
+
+  public async update({
+    id,
+    name,
+    email,
+    username,
+    password,
+  }: IUpdateUserDTO): Promise<User> {
+    const userToUpdateIndex = this.users.findIndex(user => user.id === id)
+
+    if(userToUpdateIndex === -1) {
+      throw new Error('User not found!')
+    }
+
+    const updatedUser = this.users[userToUpdateIndex]
+    if (name) updatedUser.name = name
+    if (email) updatedUser.email = email
+    if (username) updatedUser.username = username
+    if (password) updatedUser.password = password
+    updatedUser.updated_at = (new Date(Date.now() + 10000))
+
+    this.users[userToUpdateIndex] = updatedUser
+
+    return updatedUser
   }
 
   public async delete(id: string): Promise<string> {
