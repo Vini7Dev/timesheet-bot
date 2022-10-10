@@ -18,3 +18,13 @@ model Users {
 
   @@map("users")
 }
+
+model Customers {
+  id                String    @id @default(uuid())
+  code              String
+  name              String
+  created_at        DateTime  @default(now())
+  updated_ad        DateTime  @default(now())
+
+  @@map("customers")
+}
