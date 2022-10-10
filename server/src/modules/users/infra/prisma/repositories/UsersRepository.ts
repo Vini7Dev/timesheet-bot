@@ -1,4 +1,5 @@
 import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO'
+import { IUpdateUserDTO } from '@modules/users/dtos/IUpdateUserDTO'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
 import { User } from '../entities/User'
@@ -53,6 +54,28 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
 
     return createdUser
   }
+
+  public async update({
+    id,
+    name,
+    email,
+    username,
+    password,
+  }: IUpdateUserDTO): Promise<User> {
+    const updatedUser = await this.client.users.update({
+      where: { id },
+      data: {
+        name,
+        email,
+        username,
+        password,
+        updated_at: new Date()
+      }
+    })
+
+    return updatedUser
+  }
+
   public async delete(id: string): Promise<string> {
     await this.client.users.delete({
       where: {

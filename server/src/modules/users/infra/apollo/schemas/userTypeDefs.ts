@@ -35,9 +35,12 @@ export const userTypeDefs = gql`
   }
 
   input UpdateUserInput {
+    userId: String!
     name: String
-    new_password: String
-    current_password: String
+    email: String
+    username: String
+    newPassword: String
+    currentPassword: String!
   }
 
   input LoginUserInput {

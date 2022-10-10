@@ -34,7 +34,7 @@ export class UpdateProfileService {
     currentPassword,
   }: IServiceProps): Promise<User> {
     if (userId !== authenticatedUserId) {
-      throw new Error('You do not have permission to view this profile!')
+      throw new Error('You do not have permission to update this profile!')
     }
 
     const profileToUpdate = await this.usersRepository.findById(userId)
