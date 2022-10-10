@@ -33,7 +33,9 @@ describe('ListUsersService', () => {
       password: 'jhon123'
     })
 
-    const usersList = await listUsersService.execute({})
+    const usersList = await listUsersService.execute({
+      authenticatedUserId: createdUser.id,
+    })
 
     expect(usersList).toHaveLength(1)
     expect(usersList[0].id).toEqual(createdUser.id)
@@ -62,10 +64,18 @@ describe('ListUsersService', () => {
     })
 
     const usersList = await listUsersService.execute({
-      page: 1, perPage: 1
+      page: 1, perPage: 1, authenticatedUserId: secondUser.id,
     })
 
     expect(usersList).toHaveLength(1)
     expect(usersList[0].id).toEqual(secondUser.id)
+  })
+
+  it('should not be able to list users without authentication', async () => {
+    await expect(
+      listUsersService.execute({
+        authenticatedUserId: 'invalid-user-id',
+      })
+    ).rejects
   })
 })
