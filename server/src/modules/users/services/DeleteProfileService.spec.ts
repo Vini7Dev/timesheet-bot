@@ -6,6 +6,7 @@ import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateUserService } from './CreateUserService'
 import { DeleteProfileService } from './DeleteProfileService'
+import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
@@ -61,6 +62,8 @@ describe('DeleteProfileService', () => {
         userId: firstUser.id,
         authenticatedUserId: secondUser.id,
       })
-    ).rejects
+    ).rejects.toEqual(
+      new AppError('You do not have permission to delete this profile!', 403)
+    )
   })
 })

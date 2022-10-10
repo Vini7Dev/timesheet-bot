@@ -1,4 +1,5 @@
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
+import { AppError } from '@shared/errors/AppError'
 import { inject, injectable } from 'tsyringe'
 
 import { User } from '../infra/prisma/entities/User'
@@ -34,17 +35,17 @@ export class UpdateProfileService {
     currentPassword,
   }: IServiceProps): Promise<User> {
     if (userId !== authenticatedUserId) {
-      throw new Error('You do not have permission to update this profile!')
+      throw new AppError('You do not have permission to update this profile!', 403)
     }
 
     const profileToUpdate = await this.usersRepository.findById(userId)
     if (!profileToUpdate) {
-      throw new Error('Profile not found!')
+      throw new AppError('Profile not found!', 404)
     }
 
     const passwordDecrypted = this.encryptProvider.decrypt(profileToUpdate.password)
     if (currentPassword !== passwordDecrypted) {
-      throw new Error('Invalid current password!')
+      throw new AppError('Invalid current password!', 403)
     }
 
     const dataToUpdateProfile = {

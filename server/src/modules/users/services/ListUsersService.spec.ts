@@ -6,6 +6,7 @@ import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateUserService } from './CreateUserService'
 import { ListUsersService } from './ListUsersService'
+import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
@@ -76,6 +77,6 @@ describe('ListUsersService', () => {
       listUsersService.execute({
         authenticatedUserId: 'invalid-user-id',
       })
-    ).rejects
+    ).rejects.toEqual(new AppError('You must be authenticated!', 401))
   })
 })

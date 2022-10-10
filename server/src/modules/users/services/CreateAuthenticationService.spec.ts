@@ -7,6 +7,7 @@ import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateAuthenticationService } from './CreateAuthenticationService'
 import { CreateUserService } from './CreateUserService'
+import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
@@ -73,7 +74,7 @@ describe('CreateAuthenticationService', () => {
         emailOrUsername: 'non-existent-user',
         password: 'jhon123'
       })
-    ).rejects
+    ).rejects.toEqual(new AppError('Invalid credentials!', 401))
   })
 
   it('should not be able to make login with invalid password', async () => {
@@ -89,6 +90,6 @@ describe('CreateAuthenticationService', () => {
         emailOrUsername: 'jhon.doe',
         password: 'invalid-password'
       })
-    ).rejects
+    ).rejects.toEqual(new AppError('Invalid credentials!', 401))
   })
 })

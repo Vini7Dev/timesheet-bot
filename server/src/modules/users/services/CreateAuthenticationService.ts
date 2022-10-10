@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { authConfig } from '@configs/auth'
+import { AppError } from '@shared/errors/AppError'
 
 interface IServiceProps {
   emailOrUsername: string
@@ -35,13 +36,13 @@ export class CreateAuthenticationService {
     })
 
     if (!userToLogin) {
-      throw new Error('Invalid credentials!')
+      throw new AppError('Invalid credentials!', 401)
     }
 
     const passwordDecrypted = this.encryptProvider.decrypt(userToLogin.password)
 
     if (password !== passwordDecrypted) {
-      throw new Error('Invalid credentials!')
+      throw new AppError('Invalid credentials!', 401)
     }
 
     const { secret, expiresIn } = authConfig.jwt

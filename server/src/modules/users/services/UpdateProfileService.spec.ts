@@ -6,6 +6,7 @@ import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateUserService } from './CreateUserService'
 import { UpdateProfileService } from './UpdateProfileService'
+import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
@@ -94,7 +95,7 @@ describe('UpdateProfileService', () => {
         newPassword: 'newpassword',
         currentPassword: 'invalid-password',
       })
-    ).rejects
+    ).rejects.toEqual(new AppError('Invalid current password!', 403))
   })
 
   it("should not be able to update another user's profile", async () => {
@@ -122,7 +123,9 @@ describe('UpdateProfileService', () => {
         newPassword: 'newpassword',
         currentPassword: 'invalid-password',
       })
-    ).rejects
+    ).rejects.toEqual(
+      new AppError('You do not have permission to update this profile!', 403)
+    )
   })
 
   it('should not be able to update an non-existent profile', async () => {
@@ -136,6 +139,6 @@ describe('UpdateProfileService', () => {
         newPassword: 'newpassword',
         currentPassword: 'invalid-password',
       })
-    ).rejects
+    ).rejects.toEqual(new AppError('Profile not found!', 404))
   })
 })

@@ -3,6 +3,7 @@ import { inject, injectable } from 'tsyringe'
 import { User } from '../infra/prisma/entities/User'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
+import { AppError } from '@shared/errors/AppError'
 
 interface IServiceProps {
   name: string
@@ -27,7 +28,7 @@ export class CreateUserService {
     })
 
     if (usernameAlreadyExists) {
-      throw new Error('This username or email already exists!')
+      throw new AppError('This username or email already exists!')
     }
 
     const cryptPassword = this.encryptProvider.encrypt(password)

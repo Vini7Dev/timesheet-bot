@@ -5,6 +5,7 @@ import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateUserService } from './CreateUserService'
+import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
@@ -46,7 +47,7 @@ describe('CreateUserService', () => {
       email: 'sameEmail',
       username: 'jhon.doe2',
       password: 'jhon123',
-    })).rejects
+    })).rejects.toEqual(new AppError('This username or email already exists!'))
   })
 
   it('should not be able to create a user with an already existing username', async () => {
@@ -62,6 +63,6 @@ describe('CreateUserService', () => {
       email: 'jhondoe2@mail.com',
       username: 'sameUsername',
       password: 'jhon123',
-    })).rejects
+    })).rejects.toEqual(new AppError('This username or email already exists!'))
   })
 })

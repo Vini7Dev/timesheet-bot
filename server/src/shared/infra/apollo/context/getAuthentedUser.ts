@@ -3,6 +3,7 @@ import { verify } from 'jsonwebtoken'
 import { cookieParser } from '@utils/cookieParser'
 import { authConfig } from '@configs/auth'
 import { IAppContext } from '.'
+import { AppError } from '@shared/errors/AppError'
 
 interface IVerifyPayload {
   sub: string
@@ -24,6 +25,6 @@ export const getAuthentedUser = async (ctx: IAppContext) => {
 
     return user_id
   } catch(err) {
-    throw new Error('Invalid authentication token!')
+    throw new AppError('Invalid authentication token!', 401)
   }
 }

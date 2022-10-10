@@ -6,6 +6,7 @@ import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateUserService } from './CreateUserService'
 import { ShowProfileService } from './ShowProfileService'
+import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
@@ -43,12 +44,14 @@ describe('ShowProfileService', () => {
   })
 
   it('should not be able to get a non-existent profile', async () => {
-    await expect(
-      showProfileService.execute({
-        userId: 'non-existent-user',
-        authenticatedUserId: 'non-existent-user'
-      })
-    ).rejects
+    const emptyResult = await showProfileService.execute({
+      userId: 'non-existent-user',
+      authenticatedUserId: 'non-existent-user'
+    })
+
+    expect(
+      emptyResult
+    ).toEqual(null)
   })
 
   it("should not be able to get another user's profile", async () => {
@@ -71,6 +74,8 @@ describe('ShowProfileService', () => {
         userId: firstUser.id,
         authenticatedUserId: secondUser.id,
       })
-    ).rejects
+    ).rejects.toEqual(
+      new AppError('You do not have permission to view this profile!', 403)
+    )
   })
 })

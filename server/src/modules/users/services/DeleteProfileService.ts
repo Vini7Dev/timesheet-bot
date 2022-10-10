@@ -1,3 +1,4 @@
+import { AppError } from '@shared/errors/AppError'
 import { inject, injectable } from 'tsyringe'
 
 import { IUsersRepository } from '../repositories/IUsersRepository'
@@ -19,7 +20,7 @@ export class DeleteProfileService {
     authenticatedUserId,
   }: IServiceProps): Promise<string> {
     if (userId !== authenticatedUserId) {
-      throw new Error('You do not have permission to delete this profile!')
+      throw new AppError('You do not have permission to delete this profile!', 403)
     }
 
     const userIdDeleted = await this.usersRepository.delete(userId)

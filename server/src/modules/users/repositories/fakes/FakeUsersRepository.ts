@@ -1,5 +1,6 @@
 import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO';
 import { IUpdateUserDTO } from '@modules/users/dtos/IUpdateUserDTO';
+import { AppError } from '@shared/errors/AppError';
 import { User } from '../../infra/prisma/entities/User';
 
 import { IUsersRepository } from '../IUsersRepository';
@@ -67,7 +68,7 @@ export class FakeUsersRepository implements IUsersRepository {
     const userToUpdateIndex = this.users.findIndex(user => user.id === id)
 
     if(userToUpdateIndex === -1) {
-      throw new Error('User not found!')
+      throw new AppError('User not found!', 404)
     }
 
     const updatedUser = this.users[userToUpdateIndex]

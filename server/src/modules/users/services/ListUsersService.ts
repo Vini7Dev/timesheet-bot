@@ -1,3 +1,4 @@
+import { AppError } from '@shared/errors/AppError'
 import { inject, injectable } from 'tsyringe'
 
 import { User } from '../infra/prisma/entities/User'
@@ -24,7 +25,7 @@ export class ListUsersService {
     const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
 
     if (!authenticatedUser) {
-      throw new Error('Authenticated user not found!')
+      throw new AppError('You must be authenticated!', 401)
     }
 
     const usersList = await this.usersRepository.list({ page, perPage })
