@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe'
+
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { AppError } from '@shared/errors/AppError'
 import { ICustomersRepository } from '../repositories/ICustomersRepository'
@@ -8,10 +10,13 @@ interface IServiceProps {
   authenticatedUserId: string
 }
 
+@injectable()
 export class CreateCustomerService {
   constructor (
+    @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
 
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository
   ) {}
 
