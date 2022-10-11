@@ -1,4 +1,5 @@
-import { ICreateCustomer } from '@modules/customers/dtos/ICreateCustomer';
+import { ICreateCustomerDTO } from '@modules/customers/dtos/ICreateCustomerDTO';
+import { IUpdateCustomerDTO } from '@modules/customers/dtos/IUpdateCustomerDTO';
 import { ICustomersRepository } from '@modules/customers/repositories/ICustomersRepository'
 import { Customer } from '../entities/Customer';
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository';
@@ -24,11 +25,15 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
     return customerList
   }
 
-  public async create({ code, name }: ICreateCustomer): Promise<Customer> {
+  public async create({ code, name }: ICreateCustomerDTO): Promise<Customer> {
     const createdCustomer = await this.client.customers.create({
       data: { code, name }
     })
 
     return createdCustomer
+  }
+
+  public async update(data: IUpdateCustomerDTO): Promise<Customer> {
+    throw new Error('Method not implemented.');
   }
 }
