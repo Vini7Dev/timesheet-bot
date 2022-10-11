@@ -32,7 +32,7 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
 
   public async list({
     page = 0,
-    perPage = 10
+    perPage = 10,
   }: { page?: number, perPage?: number }): Promise<User[]> {
     const userList = await this.client.users.findMany({
       skip: page,

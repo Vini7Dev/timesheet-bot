@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
 import { AppError } from '@shared/errors/AppError';
 import { Customer } from '../infra/prisma/entities/Customer';
@@ -9,10 +11,13 @@ interface IServiceProps {
   perPage?: number
 }
 
+@injectable()
 export class ListCustomersService {
   constructor (
+    @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
 
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

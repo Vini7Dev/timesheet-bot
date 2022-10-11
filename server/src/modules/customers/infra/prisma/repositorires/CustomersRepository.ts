@@ -12,6 +12,18 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
     return findedCustomer
   }
 
+  public async list({
+    page = 0,
+    perPage = 10,
+  }: { page?: number, perPage?: number }): Promise<Customer[]> {
+    const customerList = await this.client.customers.findMany({
+      skip: page,
+      take: perPage,
+    })
+
+    return customerList
+  }
+
   public async create({ code, name }: ICreateCustomer): Promise<Customer> {
     const createdCustomer = await this.client.customers.create({
       data: { code, name }
