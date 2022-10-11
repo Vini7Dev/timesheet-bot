@@ -2,6 +2,8 @@ import { gql } from 'apollo-server';
 
 import { userTypeDefs } from '@modules/users/infra/apollo/schemas/userTypeDefs';
 import { userResolvers } from '@modules/users/infra/apollo/schemas/userResolvers';
+import { customersTypeDefs } from '@modules/customers/infra/apollo/schemas/customersTypeDefs';
+import { customersResolvers } from '@modules/customers/infra/apollo/schemas/customersResolvers';
 
 const rootTypeDefs = gql`
   type Query {
@@ -34,9 +36,11 @@ const rootResolvers = {
 export const typeDefs = [
   rootTypeDefs,
   userTypeDefs,
+  customersTypeDefs,
 ]
 
 export const resolvers = [
   rootResolvers,
   userResolvers,
+  customersResolvers,
 ]
