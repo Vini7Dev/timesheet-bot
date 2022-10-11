@@ -4,14 +4,12 @@ import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { FakeEncryptProvider } from '@shared/containers/providers/Encrypt/fakes/FakeEncryptProvider'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { IUsersRepository } from '../repositories/IUsersRepository'
-import { CreateUserService } from './CreateUserService'
 import { ShowProfileService } from './ShowProfileService'
 import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
 let showProfileService: ShowProfileService
-let createUserService: CreateUserService
 
 describe('ShowProfileService', () => {
   beforeEach(() => {
@@ -20,14 +18,10 @@ describe('ShowProfileService', () => {
     showProfileService = new ShowProfileService(
       usersRepository,
     )
-    createUserService = new CreateUserService(
-      usersRepository,
-      encryptProvider,
-    )
   })
 
   it('should be able to show profile data', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -55,14 +49,14 @@ describe('ShowProfileService', () => {
   })
 
   it("should not be able to get another user's profile", async () => {
-    const firstUser = await createUserService.execute({
+    const firstUser = await usersRepository.create({
       name: 'Jhon Doe - 1',
       email: 'jhondoe1@mail.com',
       username: 'jhon.doe1',
       password: 'jhon123',
     })
 
-    const secondUser = await createUserService.execute({
+    const secondUser = await usersRepository.create({
       name: 'Jhon Doe - 2',
       email: 'jhondoe2@mail.com',
       username: 'jhon.doe2',
