@@ -4,14 +4,12 @@ import { FakeEncryptProvider } from '@shared/containers/providers/Encrypt/fakes/
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
-import { CreateUserService } from './CreateUserService'
 import { DeleteProfileService } from './DeleteProfileService'
 import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
 let deleteProfileService: DeleteProfileService
-let createUserService: CreateUserService
 
 describe('DeleteProfileService', () => {
   beforeEach(() => {
@@ -20,14 +18,10 @@ describe('DeleteProfileService', () => {
     deleteProfileService = new DeleteProfileService(
       usersRepository,
     )
-    createUserService = new CreateUserService(
-      usersRepository,
-      encryptProvider,
-    )
   })
 
   it('should be able to delete profile', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -43,14 +37,14 @@ describe('DeleteProfileService', () => {
   })
 
   it('should not be able to delete different user profile', async () => {
-    const firstUser = await createUserService.execute({
+    const firstUser = await usersRepository.create({
       name: 'Jhon Doe - 1',
       email: 'jhondoe1@mail.com',
       username: 'jhon.doe1',
       password: 'jhon123',
     })
 
-    const secondUser = await createUserService.execute({
+    const secondUser = await usersRepository.create({
       name: 'Jhon Doe - 2',
       email: 'jhondoe2@mail.com',
       username: 'jhon.doe2',
