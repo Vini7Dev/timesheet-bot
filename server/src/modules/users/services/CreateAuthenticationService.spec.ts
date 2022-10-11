@@ -6,13 +6,11 @@ import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 import { CreateAuthenticationService } from './CreateAuthenticationService'
-import { CreateUserService } from './CreateUserService'
 import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
 let createAuthenticationService: CreateAuthenticationService
-let createUserService: CreateUserService
 
 describe('CreateAuthenticationService', () => {
   beforeAll(() => {
@@ -28,14 +26,10 @@ describe('CreateAuthenticationService', () => {
       usersRepository,
       encryptProvider,
     )
-    createUserService = new CreateUserService(
-      usersRepository,
-      encryptProvider,
-    )
   })
 
   it('should be able to make login with email', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -52,7 +46,7 @@ describe('CreateAuthenticationService', () => {
   })
 
   it('should be able to make login with username', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -78,7 +72,7 @@ describe('CreateAuthenticationService', () => {
   })
 
   it('should not be able to make login with invalid password', async () => {
-    await createUserService.execute({
+    await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
