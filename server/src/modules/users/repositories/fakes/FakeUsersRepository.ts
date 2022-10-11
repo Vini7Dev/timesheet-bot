@@ -20,7 +20,7 @@ export class FakeUsersRepository implements IUsersRepository {
 
   public async findByUsernameOrEmail({
     email, username
-  }: { email: string, username: string }): Promise<User | null> {
+  }: { email?: string, username?: string }): Promise<User | null> {
     const findedUser = this.users.find(
       user => user.email === email || user.username === username
     )
@@ -43,14 +43,16 @@ export class FakeUsersRepository implements IUsersRepository {
     username,
     password,
   }: ICreateUserDTO): Promise<User> {
+    const createDate = new Date()
+
     const createdUser = {
       id: Math.random().toString(),
       name,
       email,
       username,
       password,
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: createDate,
+      updated_at: createDate,
     }
 
     this.users.push(createdUser)

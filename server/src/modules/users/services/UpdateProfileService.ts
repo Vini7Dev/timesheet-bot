@@ -43,6 +43,13 @@ export class UpdateProfileService {
       throw new AppError('Profile not found!', 404)
     }
 
+    const usernameAlreadyExists = await this.usersRepository.findByUsernameOrEmail({
+      email, username,
+    })
+    if (usernameAlreadyExists) {
+      throw new AppError('This username or email already exists!')
+    }
+
     const passwordDecrypted = this.encryptProvider.decrypt(profileToUpdate.password)
     if (currentPassword !== passwordDecrypted) {
       throw new AppError('Invalid current password!', 403)

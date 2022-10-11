@@ -17,7 +17,7 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
 
   public async findByUsernameOrEmail({
     email, username,
-  }: { email: string, username: string }): Promise<User | null> {
+  }: { email?: string, username?: string }): Promise<User | null> {
     const findedUser = await this.client.users.findFirst({
       where: {
         OR: [

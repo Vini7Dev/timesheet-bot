@@ -71,6 +71,62 @@ describe('UpdateProfileService', () => {
     expect(updatedUser.updated_at).not.toEqual(updatedUser.created_at)
   })
 
+  it('should not be able to update profile with email already exists', async () => {
+    await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'sameEmail',
+      username: 'jhon.doe1',
+      password: 'jhon123',
+    })
+
+    const secondUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe2@mail.com',
+      username: 'jhon.doe2',
+      password: 'jhon123',
+    })
+
+    await expect(
+      updateProfileService.execute({
+        authenticatedUserId: secondUser.id,
+        userId: secondUser.id,
+        name: 'New name',
+        email: 'sameEmail',
+        username: 'new.username',
+        newPassword: 'newpassword',
+        currentPassword: 'jhon123',
+      })
+    ).rejects.toEqual(new AppError('This username or email already exists!'))
+  })
+
+  it('should not be able to update profile with username already exists', async () => {
+    await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe1@mail.com',
+      username: 'same.username',
+      password: 'jhon123',
+    })
+
+    const secondUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe2@mail.com',
+      username: 'jhon.doe2',
+      password: 'jhon123',
+    })
+
+    await expect(
+      updateProfileService.execute({
+        authenticatedUserId: secondUser.id,
+        userId: secondUser.id,
+        name: 'New name',
+        email: 'newemail@mail.com',
+        username: 'same.username',
+        newPassword: 'newpassword',
+        currentPassword: 'jhon123',
+      })
+    ).rejects.toEqual(new AppError('This username or email already exists!'))
+  })
+
   it('should not be able to update profile with invalid current password', async () => {
     const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
