@@ -7,5 +7,5 @@ export class Customer {
 
   created_at: Date
 
-  updated_ad: Date
+  updated_at: Date
 }
