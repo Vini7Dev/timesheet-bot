@@ -4,14 +4,12 @@ import { FakeEncryptProvider } from '@shared/containers/providers/Encrypt/fakes/
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
-import { CreateUserService } from './CreateUserService'
 import { ListUsersService } from './ListUsersService'
 import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
 let listUsersService: ListUsersService
-let createUserService: CreateUserService
 
 describe('ListUsersService', () => {
   beforeEach(() => {
@@ -19,10 +17,6 @@ describe('ListUsersService', () => {
     encryptProvider = new FakeEncryptProvider()
     listUsersService = new ListUsersService(
       usersRepository,
-    )
-    createUserService = new CreateUserService(
-      usersRepository,
-      encryptProvider,
     )
   })
 
