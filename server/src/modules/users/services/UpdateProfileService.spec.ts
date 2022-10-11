@@ -4,14 +4,12 @@ import { FakeEncryptProvider } from '@shared/containers/providers/Encrypt/fakes/
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '../repositories/IUsersRepository'
-import { CreateUserService } from './CreateUserService'
 import { UpdateProfileService } from './UpdateProfileService'
 import { AppError } from '@shared/errors/AppError'
 
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
 let updateProfileService: UpdateProfileService
-let createUserService: CreateUserService
 
 describe('UpdateProfileService', () => {
   beforeEach(() => {
@@ -21,14 +19,10 @@ describe('UpdateProfileService', () => {
       usersRepository,
       encryptProvider,
     )
-    createUserService = new CreateUserService(
-      usersRepository,
-      encryptProvider,
-    )
   })
 
   it('should be able to update profile', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -55,7 +49,7 @@ describe('UpdateProfileService', () => {
   })
 
   it('should be able to proccess request without changes', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -78,7 +72,7 @@ describe('UpdateProfileService', () => {
   })
 
   it('should not be able to update profile with invalid current password', async () => {
-    const createdUser = await createUserService.execute({
+    const createdUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -99,14 +93,14 @@ describe('UpdateProfileService', () => {
   })
 
   it("should not be able to update another user's profile", async () => {
-    const firstUser = await createUserService.execute({
+    const firstUser = await usersRepository.create({
       name: 'Jhon Doe - 1',
       email: 'jhondoe1@mail.com',
       username: 'jhon.doe1',
       password: 'jhon123',
     })
 
-    const secondUser = await createUserService.execute({
+    const secondUser = await usersRepository.create({
       name: 'Jhon Doe - 2',
       email: 'jhondoe2@mail.com',
       username: 'jhon.doe2',
