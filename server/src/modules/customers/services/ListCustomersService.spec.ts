@@ -39,7 +39,7 @@ describe('ListCustomersService', () => {
     })
 
     expect(customersList).toHaveLength(1)
-    expect(customersList[0]).toEqual(createdCustomer.id)
+    expect(customersList[0].id).toEqual(createdCustomer.id)
   })
 
   it('should be able to list customers with pagination filters', async () => {
@@ -70,7 +70,7 @@ describe('ListCustomersService', () => {
     })
 
     expect(customersList).toHaveLength(1)
-    expect(customersList[1]).toEqual(secondCustomer.id)
+    expect(customersList[0].id).toEqual(secondCustomer.id)
   })
 
   it('should not be able to list customers without authentication', async () => {
@@ -83,6 +83,6 @@ describe('ListCustomersService', () => {
       listCustomersService.execute({
         authenticatedUserId: 'invalid-user-id',
       })
-    ).rejects.toEqual(new AppError('You must be authenticated', 401))
+    ).rejects.toEqual(new AppError('You must be authenticated!', 401))
   })
 })

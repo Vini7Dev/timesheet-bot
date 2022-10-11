@@ -9,6 +9,15 @@ export class FakeCustomersRepository implements ICustomersRepository {
     this.customers = []
   }
 
+  public async list({
+    page = 0,
+    perPage = 10,
+  }: { page?: number, perPage?: number }): Promise<Customer[]> {
+    const filteredCustomers = this.customers.slice(page, perPage + page)
+
+    return filteredCustomers
+  }
+
   public async findByCode(code: string): Promise<Customer | null> {
     const findedCustomer = this.customers.find(customer => customer.code === code)
 
