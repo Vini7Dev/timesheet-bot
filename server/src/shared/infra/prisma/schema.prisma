@@ -23,8 +23,21 @@ model Customers {
   id                String    @id @default(uuid())
   code              String
   name              String
+  projects          Projects[]
   created_at        DateTime  @default(now())
   updated_at        DateTime  @default(now())
 
   @@map("customers")
+}
+
+model Projects {
+  id                String  @id @default(uuid())
+  code              String
+  name              String
+  customer_id       String
+  customer          Customers @relation(fields: [customer_id], references: [id])
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(now())
+
+  @@map("projects")
 }
