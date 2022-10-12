@@ -8,4 +8,5 @@ export interface ICustomersRepository {
   list(filters: { page?: number, perPage?: number }): Promise<Customer[]>
   create(data: ICreateCustomerDTO): Promise<Customer>
   update(data: IUpdateCustomerDTO): Promise<Customer>
+  delete(id: string): Promise<string>
 }

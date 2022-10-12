@@ -64,4 +64,14 @@ export class FakeCustomersRepository implements ICustomersRepository {
 
     return updatedCustomer
   }
+
+  public async delete(id: string): Promise<string> {
+    const customerToDeleteIndex = this.customers.findIndex(customer => customer.id === id)
+
+    if(customerToDeleteIndex !== -1) {
+      this.customers.splice(customerToDeleteIndex, 1)
+    }
+
+    return id
+  }
 }
