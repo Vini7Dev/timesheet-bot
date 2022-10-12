@@ -5,7 +5,6 @@ import { Customer } from '../entities/Customer';
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository';
 
 export class CustomersRepository extends AppRepository implements ICustomersRepository {
-
   public async findById(id: string): Promise<Customer | null> {
     const findedCustomer = await this.client.customers.findUnique({
       where: { id }
@@ -53,5 +52,13 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
     })
 
     return updatedCustomer
+  }
+
+  public async delete(id: string): Promise<string> {
+    await this.client.customers.delete({
+      where: { id }
+    })
+
+    return id
   }
 }

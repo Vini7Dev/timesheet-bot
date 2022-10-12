@@ -78,9 +78,7 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
 
   public async delete(id: string): Promise<string> {
     await this.client.users.delete({
-      where: {
-        id,
-      }
+      where: { id }
     })
 
     return id
