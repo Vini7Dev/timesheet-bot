@@ -7,7 +7,8 @@ import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository';
 export class CustomersRepository extends AppRepository implements ICustomersRepository {
   public async findById(id: string): Promise<Customer | null> {
     const findedCustomer = await this.client.customers.findUnique({
-      where: { id }
+      where: { id },
+      include: { projects: true, }
     })
 
     return findedCustomer
@@ -15,7 +16,7 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
 
   public async findByCode(code: string): Promise<Customer | null> {
     const findedCustomer = await this.client.customers.findFirst({
-      where: { code }
+      where: { code },
     })
 
     return findedCustomer
@@ -28,6 +29,7 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
     const customerList = await this.client.customers.findMany({
       skip: page,
       take: perPage,
+      include: { projects: true },
     })
 
     return customerList

@@ -16,6 +16,7 @@ export const customersTypeDefs = gql`
     id: ID!
     code: String!
     name: String!
+    projects: [Project!]
     created_at: String!
     updated_at: String!
   }
