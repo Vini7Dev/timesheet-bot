@@ -5,6 +5,15 @@ import { Customer } from '../entities/Customer';
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository';
 
 export class CustomersRepository extends AppRepository implements ICustomersRepository {
+
+  public async findById(id: string): Promise<Customer | null> {
+    const findedCustomer = await this.client.customers.findUnique({
+      where: { id }
+    })
+
+    return findedCustomer
+  }
+
   public async findByCode(code: string): Promise<Customer | null> {
     const findedCustomer = await this.client.customers.findFirst({
       where: { code }
@@ -33,7 +42,16 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
     return createdCustomer
   }
 
-  public async update(data: IUpdateCustomerDTO): Promise<Customer> {
-    throw new Error('Method not implemented.');
+  public async update({ id, code, name }: IUpdateCustomerDTO): Promise<Customer> {
+    const updatedCustomer = await this.client.customers.update({
+      where: { id },
+      data: {
+        code,
+        name,
+        updated_at: new Date()
+      }
+    })
+
+    return updatedCustomer
   }
 }

@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe'
+
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { AppError } from '@shared/errors/AppError'
 import { Customer } from '../infra/prisma/entities/Customer'
@@ -10,10 +12,13 @@ interface IServiceProps {
   authenticatedUserId: string
 }
 
+@injectable()
 export class UpdateCustomerService {
   constructor (
+    @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
 
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 
@@ -42,7 +47,6 @@ export class UpdateCustomerService {
       id: customerId,
       code: code ?? customerToUpdate.code,
       name: name ?? customerToUpdate.name,
-
     }
 
     const updatedProfile = await this.customersRepository.update(dataToUpdateCustomer)
