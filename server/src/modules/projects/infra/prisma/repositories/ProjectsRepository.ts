@@ -13,6 +13,19 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
     return findedProject
   }
 
+  public async list({
+    page = 0,
+    perPage = 10,
+  }: { page?: number, perPage?: number }): Promise<Project[]> {
+    const projectsList = await this.client.projects.findMany({
+      skip: page,
+      take: perPage,
+      include: { customer: true },
+    })
+
+    return projectsList
+  }
+
   public async create({
     code,
     name,

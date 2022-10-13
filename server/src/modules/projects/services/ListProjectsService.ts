@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe'
+
 import { Project } from '../infra/prisma/entities/Project'
 import { IProjectsRepository } from '../repositories/IProjectsRepository'
 
@@ -6,8 +8,10 @@ interface IServiceProps {
   perPage?: number
 }
 
+@injectable()
 export class ListProjectsService {
   constructor (
+    @inject('ProjectsRepository')
     private projectsRepository: IProjectsRepository
   ) {}
 

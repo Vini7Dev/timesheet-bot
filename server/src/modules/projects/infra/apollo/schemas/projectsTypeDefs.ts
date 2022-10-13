@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server'
 
 export const projectsTypeDefs = gql`
+  extend type Query {
+    projects(data: ApiFiltersInput!): [Project!]!
+  }
+
   extend type Mutation {
     createProject(data: CreateProjectInput!): Project!
   }
@@ -9,7 +13,7 @@ export const projectsTypeDefs = gql`
     id: String!
     code: String!
     name: String!
-    customer: Customer!
+    customer: Customer
     created_at: String!
     updated_at: String!
   }
