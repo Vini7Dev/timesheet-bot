@@ -38,14 +38,19 @@ describe('ShowProfileService', () => {
   })
 
   it('should not be able to get a non-existent profile', async () => {
-    const emptyResult = await showProfileService.execute({
-      userId: 'non-existent-user',
-      authenticatedUserId: 'non-existent-user'
+    const createdUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
     })
 
-    expect(
-      emptyResult
-    ).toEqual(null)
+    await expect(
+      showProfileService.execute({
+        userId: 'non-existent-user',
+        authenticatedUserId: createdUser.id,
+      })
+    ).rejects.toEqual(new AppError('User not found!', 404))
   })
 
   it("should not be able to get another user's profile", async () => {

@@ -20,11 +20,15 @@ export class ShowProfileService {
     userId,
     authenticatedUserId
   }: IServiceProps): Promise<User | null> {
-    if (userId !== authenticatedUserId) {
-      throw new AppError('You do not have permission to view this profile!', 403)
+    const userData = await this.usersRepository.findById(userId)
+
+    if (!userData) {
+      throw new AppError('User not found!', 404)
     }
 
-    const userData = await this.usersRepository.findById(userId)
+    if (userData.id !== authenticatedUserId) {
+      throw new AppError('You do not have permission to view this profile!', 403)
+    }
 
     return userData
   }
