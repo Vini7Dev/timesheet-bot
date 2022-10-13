@@ -12,7 +12,7 @@ export const context = async (ctx: ExpressContext): Promise<IAppContext> => {
   return {
     ...ctx,
     authentication: {
-      user_id: await getAuthentedUser(ctx),
+      user_id: await getAuthentedUser(ctx as IAppContext),
     },
   }
 }

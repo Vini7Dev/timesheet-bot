@@ -15,7 +15,7 @@ const server = new ApolloServer({
   cors: {
     origin: ['https://studio.apollographql.com'],
     credentials: true,
-  }
+  },
 })
 
 server.listen(SERVER_PORT).then(({ url }) => {
