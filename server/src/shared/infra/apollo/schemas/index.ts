@@ -4,7 +4,8 @@ import { userTypeDefs } from '@modules/users/infra/apollo/schemas/userTypeDefs';
 import { userResolvers } from '@modules/users/infra/apollo/schemas/userResolvers';
 import { customersTypeDefs } from '@modules/customers/infra/apollo/schemas/customersTypeDefs';
 import { customersResolvers } from '@modules/customers/infra/apollo/schemas/customersResolvers';
-import { projectsTypeDefs } from '@modules/projects/infra/apollo/projectsTypeDefs';
+import { projectsTypeDefs } from '@modules/projects/infra/apollo/schemas/projectsTypeDefs';
+import { projectsResolvers } from '@modules/projects/infra/apollo/schemas/projectsResolvers';
 
 const rootTypeDefs = gql`
   type Query {
@@ -45,4 +46,5 @@ export const resolvers = [
   rootResolvers,
   userResolvers,
   customersResolvers,
+  projectsResolvers,
 ]
