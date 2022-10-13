@@ -2,6 +2,7 @@ import { container } from 'tsyringe'
 
 import { IAppContext } from '@shared/infra/apollo/context'
 import { UpdateProfileService } from '@modules/users/services/UpdateProfileService'
+import { ensureAuthenticated } from '@utils/ensureAuthenticated'
 
 interface IUpdateUserInput {
   data: {
@@ -28,12 +29,12 @@ export const updateUser = async (
   }: IUpdateUserInput,
   ctx: IAppContext
 ) => {
-  const { user_id: authenticatedUserId } = ctx.authentication
+  const authenticatedUserId = ensureAuthenticated(ctx)
 
   const updateProfileService = container.resolve(UpdateProfileService)
 
   const updatedUser = await updateProfileService.execute({
-    authenticatedUserId: authenticatedUserId ?? '',
+    authenticatedUserId,
     userId,
     name,
     email,

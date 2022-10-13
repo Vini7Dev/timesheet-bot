@@ -24,7 +24,7 @@ export class DeleteProfileService {
       throw new AppError('User not found!', 404)
     }
 
-    if (userId !== authenticatedUserId) {
+    if (userToDelete.id !== authenticatedUserId) {
       throw new AppError('You do not have permission to delete this profile!', 403)
     }
 

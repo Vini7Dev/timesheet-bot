@@ -65,12 +65,4 @@ describe('ListUsersService', () => {
     expect(usersList).toHaveLength(1)
     expect(usersList[0].id).toEqual(secondUser.id)
   })
-
-  it('should not be able to list users without authentication', async () => {
-    await expect(
-      listUsersService.execute({
-        authenticatedUserId: 'invalid-user-id',
-      })
-    ).rejects.toEqual(new AppError('You must be authenticated!', 401))
-  })
 })

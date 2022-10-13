@@ -22,12 +22,6 @@ export class ListUsersService {
     perPage,
     authenticatedUserId,
   }: IServiceProps): Promise<User[]> {
-    const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
-
-    if (!authenticatedUser) {
-      throw new AppError('You must be authenticated!', 401)
-    }
-
     const usersList = await this.usersRepository.list({ page, perPage })
 
     return usersList
