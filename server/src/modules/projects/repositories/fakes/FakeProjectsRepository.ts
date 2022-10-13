@@ -1,5 +1,7 @@
 import { ICreateProjectDTO } from '@modules/projects/dtos/ICreateProjectDTO'
+import { IUpdateProjectDTO } from '@modules/projects/dtos/IUpdateProjectDTO'
 import { Project } from '@modules/projects/infra/prisma/entities/Project'
+import { AppError } from '@shared/errors/AppError'
 import { IProjectsRepository } from '../IProjectsRepository'
 
 export class FakeProjectsRepository implements IProjectsRepository {
@@ -7,6 +9,12 @@ export class FakeProjectsRepository implements IProjectsRepository {
 
   constructor () {
     this.projects = []
+  }
+
+  public async findById(id: string): Promise<Project | null> {
+    const findedProject = this.projects.find(project => project.id === id)
+
+    return findedProject ?? null
   }
 
   public async findByCode(code: string): Promise<Project | null> {
@@ -43,5 +51,26 @@ export class FakeProjectsRepository implements IProjectsRepository {
     this.projects.push(createdProject)
 
     return createdProject
+  }
+
+  public async update({
+    id,
+    code,
+    name,
+  }: IUpdateProjectDTO): Promise<Project> {
+    const projectToUpdateIndex = this.projects.findIndex(project => project.id === id)
+
+    if(projectToUpdateIndex === -1) {
+      throw new AppError('Project not found!', 404)
+    }
+
+    const updatedProject = this.projects[projectToUpdateIndex]
+    if (code) updatedProject.code = code
+    if (name) updatedProject.name = name
+    updatedProject.updated_at = (new Date(Date.now() + 10000))
+
+    this.projects[projectToUpdateIndex] = updatedProject
+
+    return updatedProject
   }
 }
