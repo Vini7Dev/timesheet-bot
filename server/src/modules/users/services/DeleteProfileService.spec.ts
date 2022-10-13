@@ -36,6 +36,22 @@ describe('DeleteProfileService', () => {
     expect(deletedProfileId).toEqual(createdUser.id)
   })
 
+  it('should not be able to delete a non-existent profile', async () => {
+    const createdUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    await expect(
+      deleteProfileService.execute({
+        userId: 'invalid-user-id',
+        authenticatedUserId: createdUser.id,
+      })
+    ).rejects.toEqual(new AppError('User not found!', 404))
+  })
+
   it('should not be able to delete different user profile', async () => {
     const firstUser = await usersRepository.create({
       name: 'Jhon Doe - 1',

@@ -19,6 +19,11 @@ export class DeleteProfileService {
     userId,
     authenticatedUserId,
   }: IServiceProps): Promise<string> {
+    const userToDelete = await this.usersRepository.findById(userId)
+    if (!userToDelete) {
+      throw new AppError('User not found!', 404)
+    }
+
     if (userId !== authenticatedUserId) {
       throw new AppError('You do not have permission to delete this profile!', 403)
     }
