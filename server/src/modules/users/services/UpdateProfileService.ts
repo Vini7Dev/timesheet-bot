@@ -34,13 +34,13 @@ export class UpdateProfileService {
     newPassword,
     currentPassword,
   }: IServiceProps): Promise<User> {
-    if (userId !== authenticatedUserId) {
-      throw new AppError('You do not have permission to update this profile!', 403)
-    }
-
     const profileToUpdate = await this.usersRepository.findById(userId)
     if (!profileToUpdate) {
       throw new AppError('Profile not found!', 404)
+    }
+
+    if (profileToUpdate.id !== authenticatedUserId) {
+      throw new AppError('You do not have permission to update this profile!', 403)
     }
 
     const usernameAlreadyExists = await this.usersRepository.findByUsernameOrEmail({
