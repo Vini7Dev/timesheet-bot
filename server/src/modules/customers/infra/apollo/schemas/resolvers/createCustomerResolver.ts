@@ -2,6 +2,7 @@ import { container } from 'tsyringe'
 
 import { CreateCustomerService } from '@modules/customers/services/CreateCustomerService'
 import { IAppContext } from '@shared/infra/apollo/context'
+import { ensureAuthenticated } from '@utils/ensureAuthenticated'
 
 interface ICreateCustomerInput {
   data: {
@@ -15,14 +16,14 @@ export const createCustomer = async (
   { data: { code, name } }: ICreateCustomerInput,
   ctx: IAppContext
 ) => {
-  const { user_id: authenticatedUserId } = ctx.authentication
+  const authenticatedUserId = ensureAuthenticated(ctx)
 
   const createCustomerService = container.resolve(CreateCustomerService)
 
   const createdCustomer = await createCustomerService.execute({
     code,
     name,
-    authenticatedUserId: authenticatedUserId ?? '',
+    authenticatedUserId,
   })
 
   return createdCustomer

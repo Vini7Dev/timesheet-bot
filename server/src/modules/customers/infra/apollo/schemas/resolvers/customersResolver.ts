@@ -3,6 +3,7 @@ import { container } from 'tsyringe'
 import { ListUsersService } from '@modules/users/services/ListUsersService'
 import { IAppContext } from '@shared/infra/apollo/context'
 import { ListCustomersService } from '@modules/customers/services/ListCustomersService'
+import { ensureAuthenticated } from '@utils/ensureAuthenticated'
 
 interface IApiFiltersInput {
   data: {
@@ -17,12 +18,14 @@ export const customers = async (
   }: IApiFiltersInput,
   ctx: IAppContext
 ) => {
-  const { user_id: authenticatedUserId } = ctx.authentication
+  const authenticatedUserId = ensureAuthenticated(ctx)
 
   const listCustomersService = container.resolve(ListCustomersService)
 
   const customerList = await listCustomersService.execute({
-    page, perPage, authenticatedUserId: authenticatedUserId ?? '',
+    page,
+    perPage,
+    authenticatedUserId,
   })
 
   return customerList
