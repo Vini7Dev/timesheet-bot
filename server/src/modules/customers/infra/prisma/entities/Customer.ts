@@ -7,7 +7,7 @@ export class Customer {
 
   name: string
 
-  projects: Project[]
+  projects?: Project[]
 
   created_at: Date
 

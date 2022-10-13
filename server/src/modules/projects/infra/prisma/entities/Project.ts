@@ -9,7 +9,7 @@ export class Project {
 
   customer_id: string
 
-  customer: Customer
+  customer?: Customer
 
   created_at: Date
 
