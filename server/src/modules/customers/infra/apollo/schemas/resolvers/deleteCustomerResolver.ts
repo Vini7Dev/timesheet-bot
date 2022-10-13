@@ -9,13 +9,12 @@ interface IDeleteCustomerInput {
 }
 
 export const deleteCustomer = async (_: any, { id }: IDeleteCustomerInput, ctx: IAppContext) => {
-  const authenticatedUserId = ensureAuthenticated(ctx)
+  ensureAuthenticated(ctx)
 
   const deleteCustomerService = container.resolve(DeleteCustomerService)
 
   const userIdDeleted = await deleteCustomerService.execute({
     customerId: id,
-    authenticatedUserId,
   })
 
   return userIdDeleted

@@ -18,14 +18,13 @@ export const customers = async (
   }: IApiFiltersInput,
   ctx: IAppContext
 ) => {
-  const authenticatedUserId = ensureAuthenticated(ctx)
+  ensureAuthenticated(ctx)
 
   const listCustomersService = container.resolve(ListCustomersService)
 
   const customerList = await listCustomersService.execute({
     page,
     perPage,
-    authenticatedUserId,
   })
 
   return customerList

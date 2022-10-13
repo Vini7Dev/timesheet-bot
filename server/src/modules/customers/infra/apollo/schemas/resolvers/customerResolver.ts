@@ -9,13 +9,12 @@ interface ICustomerInput {
 }
 
 export const customer = async (_: any, { id }: ICustomerInput, ctx: IAppContext) => {
-  const authenticatedUserId = ensureAuthenticated(ctx)
+  ensureAuthenticated(ctx)
 
   const showCustomerService = container.resolve(ShowCustomerService)
 
   const findedCustomer = await showCustomerService.execute({
     customerId: id,
-    authenticatedUserId,
   })
 
   return findedCustomer

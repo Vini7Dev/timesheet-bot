@@ -16,14 +16,13 @@ export const createCustomer = async (
   { data: { code, name } }: ICreateCustomerInput,
   ctx: IAppContext
 ) => {
-  const authenticatedUserId = ensureAuthenticated(ctx)
+  ensureAuthenticated(ctx)
 
   const createCustomerService = container.resolve(CreateCustomerService)
 
   const createdCustomer = await createCustomerService.execute({
     code,
     name,
-    authenticatedUserId,
   })
 
   return createdCustomer

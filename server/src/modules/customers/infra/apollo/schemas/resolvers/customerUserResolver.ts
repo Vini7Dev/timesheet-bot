@@ -23,12 +23,11 @@ export const updateCustomer = async (
   }: IUpdateCustomerInput,
   ctx: IAppContext
 ) => {
-  const authenticatedUserId = ensureAuthenticated(ctx)
+  ensureAuthenticated(ctx)
 
   const customerProfileService = container.resolve(UpdateCustomerService)
 
   const updatedCustomer = await customerProfileService.execute({
-    authenticatedUserId,
     customerId,
     code,
     name,
