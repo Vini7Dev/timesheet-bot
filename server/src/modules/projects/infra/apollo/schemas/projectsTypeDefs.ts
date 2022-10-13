@@ -2,6 +2,7 @@ import { gql } from 'apollo-server'
 
 export const projectsTypeDefs = gql`
   extend type Query {
+    project(id: ID!): Project!
     projects(data: ApiFiltersInput!): [Project!]!
   }
 
