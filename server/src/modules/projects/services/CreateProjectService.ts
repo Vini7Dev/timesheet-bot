@@ -1,7 +1,9 @@
 import { inject, injectable } from 'tsyringe'
+
 import { ICustomersRepository } from '@modules/customers/repositories/ICustomersRepository'
 import { AppError } from '@shared/errors/AppError'
 import { IProjectsRepository } from '../repositories/IProjectsRepository'
+import { Project } from '../infra/prisma/entities/Project'
 
 interface IServiceProps {
   code: string
@@ -23,7 +25,7 @@ export class CreateProjectService {
     code,
     name,
     customer_id,
-  }: IServiceProps) {
+  }: IServiceProps): Promise<Project> {
     const projectWithSameCode = await this.projectsRepository.findByCode(code)
 
     if (projectWithSameCode) {
