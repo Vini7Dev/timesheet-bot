@@ -2,6 +2,7 @@ import { inject, injectable } from 'tsyringe';
 
 import { AppError } from '@shared/errors/AppError';
 import { ICustomersRepository } from '../repositories/ICustomersRepository'
+import { Customer } from '../infra/prisma/entities/Customer';
 
 interface IServiceProps {
   customerId: string
@@ -16,9 +17,9 @@ export class ShowCustomerService {
 
   public async execute({
     customerId,
-  }: IServiceProps) {
+  }: IServiceProps): Promise<Customer> {
     const findedCustomer = await this.customersRepository.findById(customerId)
-    
+
     if (!findedCustomer) {
       throw new AppError('Customer not found!', 404)
     }

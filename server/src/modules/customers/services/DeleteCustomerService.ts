@@ -15,7 +15,7 @@ export class DeleteCustomerService {
 
   public async execute({
     customerId,
-  }: IServiceProps) {
+  }: IServiceProps): Promise<string> {
     const customerIdDeleted = await this.customersRepository.delete(customerId)
 
     return customerIdDeleted

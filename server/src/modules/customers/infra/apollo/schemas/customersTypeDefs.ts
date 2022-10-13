@@ -2,7 +2,7 @@ import { gql } from 'apollo-server'
 
 export const customersTypeDefs = gql`
   extend type Query {
-    customer(id: ID!): Customer
+    customer(id: ID!): Customer!
     customers(data: ApiFiltersInput!): [Customer!]!
   }
 

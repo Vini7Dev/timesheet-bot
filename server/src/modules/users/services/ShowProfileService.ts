@@ -19,7 +19,7 @@ export class ShowProfileService {
   public async execute({
     userId,
     authenticatedUserId
-  }: IServiceProps): Promise<User | null> {
+  }: IServiceProps): Promise<User> {
     const userData = await this.usersRepository.findById(userId)
 
     if (!userData) {

@@ -2,6 +2,7 @@ import { inject, injectable } from 'tsyringe'
 
 import { AppError } from '@shared/errors/AppError'
 import { ICustomersRepository } from '../repositories/ICustomersRepository'
+import { Customer } from '../infra/prisma/entities/Customer'
 
 interface IServiceProps {
   name: string
@@ -18,7 +19,7 @@ export class CreateCustomerService {
   public async execute({
     code,
     name,
-  }: IServiceProps) {
+  }: IServiceProps): Customer {
     const customerWithSameCode = await this.customersRepository.findByCode(code)
 
     if(customerWithSameCode) {
