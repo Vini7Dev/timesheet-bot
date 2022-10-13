@@ -8,4 +8,5 @@ export interface IProjectsRepository {
   list(filters: { page?: number, perPage?: number }): Promise<Project[]>
   create(data: ICreateProjectDTO): Promise<Project>
   update(data: IUpdateProjectDTO): Promise<Project>
+  delete(id: string): Promise<string>
 }

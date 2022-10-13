@@ -73,4 +73,14 @@ export class FakeProjectsRepository implements IProjectsRepository {
 
     return updatedProject
   }
+
+  public async delete(id: string): Promise<string> {
+    const projectToDeleteIndex = this.projects.findIndex(project => project.id === id)
+
+    if(projectToDeleteIndex !== -1) {
+      this.projects.splice(projectToDeleteIndex, 1)
+    }
+
+    return id
+  }
 }
