@@ -3,7 +3,6 @@ import 'reflect-metadata'
 import { FakeCustomersRepository } from '../repositories/fakes/FakeCustomersRepository'
 import { ICustomersRepository } from '../repositories/ICustomersRepository'
 import { ListCustomersService } from './ListCustomersService'
-import { AppError } from '@shared/errors/AppError'
 
 let customersRepository: ICustomersRepository
 let listCustomersService: ListCustomersService

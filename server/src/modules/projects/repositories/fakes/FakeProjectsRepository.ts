@@ -15,6 +15,15 @@ export class FakeProjectsRepository implements IProjectsRepository {
     return findedProject ?? null
   }
 
+  public async list({
+    page = 0,
+    perPage = 10,
+  }: { page?: number, perPage?: number }): Promise<Project[]> {
+    const filteredProjects = this.projects.slice(page, perPage + page)
+
+    return filteredProjects
+  }
+
   public async create({
     code,
     name,

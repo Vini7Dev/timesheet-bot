@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { CustomersRepository } from '@modules/customers/infra/prisma/repositorires/CustomersRepository'
 import { ICustomersRepository } from '@modules/customers/repositories/ICustomersRepository'
 import { AppError } from '@shared/errors/AppError'
