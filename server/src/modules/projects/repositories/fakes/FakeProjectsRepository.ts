@@ -10,7 +10,9 @@ export class FakeProjectsRepository implements IProjectsRepository {
   }
 
   public async findByCode(code: string): Promise<Project | null> {
-    throw new Error('Method not implemented.')
+    const findedProject = this.projects.find(project => project.code === code)
+
+    return findedProject ?? null
   }
 
   public async create({
