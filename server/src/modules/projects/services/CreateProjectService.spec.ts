@@ -1,11 +1,11 @@
 import 'reflect-metadata'
 
-import { CustomersRepository } from '@modules/customers/infra/prisma/repositorires/CustomersRepository'
 import { ICustomersRepository } from '@modules/customers/repositories/ICustomersRepository'
 import { AppError } from '@shared/errors/AppError'
 import { FakeProjectsRepository } from '../repositories/fakes/FakeProjectsRepository'
 import { IProjectsRepository } from '../repositories/IProjectsRepository'
 import { CreateProjectService } from './CreateProjectService'
+import { FakeCustomersRepository } from '@modules/customers/repositories/fakes/FakeCustomersRepository'
 
 let projectsRepository: IProjectsRepository
 let customersRepository: ICustomersRepository
@@ -14,7 +14,7 @@ let createProjectService: CreateProjectService
 describe('CreateProjectService', () => {
   beforeEach(() => {
     projectsRepository = new FakeProjectsRepository()
-    customersRepository = new CustomersRepository()
+    customersRepository = new FakeCustomersRepository()
     createProjectService = new CreateProjectService(
       projectsRepository,
       customersRepository,

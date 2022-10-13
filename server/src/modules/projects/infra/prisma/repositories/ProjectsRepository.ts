@@ -71,4 +71,12 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
 
     return updatedProject
   }
+
+  public async delete(id: string): Promise<string> {
+    await this.client.projects.delete({
+      where: { id },
+    })
+
+    return id
+  }
 }

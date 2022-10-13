@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe'
+
 import { AppError } from '@shared/errors/AppError'
 import { IProjectsRepository } from '../repositories/IProjectsRepository'
 
@@ -5,8 +7,10 @@ interface IServiceProps {
   projectId: string
 }
 
+@injectable()
 export class DeleteProjectService {
   constructor (
+    @inject('ProjectsRepository')
     private projectsRepository: IProjectsRepository
   ) {}
 
