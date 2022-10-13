@@ -19,7 +19,7 @@ export class CreateCustomerService {
   public async execute({
     code,
     name,
-  }: IServiceProps): Customer {
+  }: IServiceProps): Promise<Customer> {
     const customerWithSameCode = await this.customersRepository.findByCode(code)
 
     if(customerWithSameCode) {
