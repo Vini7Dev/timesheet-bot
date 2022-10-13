@@ -50,7 +50,7 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
       data: {
         code,
         name,
-        updated_at: new Date()
+        updated_at: new Date(),
       }
     })
 

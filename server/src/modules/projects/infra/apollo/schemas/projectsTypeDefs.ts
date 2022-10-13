@@ -7,6 +7,7 @@ export const projectsTypeDefs = gql`
 
   extend type Mutation {
     createProject(data: CreateProjectInput!): Project!
+    updateProject(data: UpdateProjectInput!): Project!
   }
 
   type Project {
@@ -22,5 +23,11 @@ export const projectsTypeDefs = gql`
     code: String!
     name: String!
     customer_id: String!
+  }
+
+  input UpdateProjectInput {
+    projectId: String!
+    code: String
+    name: String
   }
 `

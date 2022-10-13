@@ -1,4 +1,5 @@
-import { ICustomersRepository } from '@modules/customers/repositories/ICustomersRepository';
+import { inject, injectable } from 'tsyringe';
+
 import { AppError } from '@shared/errors/AppError';
 import { Project } from '../infra/prisma/entities/Project';
 import { IProjectsRepository } from '../repositories/IProjectsRepository'
@@ -9,8 +10,10 @@ interface IServiceProps {
   name?: string
 }
 
+@injectable()
 export class UpdateProjectService {
   constructor (
+    @inject('ProjectsRepository')
     private projectsRepository: IProjectsRepository,
   ) {}
 

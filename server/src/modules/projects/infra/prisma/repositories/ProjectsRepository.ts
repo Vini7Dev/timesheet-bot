@@ -1,9 +1,19 @@
 import { ICreateProjectDTO } from '@modules/projects/dtos/ICreateProjectDTO'
+import { IUpdateProjectDTO } from '@modules/projects/dtos/IUpdateProjectDTO'
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
 import { Project } from '../entities/Project'
 
 export class ProjectsRepository extends AppRepository implements IProjectsRepository {
+  public async findById(id: string): Promise<Project | null> {
+    const findedProject = await this.client.projects.findFirst({
+      where: { id },
+      include: { customer: true }
+    })
+
+    return findedProject
+  }
+
   public async findByCode(code: string): Promise<Project | null> {
     const findedProject = await this.client.projects.findFirst({
       where: { code },
@@ -41,5 +51,24 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
     })
 
     return createdProject
+  }
+
+  public async update({
+    id,
+    code,
+    name,
+  }: IUpdateProjectDTO): Promise<Project> {
+    const updatedProject = await this.client.projects.update({
+      where: { id },
+      data: {
+        id,
+        code,
+        name,
+        updated_at: new Date(),
+      },
+      include: { customer: true },
+    })
+
+    return updatedProject
   }
 }
