@@ -46,7 +46,7 @@ export class UpdateProfileService {
     const usernameAlreadyExists = await this.usersRepository.findByUsernameOrEmail({
       email, username,
     })
-    if (usernameAlreadyExists) {
+    if (usernameAlreadyExists && usernameAlreadyExists.id !== profileToUpdate.id) {
       throw new AppError('This username or email already exists!')
     }
 

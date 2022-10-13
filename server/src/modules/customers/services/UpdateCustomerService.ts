@@ -30,8 +30,8 @@ export class UpdateCustomerService {
 
     if (code) {
       const customerWithSameCode = await this.customersRepository.findByCode(code)
-      
-      if(customerWithSameCode) {
+
+      if(customerWithSameCode && customerWithSameCode.id !== customerToUpdate.id) {
         throw new AppError('This code already exists!')
       }
     }
@@ -42,8 +42,8 @@ export class UpdateCustomerService {
       name: name ?? customerToUpdate.name,
     }
 
-    const updatedProfile = await this.customersRepository.update(dataToUpdateCustomer)
+    const updatedCustomer = await this.customersRepository.update(dataToUpdateCustomer)
 
-    return updatedProfile
+    return updatedCustomer
   }
 }
