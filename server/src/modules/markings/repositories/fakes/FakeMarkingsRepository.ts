@@ -20,8 +20,13 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number; }): Promise<Marking[]> {
-    const filteredMarkings = this.markings.slice(page, perPage + page)
+    date,
+  }: { page?: number, perPage?: number, date?: string }): Promise<Marking[]> {
+    const filteredMarkings = this.markings
+      .filter(marking => {
+        return (date ? marking.date === date : true)
+      })
+      .slice(page, perPage + page)
 
     return filteredMarkings
   }

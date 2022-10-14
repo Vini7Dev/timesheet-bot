@@ -121,32 +121,122 @@ describe('CreateMarkingService', () => {
       customer_id: 'any-customer-id',
     })
 
-    await createMarkingService.execute({
+    const dataToCreateMarkingWithoutTimes = {
+      description: 'Description Example 2',
+      date: '01/01/2022',
+      work_class: WorkClass.PRODUCTION,
+      project_id: projectReference.id,
+      authenticatedUserId: authenticatedUser.id,
+    }
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_time: '11:00',
+        finish_time: '14:00',
+      })
+    ).rejects.toEqual(
+      new AppError('Another task already exists in parallel date and time!')
+    )
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_time: '08:00',
+        finish_time: '10:00',
+      })
+    ).rejects.toEqual(
+      new AppError('Another task already exists in parallel date and time!')
+    )
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_time: '10:00',
+        finish_time: '11:00',
+      })
+    ).rejects.toEqual(
+      new AppError('Another task already exists in parallel date and time!')
+    )
+  })
+
+  it('should not be able to create marking when only one of interval of the times are received', async () => {
+    const authenticatedUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const projectReference = await projectsRepository.create({
+      code: 'ABCDE',
+      name: 'Project Example',
+      customer_id: 'any-customer-id',
+    })
+
+    const dataToCreateMarkingWithoutTimes = {
       description: 'Description Example',
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      start_interval_time: '10:00',
-      finish_interval_time: '11:00',
       work_class: WorkClass.PRODUCTION,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
-    })
+    }
 
     await expect(
       createMarkingService.execute({
-        description: 'Description Example 2',
-        date: '01/01/2022',
-        start_time: '11:00',
-        finish_time: '14:00',
+        ...dataToCreateMarkingWithoutTimes,
         start_interval_time: '10:00',
-        finish_interval_time: '11:00',
-        work_class: WorkClass.PRODUCTION,
-        project_id: projectReference.id,
-        authenticatedUserId: authenticatedUser.id,
       })
-    ).rejects.toEqual(
-      new AppError('Another task already exists in parallel date and time!', 422)
-    )
+    ).rejects.toEqual(new AppError('Only one of interval times was received!'))
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        finish_interval_time: '11:00',
+      })
+    ).rejects.toEqual(new AppError('Only one of interval times was received!'))
+  })
+
+  it('should not be able to create marking with interval times outsite the start and finish time range', async () => {
+    const authenticatedUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const projectReference = await projectsRepository.create({
+      code: 'ABCDE',
+      name: 'Project Example',
+      customer_id: 'any-customer-id',
+    })
+
+    const dataToCreateMarkingWithoutTimes = {
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: projectReference.id,
+      authenticatedUserId: authenticatedUser.id,
+    }
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_interval_time: '08:00',
+        finish_interval_time: '10:00',
+      })
+    ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!!'))
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_interval_time: '08:00',
+        finish_interval_time: '11:00',
+      })
+    ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
   })
 })
