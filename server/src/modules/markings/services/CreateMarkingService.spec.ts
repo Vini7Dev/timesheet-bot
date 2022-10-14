@@ -32,7 +32,7 @@ describe('CreateMarkingService', () => {
   })
 
   it('should be able to create marking', async () => {
-    const userReference = await usersRepository.create({
+    const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -54,7 +54,7 @@ describe('CreateMarkingService', () => {
       finish_interval_time: '11:00',
       work_class: WorkClass.PRODUCTION,
       project_id: projectReference.id,
-      user_id: userReference.id,
+      authenticatedUserId: authenticatedUser.id,
     })
 
     expect(createdMarking).toHaveProperty('id')
@@ -79,13 +79,13 @@ describe('CreateMarkingService', () => {
         finish_interval_time: '11:00',
         work_class: WorkClass.PRODUCTION,
         project_id: projectReference.id,
-        user_id: 'invalid-user-id',
+        authenticatedUserId: 'invalid-user-id',
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
   })
 
   it('should not be able to create marking with a non-existent project', async () => {
-    const userReference = await usersRepository.create({
+    const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -102,13 +102,13 @@ describe('CreateMarkingService', () => {
         finish_interval_time: '11:00',
         work_class: WorkClass.PRODUCTION,
         project_id: 'invalid-project-id',
-        user_id: userReference.id,
+        authenticatedUserId: authenticatedUser.id,
       })
     ).rejects.toEqual(new AppError('Project not found!', 404))
   })
 
   it('should not be able to create markings with parallel date time', async () => {
-    const userReference = await usersRepository.create({
+    const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -130,7 +130,7 @@ describe('CreateMarkingService', () => {
       finish_interval_time: '11:00',
       work_class: WorkClass.PRODUCTION,
       project_id: projectReference.id,
-      user_id: userReference.id,
+      authenticatedUserId: authenticatedUser.id,
     })
 
     await expect(
@@ -143,7 +143,7 @@ describe('CreateMarkingService', () => {
         finish_interval_time: '11:00',
         work_class: WorkClass.PRODUCTION,
         project_id: projectReference.id,
-        user_id: userReference.id,
+        authenticatedUserId: authenticatedUser.id,
       })
     ).rejects.toEqual(
       new AppError('Another task already exists in parallel date and time!', 422)

@@ -16,8 +16,8 @@ interface IServiceProps {
   start_interval_time?: string
   finish_interval_time?: string
   work_class: WorkClass
-  user_id: string
   project_id: string
+  authenticatedUserId: string
 }
 
 export class CreateMarkingService {
