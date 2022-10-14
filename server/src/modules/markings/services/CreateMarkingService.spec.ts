@@ -234,8 +234,24 @@ describe('CreateMarkingService', () => {
     await expect(
       createMarkingService.execute({
         ...dataToCreateMarkingWithoutTimes,
-        start_interval_time: '08:00',
-        finish_interval_time: '11:00',
+        start_interval_time: '10:00',
+        finish_interval_time: '13:00',
+      })
+    ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_interval_time: '13:00',
+        finish_interval_time: '14:00',
+      })
+    ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutTimes,
+        start_interval_time: '07:00',
+        finish_interval_time: '08:00',
       })
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
   })
