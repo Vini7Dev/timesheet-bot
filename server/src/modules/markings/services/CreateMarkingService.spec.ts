@@ -2,12 +2,12 @@ import 'reflect-metadata'
 
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
-import { UsersRepository } from '@modules/users/infra/prisma/repositories/UsersRepository'
-import { ProjectsRepository } from '@modules/projects/infra/prisma/repositories/ProjectsRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { CreateMarkingService } from './CreateMarkingService'
 import { FakeMarkingsRepository } from '../repositories/fakes/FakeMarkingsRepository'
 import { AppError } from '@shared/errors/AppError'
+import { FakeProjectsRepository } from '@modules/projects/repositories/fakes/FakeProjectsRepository'
+import { FakeUsersRepository } from '@modules/users/repositories/fakes/FakeUsersRepository'
 
 enum WorkClass {
   PRODUCTION,
@@ -22,8 +22,8 @@ let createMarkingService: CreateMarkingService
 describe('CreateMarkingService', () => {
   beforeEach(() => {
     markingsRepository = new FakeMarkingsRepository()
-    usersRepository = new UsersRepository()
-    projectsRepository = new ProjectsRepository()
+    usersRepository = new FakeUsersRepository()
+    projectsRepository = new FakeProjectsRepository()
     createMarkingService = new CreateMarkingService(
       markingsRepository,
       usersRepository,
@@ -121,6 +121,18 @@ describe('CreateMarkingService', () => {
       customer_id: 'any-customer-id',
     })
 
+    await createMarkingService.execute({
+      description: 'Description Example 1',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: projectReference.id,
+      authenticatedUserId: authenticatedUser.id,
+    })
+
     const dataToCreateMarkingWithoutTimes = {
       description: 'Description Example 2',
       date: '01/01/2022',
@@ -174,7 +186,7 @@ describe('CreateMarkingService', () => {
       customer_id: 'any-customer-id',
     })
 
-    const dataToCreateMarkingWithoutTimes = {
+    const dataToCreateMarkingWithoutIntervalTimes = {
       description: 'Description Example',
       date: '01/01/2022',
       start_time: '09:00',
@@ -186,14 +198,14 @@ describe('CreateMarkingService', () => {
 
     await expect(
       createMarkingService.execute({
-        ...dataToCreateMarkingWithoutTimes,
+        ...dataToCreateMarkingWithoutIntervalTimes,
         start_interval_time: '10:00',
       })
     ).rejects.toEqual(new AppError('Only one of interval times was received!'))
 
     await expect(
       createMarkingService.execute({
-        ...dataToCreateMarkingWithoutTimes,
+        ...dataToCreateMarkingWithoutIntervalTimes,
         finish_interval_time: '11:00',
       })
     ).rejects.toEqual(new AppError('Only one of interval times was received!'))
@@ -213,7 +225,7 @@ describe('CreateMarkingService', () => {
       customer_id: 'any-customer-id',
     })
 
-    const dataToCreateMarkingWithoutTimes = {
+    const dataToCreateMarkingWithoutIntervalTimes = {
       description: 'Description Example',
       date: '01/01/2022',
       start_time: '09:00',
@@ -225,15 +237,15 @@ describe('CreateMarkingService', () => {
 
     await expect(
       createMarkingService.execute({
-        ...dataToCreateMarkingWithoutTimes,
+        ...dataToCreateMarkingWithoutIntervalTimes,
         start_interval_time: '08:00',
         finish_interval_time: '10:00',
       })
-    ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!!'))
+    ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
 
     await expect(
       createMarkingService.execute({
-        ...dataToCreateMarkingWithoutTimes,
+        ...dataToCreateMarkingWithoutIntervalTimes,
         start_interval_time: '10:00',
         finish_interval_time: '13:00',
       })
@@ -241,7 +253,7 @@ describe('CreateMarkingService', () => {
 
     await expect(
       createMarkingService.execute({
-        ...dataToCreateMarkingWithoutTimes,
+        ...dataToCreateMarkingWithoutIntervalTimes,
         start_interval_time: '13:00',
         finish_interval_time: '14:00',
       })
@@ -249,7 +261,7 @@ describe('CreateMarkingService', () => {
 
     await expect(
       createMarkingService.execute({
-        ...dataToCreateMarkingWithoutTimes,
+        ...dataToCreateMarkingWithoutIntervalTimes,
         start_interval_time: '07:00',
         finish_interval_time: '08:00',
       })
