@@ -13,6 +13,7 @@ model Users {
   email       String    @unique
   username    String    @unique
   password    String
+  markings    Markings[]
   created_at  DateTime  @default(now())
   updated_at  DateTime  @default(now())
 
@@ -31,13 +32,38 @@ model Customers {
 }
 
 model Projects {
-  id                String  @id @default(uuid())
+  id                String    @id @default(uuid())
   code              String
   name              String
   customer_id       String
   customer          Customers @relation(fields: [customer_id], references: [id])
-  created_at        DateTime @default(now())
-  updated_at        DateTime @default(now())
+  markings          Markings[]
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @default(now())
 
   @@map("projects")
+}
+
+model Markings {
+  id                    String    @id @default(uuid())
+  description           String
+  date                  String
+  start_time            String
+  finish_time           String
+  start_interval_time   String?
+  finish_interval_time  String?
+  work_class            WorkClass @default(PRODUCTION)
+  user_id               String
+  user                  Users     @relation(fields: [user_id], references: [id])
+  project_id            String
+  project               Projects  @relation(fields: [project_id], references: [id])
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @default(now())
+
+  @@map("markings")
+}
+
+enum WorkClass {
+  PRODUCTION
+  ABSENCE
 }
