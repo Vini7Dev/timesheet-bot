@@ -36,7 +36,7 @@ describe('CreateCustomerService', () => {
 
     await expect(
       createCustomerService.execute({
-        name: 'First Customer',
+        name: 'Second Customer',
         code: '0123456789',
       })
     ).rejects.toEqual(new AppError('This code already exists!'))
