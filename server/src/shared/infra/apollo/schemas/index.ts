@@ -20,12 +20,25 @@ const rootTypeDefs = gql`
   }
 
   type Subscription {
-    onCreateMarking(msg: String!): String!
+    onCreateMarking: [TimesheetMarkingResponse!]!
+  }
+
+  type TimesheetMarkingResponse {
+    id: String!
+    on_timesheet_status: OnTimesheetStatus!
+    timesheet_error: String
   }
 
   input ApiFiltersInput {
     page: Int
     perPage: Int
+  }
+
+  enum OnTimesheetStatus {
+    NOT_SENT
+    SENDING
+    SENT
+    ERROR
   }
 `
 

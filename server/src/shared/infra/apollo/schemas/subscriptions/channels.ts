@@ -1,0 +1,1 @@
+export const CREATED_MARKING = 'CREATED_MARKING'
