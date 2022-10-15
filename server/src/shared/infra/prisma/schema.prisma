@@ -35,8 +35,8 @@ model Projects {
   id                String    @id @default(uuid())
   code              String
   name              String
-  customer_id       String
-  customer          Customers @relation(fields: [customer_id], references: [id])
+  customer_id       String?
+  customer          Customers? @relation(fields: [customer_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   markings          Markings[]
   created_at        DateTime  @default(now())
   updated_at        DateTime  @default(now())
@@ -53,10 +53,10 @@ model Markings {
   start_interval_time   String?
   finish_interval_time  String?
   work_class            WorkClass @default(PRODUCTION)
-  user_id               String
-  user                  Users     @relation(fields: [user_id], references: [id])
-  project_id            String
-  project               Projects  @relation(fields: [project_id], references: [id])
+  user_id               String?
+  user                  Users?     @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  project_id            String?
+  project               Projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   created_at            DateTime  @default(now())
   updated_at            DateTime  @default(now())
 
