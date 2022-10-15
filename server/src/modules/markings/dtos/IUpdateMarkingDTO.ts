@@ -1,7 +1,4 @@
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
+import { WorkClass } from '@prisma/client'
 
 export interface IUpdateMarkingDTO {
   id: string

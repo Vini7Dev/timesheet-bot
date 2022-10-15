@@ -1,10 +1,4 @@
-import { Project } from '@modules/projects/infra/prisma/entities/Project'
-import { User } from '@modules/users/infra/prisma/entities/User'
-
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
+import { WorkClass, Projects, Users } from '@prisma/client'
 
 export class Marking {
   id: string
@@ -17,19 +11,19 @@ export class Marking {
 
   finish_time: string
 
-  start_interval_time?: string
+  start_interval_time?: string | null
 
-  finish_interval_time?: string
+  finish_interval_time?: string | null
 
   work_class: WorkClass
 
-  user_id: string
+  user_id: string | null
 
-  user?: User
+  user?: Users | null
 
-  project_id: string
+  project_id: string | null
 
-  project?: Project
+  project?: Projects | null
 
   created_at: Date
 

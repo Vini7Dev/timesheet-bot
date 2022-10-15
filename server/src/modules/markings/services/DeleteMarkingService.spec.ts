@@ -1,14 +1,11 @@
 import 'reflect-metadata'
 
+import { WorkClass } from '@prisma/client'
+
 import { AppError } from '@shared/errors/AppError'
 import { FakeMarkingsRepository } from '../repositories/fakes/FakeMarkingsRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { DeleteMarkingService } from './DeleteMarkingService'
-
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
 
 let markingsRepository: IMarkingsRepository
 let deleteMarkingService: DeleteMarkingService

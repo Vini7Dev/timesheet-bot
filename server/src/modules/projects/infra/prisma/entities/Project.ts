@@ -7,9 +7,9 @@ export class Project {
 
   name: string
 
-  customer_id: string
+  customer_id: string | null
 
-  customer?: Customer
+  customer?: Customer | null
 
   created_at: Date
 

@@ -1,5 +1,7 @@
 import 'reflect-metadata'
 
+import { WorkClass } from '@prisma/client'
+
 import { FakeProjectsRepository } from '@modules/projects/repositories/fakes/FakeProjectsRepository'
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { FakeUsersRepository } from '@modules/users/repositories/fakes/FakeUsersRepository'
@@ -8,11 +10,6 @@ import { FakeMarkingsRepository } from '../repositories/fakes/FakeMarkingsReposi
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { UpdateMarkingService } from './UpdateMarkingService'
 import { AppError } from '@shared/errors/AppError'
-
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
 
 let markingsRepository: IMarkingsRepository
 let usersRepository: IUsersRepository

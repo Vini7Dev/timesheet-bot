@@ -1,3 +1,5 @@
+import { WorkClass } from '@prisma/client';
+
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
 import { AppError } from '@shared/errors/AppError';
@@ -5,10 +7,6 @@ import { filterNumberBetweenInterval } from '@utils/filterNumberBetweenInterval'
 import { Marking } from '../infra/prisma/entities/Marking';
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
 
 interface IServiceProps {
   description: string

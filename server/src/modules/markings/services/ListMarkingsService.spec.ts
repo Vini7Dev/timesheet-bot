@@ -1,12 +1,10 @@
 import 'reflect-metadata'
+
+import { WorkClass } from '@prisma/client'
+
 import { FakeMarkingsRepository } from '../repositories/fakes/FakeMarkingsRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { ListMarkingsService } from './ListMarkingsService'
-
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
 
 let markingsRepository: IMarkingsRepository
 let listMarkingsService: ListMarkingsService

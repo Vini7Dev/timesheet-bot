@@ -1,14 +1,11 @@
+import { WorkClass } from '@prisma/client'
+
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { AppError } from '@shared/errors/AppError'
 import { filterNumberBetweenInterval } from '@utils/filterNumberBetweenInterval'
 import { Marking } from '../infra/prisma/entities/Marking'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
-
-enum WorkClass {
-  PRODUCTION,
-  ABSENCE
-}
 
 interface IServiceProps {
   markingId: string
@@ -130,10 +127,10 @@ export class UpdateMarkingService {
       date: date ?? markingToUpdate.date,
       start_time: start_time ?? markingToUpdate.start_time,
       finish_time: finish_time ?? markingToUpdate.finish_time,
-      start_interval_time: start_interval_time ?? markingToUpdate.start_interval_time,
-      finish_interval_time: finish_interval_time ?? markingToUpdate.finish_interval_time,
+      start_interval_time: start_interval_time ?? markingToUpdate.start_interval_time as any,
+      finish_interval_time: finish_interval_time ?? markingToUpdate.finish_interval_time as any,
       work_class: work_class ?? markingToUpdate.work_class,
-      project_id: project_id ?? markingToUpdate.project_id,
+      project_id: project_id ?? markingToUpdate.project_id as any,
       user_id: userToRefer.id,
     })
 
