@@ -13,4 +13,5 @@ export interface IUpdateMarkingDTO {
   finish_interval_time?: string
   work_class?: WorkClass
   project_id?: string
+  user_id?: string
 }

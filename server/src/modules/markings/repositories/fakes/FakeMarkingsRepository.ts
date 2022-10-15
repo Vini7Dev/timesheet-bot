@@ -74,6 +74,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     finish_interval_time,
     work_class,
     project_id,
+    user_id,
   }: IUpdateMarkingDTO): Promise<Marking> {
     const markingToUpdateIndex = this.markings.findIndex(marking => marking.id === id)
 
@@ -90,6 +91,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     if (finish_interval_time) updatedMarking.finish_interval_time = finish_interval_time
     if (work_class) updatedMarking.work_class = work_class
     if (project_id) updatedMarking.project_id = project_id
+    if (user_id) updatedMarking.user_id = user_id
     updatedMarking.updated_at = (new Date(Date.now() + 10000))
 
     this.markings[markingToUpdateIndex] = updatedMarking
