@@ -16,7 +16,7 @@ export const customers = async (
   _: any, {
     data: { page, perPage }
   }: IApiFiltersInput,
-  ctx: IAppContext
+  ctx: IAppContext,
 ) => {
   ensureAuthenticated(ctx)
 
