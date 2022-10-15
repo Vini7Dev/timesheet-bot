@@ -45,22 +45,31 @@ model Projects {
 }
 
 model Markings {
-  id                    String    @id @default(uuid())
+  id                    String            @id @default(uuid())
+  on_timesheet_status   OnTimesheetStatus @default(NOT_SENT)
+  timesheet_error       String?
   description           String
   date                  String
   start_time            String
   finish_time           String
   start_interval_time   String?
   finish_interval_time  String?
-  work_class            WorkClass @default(PRODUCTION)
+  work_class            WorkClass         @default(PRODUCTION)
   user_id               String?
-  user                  Users?     @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user                  Users?            @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   project_id            String?
-  project               Projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  created_at            DateTime  @default(now())
-  updated_at            DateTime  @default(now())
+  project               Projects?         @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  created_at            DateTime          @default(now())
+  updated_at            DateTime          @default(now())
 
   @@map("markings")
+}
+
+enum OnTimesheetStatus {
+  NOT_SENT
+  SENDING
+  SENT
+  ERROR
 }
 
 enum WorkClass {
