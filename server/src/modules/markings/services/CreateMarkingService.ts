@@ -1,4 +1,5 @@
 import { WorkClass } from '@prisma/client';
+import { inject, injectable } from 'tsyringe';
 
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository';
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
@@ -20,12 +21,16 @@ interface IServiceProps {
   authenticatedUserId: string
 }
 
+@injectable()
 export class CreateMarkingService {
   constructor (
+    @inject('MarkingsRepository')
     private markingsRepository: IMarkingsRepository,
 
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
+    @inject('ProjectsRepository')
     private projectsRepository: IProjectsRepository,
   ) {}
 
