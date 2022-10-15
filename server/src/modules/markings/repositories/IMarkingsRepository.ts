@@ -7,5 +7,5 @@ export interface IMarkingsRepository {
   list(filters: { page?: number, perPage?: number, date?: string }): Promise<Marking[]>
   create(data: ICreateMarkingDTO): Promise<Marking>
   update(data: IUpdateMarkingDTO): Promise<Marking>
-  delete(id: string): Promise<String>
+  delete(id: string): Promise<string>
 }

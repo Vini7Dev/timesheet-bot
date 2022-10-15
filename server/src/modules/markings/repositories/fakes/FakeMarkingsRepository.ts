@@ -99,7 +99,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     return updatedMarking
   }
 
-  public async delete(id: string): Promise<String> {
+  public async delete(id: string): Promise<string> {
     const markingToDeleteIndex = this.markings.findIndex(marking => marking.id === id)
 
     if(markingToDeleteIndex !== -1) {
