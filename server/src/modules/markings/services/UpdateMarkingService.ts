@@ -23,7 +23,7 @@ interface IServiceProps {
   authenticatedUserId: string
 }
 
-export class UpdateMarkingsService {
+export class UpdateMarkingService {
   constructor (
     private markingsRepository: IMarkingsRepository,
 

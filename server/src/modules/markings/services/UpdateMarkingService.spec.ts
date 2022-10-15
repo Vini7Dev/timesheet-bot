@@ -6,7 +6,7 @@ import { FakeUsersRepository } from '@modules/users/repositories/fakes/FakeUsers
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { FakeMarkingsRepository } from '../repositories/fakes/FakeMarkingsRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
-import { UpdateMarkingsService } from './UpdateMarkingsService'
+import { UpdateMarkingService } from './UpdateMarkingService'
 import { AppError } from '@shared/errors/AppError'
 
 enum WorkClass {
@@ -17,14 +17,14 @@ enum WorkClass {
 let markingsRepository: IMarkingsRepository
 let usersRepository: IUsersRepository
 let projectsRepository: IProjectsRepository
-let updateMarkingsService: UpdateMarkingsService
+let updateMarkingService: UpdateMarkingService
 
-describe('UpdateMarkingsService', () => {
+describe('UpdateMarkingService', () => {
   beforeEach(() => {
     markingsRepository = new FakeMarkingsRepository()
     usersRepository = new FakeUsersRepository()
     projectsRepository = new FakeProjectsRepository()
-    updateMarkingsService = new UpdateMarkingsService(
+    updateMarkingService = new UpdateMarkingService(
       markingsRepository,
       usersRepository,
       projectsRepository,
@@ -57,7 +57,7 @@ describe('UpdateMarkingsService', () => {
       user_id: authenticatedUser.id,
     })
 
-    const updatedMarking = await updateMarkingsService.execute({
+    const updatedMarking = await updateMarkingService.execute({
       markingId: createdMarking.id,
       description: 'Updated Description Example',
       date: '02/01/2022',
@@ -97,7 +97,7 @@ describe('UpdateMarkingsService', () => {
     })
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         markingId: 'invalid-marking-id',
         description: 'Updated Description Example',
         date: '02/01/2022',
@@ -139,7 +139,7 @@ describe('UpdateMarkingsService', () => {
     })
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         markingId: createdMarking.id,
         description: 'Updated Description Example',
         date: '02/01/2022',
@@ -181,7 +181,7 @@ describe('UpdateMarkingsService', () => {
     })
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         markingId: createdMarking.id,
         description: 'Updated Description Example',
         date: '02/01/2022',
@@ -244,7 +244,7 @@ describe('UpdateMarkingsService', () => {
     }
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutTimes,
         start_time: '11:00',
         finish_time: '14:00',
@@ -254,7 +254,7 @@ describe('UpdateMarkingsService', () => {
     )
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutTimes,
         start_time: '08:00',
         finish_time: '10:00',
@@ -264,7 +264,7 @@ describe('UpdateMarkingsService', () => {
     )
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutTimes,
         start_time: '10:00',
         finish_time: '11:00',
@@ -310,14 +310,14 @@ describe('UpdateMarkingsService', () => {
     }
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutIntervalTimes,
         start_interval_time: '10:00',
       })
     ).rejects.toEqual(new AppError('Only one of interval times was received!'))
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutIntervalTimes,
         finish_interval_time: '11:00',
       })
@@ -360,7 +360,7 @@ describe('UpdateMarkingsService', () => {
     }
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutIntervalTimes,
         start_interval_time: '08:00',
         finish_interval_time: '10:00',
@@ -368,7 +368,7 @@ describe('UpdateMarkingsService', () => {
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutIntervalTimes,
         start_interval_time: '10:00',
         finish_interval_time: '13:00',
@@ -376,7 +376,7 @@ describe('UpdateMarkingsService', () => {
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutIntervalTimes,
         start_interval_time: '13:00',
         finish_interval_time: '14:00',
@@ -384,7 +384,7 @@ describe('UpdateMarkingsService', () => {
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
 
     await expect(
-      updateMarkingsService.execute({
+      updateMarkingService.execute({
         ...dataToUpdateMarkingWithoutIntervalTimes,
         start_interval_time: '07:00',
         finish_interval_time: '08:00',
