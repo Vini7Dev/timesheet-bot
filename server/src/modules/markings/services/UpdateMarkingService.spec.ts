@@ -82,6 +82,49 @@ describe('UpdateMarkingService', () => {
     expect(updatedMarking.updated_at).not.toEqual(updatedMarking.created_at)
   })
 
+  it('should be able to proccess request without changes', async () => {
+    const authenticatedUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const projectReference = await projectsRepository.create({
+      code: 'ABCDE',
+      name: 'Project Example',
+      customer_id: 'any-customer-id',
+    })
+
+    const createdMarking = await markingsRepository.create({
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: projectReference.id,
+      user_id: authenticatedUser.id,
+    })
+
+    const updatedMarking = await updateMarkingService.execute({
+      markingId: createdMarking.id,
+      authenticatedUserId: authenticatedUser.id,
+    })
+
+    expect(updatedMarking).toHaveProperty('id')
+    expect(updatedMarking.id).toEqual(createdMarking.id)
+    expect(updatedMarking.description).toEqual(createdMarking.description)
+    expect(updatedMarking.date).toEqual(createdMarking.date)
+    expect(updatedMarking.start_time).toEqual(createdMarking.start_time)
+    expect(updatedMarking.finish_time).toEqual(createdMarking.finish_time)
+    expect(updatedMarking.start_interval_time).toEqual(createdMarking.start_interval_time)
+    expect(updatedMarking.finish_interval_time).toEqual(createdMarking.finish_interval_time)
+    expect(updatedMarking.work_class).toEqual(createdMarking.work_class)
+    expect(updatedMarking.updated_at).not.toEqual(updatedMarking.created_at)
+  })
+
   it('should not be able to update a non-existent marking', async () => {
     const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
