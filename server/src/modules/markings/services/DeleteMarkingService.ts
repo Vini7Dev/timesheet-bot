@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe'
+
 import { AppError } from '@shared/errors/AppError'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 
@@ -5,8 +7,10 @@ interface IServiceProps {
   markingId: string
 }
 
+@injectable()
 export class DeleteMarkingService {
   constructor (
+    @inject('MarkingsRepository')
     private markingsRepository: IMarkingsRepository
   ) {}
 

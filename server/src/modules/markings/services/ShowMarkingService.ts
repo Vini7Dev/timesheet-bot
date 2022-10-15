@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import { AppError } from '@shared/errors/AppError';
 import { Marking } from '../infra/prisma/entities/Marking';
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
@@ -6,8 +8,10 @@ interface IServiceProps {
   markingId: string
 }
 
+@injectable()
 export class ShowMarkingService {
   constructor (
+    @inject('MarkingsRepository')
     private markingsRepository: IMarkingsRepository,
   ) {}
 

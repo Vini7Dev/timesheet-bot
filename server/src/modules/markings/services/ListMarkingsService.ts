@@ -1,4 +1,6 @@
-import { Marking } from '../infra/prisma/entities/Marking';
+import { inject, injectable } from 'tsyringe'
+
+import { Marking } from '../infra/prisma/entities/Marking'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 
 interface IServiceProps {
@@ -6,8 +8,10 @@ interface IServiceProps {
   perPage?: number
 }
 
+@injectable()
 export class ListMarkingsService {
   constructor (
+    @inject('MarkingsRepository')
     private markingsRepository: IMarkingsRepository
   ) {}
 
