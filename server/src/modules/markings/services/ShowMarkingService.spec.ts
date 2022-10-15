@@ -34,14 +34,18 @@ describe('ShowMarkingService', () => {
       user_id: 'any-user-id'
     })
 
-    const findedMarking = await showMarkingService.execute(createdMarking.id)
+    const findedMarking = await showMarkingService.execute({
+      markingId: createdMarking.id,
+    })
 
     expect(findedMarking).toEqual(createdMarking)
   })
 
   it('should not be able to show a non-existent marking', async () => {
     await expect(
-      showMarkingService.execute('invalid-marking-id')
+      showMarkingService.execute({
+        markingId: 'invalid-marking-id',
+      })
     ).rejects.toEqual(new AppError('Marking not found!', 404))
   })
 })
