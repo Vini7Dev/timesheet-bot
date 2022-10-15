@@ -1,13 +1,14 @@
-import { gql } from 'apollo-server';
+import { gql } from 'apollo-server'
 
-import { userTypeDefs } from '@modules/users/infra/apollo/schemas/userTypeDefs';
-import { userResolvers } from '@modules/users/infra/apollo/schemas/userResolvers';
-import { customersTypeDefs } from '@modules/customers/infra/apollo/schemas/customersTypeDefs';
-import { customersResolvers } from '@modules/customers/infra/apollo/schemas/customersResolvers';
-import { projectsTypeDefs } from '@modules/projects/infra/apollo/schemas/projectsTypeDefs';
-import { projectsResolvers } from '@modules/projects/infra/apollo/schemas/projectsResolvers';
-import { markingsTypeDefs } from '@modules/markings/infra/apollo/schemas/markingsTypeDefs';
-import { markingsResolvers } from '@modules/markings/infra/apollo/schemas/markingsResolvers';
+import { userTypeDefs } from '@modules/users/infra/apollo/schemas/userTypeDefs'
+import { userResolvers } from '@modules/users/infra/apollo/schemas/userResolvers'
+import { customersTypeDefs } from '@modules/customers/infra/apollo/schemas/customersTypeDefs'
+import { customersResolvers } from '@modules/customers/infra/apollo/schemas/customersResolvers'
+import { projectsTypeDefs } from '@modules/projects/infra/apollo/schemas/projectsTypeDefs'
+import { projectsResolvers } from '@modules/projects/infra/apollo/schemas/projectsResolvers'
+import { markingsTypeDefs } from '@modules/markings/infra/apollo/schemas/markingsTypeDefs'
+import { markingsResolvers } from '@modules/markings/infra/apollo/schemas/markingsResolvers'
+import { IAppContext } from '../context'
 
 const rootTypeDefs = gql`
   type Query {
@@ -19,7 +20,7 @@ const rootTypeDefs = gql`
   }
 
   type Subscription {
-    _empty: Boolean
+    onCreateMarking: String!
   }
 
   input ApiFiltersInput {
@@ -28,12 +29,23 @@ const rootTypeDefs = gql`
   }
 `
 
+const onCreateMarking = {
+  subscribe: (_: any, __: any, {
+    pubsub
+  }: IAppContext) => {
+    return pubsub.asyncIterator('CREATED_MARKING')
+  },
+}
+
 const rootResolvers = {
   Query: {
     _empty: () => true,
   },
   Mutation: {
     _empty: () => true,
+  },
+  Subscription: {
+    onCreateMarking,
   }
 }
 
