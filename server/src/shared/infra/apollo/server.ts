@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import { ApolloServer } from 'apollo-server'
+import { InMemoryLRUCache } from 'apollo-server-caching'
 
 import { context } from './context'
 import { resolvers, typeDefs } from './schemas'
@@ -12,6 +13,7 @@ const server = new ApolloServer({
   context,
   resolvers,
   typeDefs,
+  cache: new InMemoryLRUCache(),
   cors: {
     origin: ['https://studio.apollographql.com'],
     credentials: true,
