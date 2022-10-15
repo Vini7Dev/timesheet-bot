@@ -264,4 +264,45 @@ describe('CreateMarkingService', () => {
       })
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
   })
+
+  it('should not be able to create markings with start times equal or greater than finish times', async () => {
+    const authenticatedUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const projectReference = await projectsRepository.create({
+      code: 'ABCDE',
+      name: 'Project Example',
+      customer_id: 'any-customer-id',
+    })
+
+    const dataToCreateMarkingWithoutIntervalTimes = {
+      description: 'Description Example',
+      date: '01/01/2022',
+      work_class: WorkClass.PRODUCTION,
+      project_id: projectReference.id,
+      authenticatedUserId: authenticatedUser.id,
+    }
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutIntervalTimes,
+        start_time: '12:00',
+        finish_time: '09:00',
+      })
+    ).rejects.toEqual(new AppError('Start time cannot be equal or greater than finish time!'))
+
+    await expect(
+      createMarkingService.execute({
+        ...dataToCreateMarkingWithoutIntervalTimes,
+        start_time: '09:00',
+        finish_time: '12:00',
+        start_interval_time: '10:00',
+        finish_interval_time: '08:00',
+      })
+    ).rejects.toEqual(new AppError('Start interval time cannot be equal or greater than finish interval time!'))
+  })
 })

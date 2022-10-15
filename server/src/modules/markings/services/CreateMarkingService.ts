@@ -43,6 +43,10 @@ export class CreateMarkingService {
     const startNumber = parseInt(start_time.replace(':', ''))
     const finishNumber = parseInt(finish_time.replace(':', ''))
 
+    if (startNumber >= finishNumber) {
+      throw new AppError('Start time cannot be equal or greater than finish time!')
+    }
+
     if(start_interval_time || finish_interval_time) {
       if(!start_interval_time || !finish_interval_time) {
         throw new AppError('Only one of interval times was received!')
@@ -50,6 +54,10 @@ export class CreateMarkingService {
 
       const startIntervalNumber = parseInt(start_interval_time.replace(':', ''))
       const finishIntervalNumber = parseInt(finish_interval_time.replace(':', ''))
+
+      if (startIntervalNumber >= finishIntervalNumber) {
+        throw new AppError('Start interval time cannot be equal or greater than finish interval time!')
+      }
 
       const intervalTimeIsOnStartAndFinishRange = filterNumberBetweenInterval({
         startNumberInterval: startNumber,

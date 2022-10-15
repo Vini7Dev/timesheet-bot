@@ -87,6 +87,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
         work_class,
         project_id,
         user_id,
+        updated_at: new Date(),
       },
       include: { project: true, user: true }
     })
