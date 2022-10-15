@@ -8,7 +8,7 @@ import { projectsTypeDefs } from '@modules/projects/infra/apollo/schemas/project
 import { projectsResolvers } from '@modules/projects/infra/apollo/schemas/projectsResolvers'
 import { markingsTypeDefs } from '@modules/markings/infra/apollo/schemas/markingsTypeDefs'
 import { markingsResolvers } from '@modules/markings/infra/apollo/schemas/markingsResolvers'
-import { IAppContext } from '../context'
+import { IWSAppContext } from '../context'
 
 const rootTypeDefs = gql`
   type Query {
@@ -20,7 +20,7 @@ const rootTypeDefs = gql`
   }
 
   type Subscription {
-    onCreateMarking: String!
+    onCreateMarking(msg: String!): String!
   }
 
   input ApiFiltersInput {
@@ -30,9 +30,11 @@ const rootTypeDefs = gql`
 `
 
 const onCreateMarking = {
-  subscribe: (_: any, __: any, {
-    pubsub
-  }: IAppContext) => {
+  subscribe: (
+    _: any,
+    __: any,
+    { pubsub }: IWSAppContext,
+  ) => {
     return pubsub.asyncIterator('CREATED_MARKING')
   },
 }

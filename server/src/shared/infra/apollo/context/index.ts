@@ -11,14 +11,23 @@ export interface IAppContext extends ExpressContext {
   }
 }
 
+export interface IWSAppContext {
+  pubsub: RedisPubSub
+  authentication: {
+    user_id: string | undefined
+  }
+}
+
 export const pubsub = new RedisPubSub({ connection: redisConfig })
 
-export const context = async (ctx: ExpressContext): Promise<IAppContext> => {
+export const context = async (
+  ctx: IAppContext | IWSAppContext
+): Promise<IAppContext | IWSAppContext> => {
   return {
     ...ctx,
     pubsub,
     authentication: {
-      user_id: await getAuthentedUser(ctx as IAppContext),
+      user_id: await getAuthentedUser(ctx),
     },
   }
 }

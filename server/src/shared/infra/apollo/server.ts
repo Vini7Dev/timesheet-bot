@@ -9,7 +9,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { execute, subscribe } from 'graphql'
 
-import { context, pubsub } from './context'
+import { context, IWSAppContext } from './context'
 import { resolvers, typeDefs } from './schemas'
 
 import '@shared/containers'
@@ -41,8 +41,15 @@ import '@shared/containers'
     schema,
     execute,
     subscribe,
-    async onConnect() {
-      return { pubsub }
+    async onConnect(
+      _: any,
+      ws: IWSAppContext,
+    ) {
+      const contextData = await context(ws)
+
+      return {
+        ...contextData,
+      }
     },
   }, {
     server: httpServer,

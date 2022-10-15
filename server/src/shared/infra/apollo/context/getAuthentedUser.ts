@@ -2,17 +2,26 @@ import { verify } from 'jsonwebtoken'
 
 import { cookieParser } from '@utils/cookieParser'
 import { authConfig } from '@configs/auth'
-import { IAppContext } from '.'
 import { AppError } from '@shared/errors/AppError'
+import { IAppContext, IWSAppContext } from '.'
 
 interface IVerifyPayload {
   sub: string
 }
 
-export const getAuthentedUser = async (ctx: IAppContext) => {
-  const { cookie: headerCookies } = ctx.req.headers
+export const getAuthentedUser = async (
+  ctx: IAppContext | IWSAppContext
+): Promise<string | undefined> => {
+  let cookies = ''
 
-  const { multifyToken } = cookieParser(headerCookies)
+  const genericContext = ctx as any
+  if(genericContext.req) {
+    cookies = genericContext?.req?.headers?.cookie ?? ''
+  } else {
+    cookies = genericContext?.upgradeReq?.rawHeaders?.join(';') ?? ''
+  }
+
+  const { multifyToken } = cookieParser(cookies)
 
   if (!multifyToken) {
     return undefined
