@@ -1,8 +1,8 @@
 import { ExpressContext } from 'apollo-server-express'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 
-import { redisConfig } from '@configs/redis'
 import { getAuthentedUser } from './getAuthentedUser'
+import { pubsub } from './pubsub'
 
 export interface IAppContext extends ExpressContext {
   pubsub: RedisPubSub
@@ -17,8 +17,6 @@ export interface IWSAppContext {
     user_id: string | undefined
   }
 }
-
-export const pubsub = new RedisPubSub({ connection: redisConfig })
 
 export const context = async (
   ctx: IAppContext | IWSAppContext
