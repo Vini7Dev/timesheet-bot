@@ -7,7 +7,8 @@
     "dev": "npm-run-all -p dev:*",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
     "dev:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
-    "test": "jest"
+    "test": "jest",
+    "myTests": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/tests.ts"
   },
   "prisma": {
     "schema": "src/shared/infra/prisma/schema.prisma"
@@ -16,9 +17,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chromedriver": "^81.0.1",
     "@types/jest": "^29.1.2",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.8.1",
+    "@types/selenium-webdriver": "^4.1.5",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.24.0",
@@ -37,6 +40,7 @@
     "apollo-server-core": "^3.10.3",
     "apollo-server-express": "^3.10.3",
     "bull": "^4.10.1",
+    "chromedriver": "^106.0.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
@@ -45,6 +49,7 @@
     "npm-run-all": "^4.1.5",
     "prisma": "^4.4.0",
     "reflect-metadata": "^0.1.13",
+    "selenium-webdriver": "4.3.0",
     "subscriptions-transport-ws": "^0.11.0",
     "tsyringe": "^4.7.0"
   }

@@ -1,8 +1,6 @@
 import { WorkClass } from '@prisma/client'
 
-import { ITimesheetAuthDTO } from './ITimesheetAuthDTO'
-
-export interface IUpdateMarkingsDTO extends ITimesheetAuthDTO {
+export interface IUpdateMarkingsDTO {
   markings: IUpdateTimesheetMarkingDTO[]
 }
 

@@ -1,6 +1,4 @@
-import { ITimesheetAuthDTO } from './ITimesheetAuthDTO'
-
-export interface IDeleteMarkingsDTO extends ITimesheetAuthDTO {
+export interface IDeleteMarkingsDTO {
   markings: IDeleteTimesheetMarkingDTO[]
 }
 
