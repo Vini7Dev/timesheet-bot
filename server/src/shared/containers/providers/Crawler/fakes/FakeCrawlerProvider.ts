@@ -1,9 +1,8 @@
 import { OnTimesheetStatus } from '@prisma/client'
 
-import { CREATED_MARKING } from '@shared/infra/apollo/schemas/subscriptions/channels'
 import { ICrawler } from '../models/ICrawler'
 import { IDeleteMarkingsDTO } from '../dtos/IDeleteMarkingsDTO'
-import { IMarkingResponseDTO } from '../dtos/IMarkingResponseDTO'
+import { ICrawlerResponseDTO } from '../dtos/ICrawlerResponseDTO'
 import { ISaveMarkingsDTO } from '../dtos/ISaveMarkingsDTO'
 import { IUpdateMarkingsDTO } from '../dtos/IUpdateMarkingsDTO'
 import { ITimesheetAuthDTO } from '../dtos/ITimesheetAuthDTO'
@@ -19,34 +18,34 @@ export class FakeCrawlerProvider implements ICrawler {
 
   public async saveTimesheetTasks({
     markings,
-  }: ISaveMarkingsDTO): Promise<IMarkingResponseDTO[]> {
+  }: ISaveMarkingsDTO): Promise<ICrawlerResponseDTO> {
     const markingsResponse = markings.map(marking => ({
       id: marking.id,
       on_timesheet_status: OnTimesheetStatus.SENT,
     }))
 
-    return markingsResponse
+    return { markingsResponse }
   }
 
   public async updateTimesheetTasks({
     markings,
-  }: IUpdateMarkingsDTO): Promise<IMarkingResponseDTO[]> {
+  }: IUpdateMarkingsDTO): Promise<ICrawlerResponseDTO> {
     const markingsResponse = markings.map(marking => ({
       id: marking.id,
       on_timesheet_status: OnTimesheetStatus.SENT,
     }))
 
-    return markingsResponse
+    return { markingsResponse }
   }
 
   public async deleteTimesheetTasks({
     markings,
-  }: IDeleteMarkingsDTO): Promise<IMarkingResponseDTO[]> {
+  }: IDeleteMarkingsDTO): Promise<ICrawlerResponseDTO> {
     const markingsResponse = markings.map(marking => ({
       id: marking.id,
       on_timesheet_status: OnTimesheetStatus.NOT_SENT,
     }))
 
-    return markingsResponse
+    return { markingsResponse }
   }
 }
