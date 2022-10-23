@@ -15,7 +15,6 @@ interface IUpdateMarkingInput {
     start_interval_time?: string
     finish_interval_time?: string
     work_class?: WorkClass
-    project_id?: string
   }
 }
 
@@ -30,7 +29,6 @@ export const updateMarking = async (
     start_interval_time,
     finish_interval_time,
     work_class,
-    project_id,
   } }: IUpdateMarkingInput,
   ctx: IAppContext,
 ) => {
@@ -48,7 +46,6 @@ export const updateMarking = async (
     start_interval_time,
     finish_interval_time,
     work_class,
-    project_id,
   })
 
   return updatedMarking

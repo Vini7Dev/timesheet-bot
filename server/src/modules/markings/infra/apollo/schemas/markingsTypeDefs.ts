@@ -49,7 +49,6 @@ export const markingsTypeDefs = gql`
     start_interval_time: String
     finish_interval_time: String
     work_class: WorkClass
-    project_id: String
   }
 
   enum WorkClass {

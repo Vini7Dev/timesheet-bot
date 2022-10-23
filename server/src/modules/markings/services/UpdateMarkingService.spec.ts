@@ -24,7 +24,6 @@ describe('UpdateMarkingService', () => {
     updateMarkingService = new UpdateMarkingService(
       markingsRepository,
       usersRepository,
-      projectsRepository,
     )
   })
 
@@ -63,7 +62,6 @@ describe('UpdateMarkingService', () => {
       start_interval_time: '11:00',
       finish_interval_time: '12:00',
       work_class: WorkClass.ABSENCE,
-      project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     })
 
@@ -146,7 +144,6 @@ describe('UpdateMarkingService', () => {
         start_interval_time: '11:00',
         finish_interval_time: '12:00',
         work_class: WorkClass.ABSENCE,
-        project_id: projectReference.id,
         authenticatedUserId: authenticatedUser.id,
       })
     ).rejects.toEqual(new AppError('Marking not found!', 404))
@@ -188,52 +185,9 @@ describe('UpdateMarkingService', () => {
         start_interval_time: '11:00',
         finish_interval_time: '12:00',
         work_class: WorkClass.ABSENCE,
-        project_id: projectReference.id,
         authenticatedUserId: 'invalid-user-id',
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
-  })
-
-  it('should not be able to update marking with a non-existent project', async () => {
-    const userReference = await usersRepository.create({
-      name: 'Jhon Doe',
-      email: 'jhondoe@mail.com',
-      username: 'jhon.doe',
-      password: 'jhon123',
-    })
-
-    const projectReference = await projectsRepository.create({
-      code: 'ABCDE',
-      name: 'Project Example',
-      customer_id: 'any-customer-id',
-    })
-
-    const createdMarking = await markingsRepository.create({
-      description: 'Description Example',
-      date: '01/01/2022',
-      start_time: '09:00',
-      finish_time: '12:00',
-      start_interval_time: '10:00',
-      finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
-      project_id: projectReference.id,
-      user_id: userReference.id,
-    })
-
-    await expect(
-      updateMarkingService.execute({
-        markingId: createdMarking.id,
-        description: 'Updated Description Example',
-        date: '02/01/2022',
-        start_time: '10:00',
-        finish_time: '13:00',
-        start_interval_time: '11:00',
-        finish_interval_time: '12:00',
-        work_class: WorkClass.ABSENCE,
-        project_id: 'invalid-project-id',
-        authenticatedUserId: userReference.id,
-      })
-    ).rejects.toEqual(new AppError('Project not found!', 404))
   })
 
   it('should not be able to update markings with parallel date time', async () => {
@@ -279,7 +233,6 @@ describe('UpdateMarkingService', () => {
       description: 'Description Example 2',
       date: '01/01/2022',
       work_class: WorkClass.PRODUCTION,
-      project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -345,7 +298,6 @@ describe('UpdateMarkingService', () => {
       description: 'Description Example 2',
       date: '01/01/2022',
       work_class: WorkClass.PRODUCTION,
-      project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -395,7 +347,6 @@ describe('UpdateMarkingService', () => {
       description: 'Description Example 2',
       date: '01/01/2022',
       work_class: WorkClass.PRODUCTION,
-      project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -465,7 +416,6 @@ describe('UpdateMarkingService', () => {
       description: 'Updated Description Example',
       date: '02/01/2022',
       work_class: WorkClass.ABSENCE,
-      project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
 
