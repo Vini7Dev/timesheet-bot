@@ -12,6 +12,12 @@ import { IUpdateMarkingsDTO } from '../dtos/IUpdateMarkingsDTO'
 import { ICrawlerResponseDTO, IMarkingResponse } from '../dtos/ICrawlerResponseDTO'
 import { ITimesheetAuthDTO } from '../dtos/ITimesheetAuthDTO'
 
+interface IOpenMarkingData {
+  date: string
+  start_time: string
+  finish_time: string
+}
+
 interface IWaitByElement {
   value: string
   by: 'id' | 'className' | 'css' | 'linkText' | 'js' | 'name' | 'partialLinkText' | 'xpath'
@@ -234,130 +240,102 @@ export class SeleniumProvider implements ICrawler {
             // Open add markings page on task's month
             await this.driver.get(urls.addMarking({ DATA: markingGroupFullDate }))
 
-            let markingProcessed = false
+            // Opening marking modal
+            const openModal = await this.openMarkingDataModalByDateAndTime({
+              date: marking.date,
+              start_time: marking.start_time,
+              finish_time: marking.finish_time,
+            })
 
-            const [markingDay] = marking.date.split('/')
-    
+            if (!openModal) {
+              markingsResponse.push({
+                id: marking.id,
+                on_timesheet_status: 'SENT',
+                timesheet_error: ['A marcação não foi encontrada'],
+              })
+
+              continue
+            }
+
+            await this.waitByElements([
+              { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado' },
+              { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado' },
+              { by: 'id', value: 'idutbms_classe' },
+              { by: 'id', value: 'narrativa_principal' },
+              { by: 'id', value: 'hora' },
+              { by: 'id', value: 'hora_fim' },
+              { by: 'id', value: 'intervalo_hr_inicial' },
+              { by: 'id', value: 'intervalo_hr_final' },
+            ])
+
+            const markingCustomerCode = await this.driver.findElement(
+              By.css('table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado')
+            ).getText()
+              
+            if (marking.custumer_code.padStart(10, '0') !== markingCustomerCode.split(' - ')[0])
+              throw new Error('Different customer_code recived!')
+              
+            const markingProjectCode = await this.driver.findElement(
+              By.css('table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado')
+            ).getText()
+
+            if (marking.project_code !== markingProjectCode.split(' - ')[0])
+              throw new Error('Different project_code recived!')
+
+            const markingWorkClass = await this.driver
+              .findElement(By.id('idutbms_classe')).getAttribute('value')
+
+            const workClassRecived = marking.work_class === 'PRODUCTION' ? '63' : '57'
+            if (marking.work_class === 'PRODUCTION' && workClassRecived !== markingWorkClass)
+              throw new Error('Different work_class recived!')
+
+            const markingDescription = await this.driver
+              .findElement(By.id('narrativa_principal')).getAttribute('value')
+
+            if (marking.description !== markingDescription)
+              throw new Error('Different description recived!')
+
+            const markingStartTime = await this.driver
+              .findElement(By.id('hora')).getAttribute('value')
+
+            if (marking.start_time !== markingStartTime)
+              throw new Error('Different start_time recived!')
+
+            const markingFinishTime = await this.driver
+              .findElement(By.id('hora_fim')).getAttribute('value')
+
+            if (marking.finish_time !== markingFinishTime)
+              throw new Error('Different finish_time recived!')
+
+            const markingStartIntervalTime = await this.driver
+              .findElement(By.id('intervalo_hr_inicial')).getAttribute('value')
+
+            if (marking.start_interval_time && marking.start_interval_time !== markingStartIntervalTime)
+              throw new Error('Different start_interval_time recived!')
+
+            const markingFinishIntervalTime = await this.driver
+              .findElement(By.id('intervalo_hr_final')).getAttribute('value')
+
+            if (marking.finish_interval_time && marking.finish_interval_time !== markingFinishIntervalTime)
+              throw new Error('Different finish_interval_time recived!')
+
             await this.waitByElements([{
               by: 'css',
-              value: `[href="javascript:editHora('08:00','','${marking.date}')"]`,
+              value: 'div.ui-dialog-buttonpane > div > button:nth-child(1)'
             }])
-    
-            // Get calendar rows
-            const calendarTableRows = await this.driver.findElements(
-              By.css('td > table.list-table > tbody > tr')
-            )
-            for (let i = 0; i < calendarTableRows.length; i++) {      
-              if (i === 0) continue // Ignore week days row
-              if (parseInt(markingDay) > 7 && i < 3) continue // Make sure to get the correct day of the month
-              if (markingProcessed) break // If this marking has been processed, go to the next
 
-              const calendarTableRow = calendarTableRows[i]
-              const rowTableDatas = await calendarTableRow.findElements(By.css('.list-td'))
-    
-              for (const rowTableData of rowTableDatas) {
-                if (markingProcessed) break // If this marking has been processed, go to the next
+            await this.driver.findElement(
+              By.css('div.ui-dialog-buttonpane > div > button:nth-child(1)')
+            ).click()
+
+            await this.driver.switchTo().alert().accept()
+
+            await delay(3000)
             
-                const tableDataLinks = await rowTableData.findElements(By.css('a'))
-      
-                const dayLinkText = await tableDataLinks[0].getText()
-                const dayLinkWithoutMonthText = dayLinkText.split(' ')[0]
-      
-                if (dayLinkWithoutMonthText === markingDay) {
-                  for(const tableDataLink of tableDataLinks) {
-                    const linkText = await tableDataLink.getText()
-      
-                    if(linkText === `${marking.start_time} - ${marking.finish_time}`) {
-                      await tableDataLink.click()
-      
-                      await this.waitByElements([
-                        { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado' },
-                        { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado' },
-                        { by: 'id', value: 'idutbms_classe' },
-                        { by: 'id', value: 'narrativa_principal' },
-                        { by: 'id', value: 'hora' },
-                        { by: 'id', value: 'hora_fim' },
-                        { by: 'id', value: 'intervalo_hr_inicial' },
-                        { by: 'id', value: 'intervalo_hr_final' },
-                      ])
-
-                      const markingCustomerCode = await this.driver.findElement(
-                        By.css('table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado')
-                      ).getText()
-                        
-                      if (marking.custumer_code.padStart(10, '0') !== markingCustomerCode.split(' - ')[0])
-                        throw new Error('Different customer_code recived!')
-                        
-                      const markingProjectCode = await this.driver.findElement(
-                        By.css('table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado')
-                      ).getText()
-      
-                      if (marking.project_code !== markingProjectCode.split(' - ')[0])
-                        throw new Error('Different project_code recived!')
-      
-                      const markingWorkClass = await this.driver
-                        .findElement(By.id('idutbms_classe')).getAttribute('value')
-      
-                      const workClassRecived = marking.work_class === 'PRODUCTION' ? '63' : '57'
-                      if (marking.work_class === 'PRODUCTION' && workClassRecived !== markingWorkClass)
-                        throw new Error('Different work_class recived!')
-      
-                      const markingDescription = await this.driver
-                        .findElement(By.id('narrativa_principal')).getAttribute('value')
-      
-                      if (marking.description !== markingDescription)
-                        throw new Error('Different description recived!')
-      
-                      const markingStartTime = await this.driver
-                        .findElement(By.id('hora')).getAttribute('value')
-      
-                      if (marking.start_time !== markingStartTime)
-                        throw new Error('Different start_time recived!')
-      
-                      const markingFinishTime = await this.driver
-                        .findElement(By.id('hora_fim')).getAttribute('value')
-      
-                      if (marking.finish_time !== markingFinishTime)
-                        throw new Error('Different finish_time recived!')
-      
-                      const markingStartIntervalTime = await this.driver
-                        .findElement(By.id('intervalo_hr_inicial')).getAttribute('value')
-      
-                      if (marking.start_interval_time && marking.start_interval_time !== markingStartIntervalTime)
-                        throw new Error('Different start_interval_time recived!')
-      
-                      const markingFinishIntervalTime = await this.driver
-                        .findElement(By.id('intervalo_hr_final')).getAttribute('value')
-      
-                      if (marking.finish_interval_time && marking.finish_interval_time !== markingFinishIntervalTime)
-                        throw new Error('Different finish_interval_time recived!')
-      
-                      await this.waitByElements([{
-                        by: 'css',
-                        value: 'div.ui-dialog-buttonpane > div > button:nth-child(1)'
-                      }])
-      
-                      await this.driver.findElement(
-                        By.css('div.ui-dialog-buttonpane > div > button:nth-child(1)')
-                      ).click()
-
-                      await this.driver.switchTo().alert().accept()
-      
-                      await delay(5000)
-                      
-                      markingsResponse.push({
-                        id: marking.id,
-                        on_timesheet_status: 'NOT_SENT',
-                      })
-
-                      // Go to next marking
-                      markingProcessed = true
-                      break
-                    }
-                  }
-                }
-              }
-            }
+            markingsResponse.push({
+              id: marking.id,
+              on_timesheet_status: 'NOT_SENT',
+            })
           } catch(err: any) {
             // An error occurred before save marking
             markingsResponse.push({
@@ -373,19 +351,52 @@ export class SeleniumProvider implements ICrawler {
       }
     }
 
-    // Getting not processed markings and adding a not found error
-    const markingsOutOfResponse = markings.filter(marking => {
-      return !markingsResponse.find(markingResponse => markingResponse.id === marking.id)
-    })
+    return { markingsResponse }
+  }
 
-    for (const markingOutOfResponse of markingsOutOfResponse) {
-      markingsResponse.push({
-        id: markingOutOfResponse.id,
-        on_timesheet_status: 'SENT',
-        timesheet_error: ['A marcação não foi encontrada'],
-      })
+  private async openMarkingDataModalByDateAndTime({
+    date,
+    start_time,
+    finish_time,
+  }: IOpenMarkingData): Promise<boolean> {
+    const [markingDay] = date.split('/')
+
+    await this.waitByElements([{
+      by: 'css',
+      value: `[href="javascript:editHora('08:00','','${date}')"]`,
+    }])
+
+    // Get calendar rows
+    const calendarTableRows = await this.driver.findElements(
+      By.css('td > table.list-table > tbody > tr')
+    )
+    for (let i = 0; i < calendarTableRows.length; i++) {      
+      if (i === 0) continue // Ignore week days row
+      if (parseInt(markingDay) > 7 && i < 3) continue // Make sure to get the correct day of the month
+
+      // Getting row data elements
+      const calendarTableRow = calendarTableRows[i]
+      const rowTableDatas = await calendarTableRow.findElements(By.css('.list-td'))
+
+      for (const rowTableData of rowTableDatas) {
+        const tableDataLinks = await rowTableData.findElements(By.css('a'))
+        const dayLinkText = await tableDataLinks[0].getText()
+        const dayLinkWithoutMonthText = dayLinkText.split(' ')[0]
+
+        if (dayLinkWithoutMonthText === markingDay) {
+          // Looking for the marking by time and open modal
+          for(const tableDataLink of tableDataLinks) {
+            const linkText = await tableDataLink.getText()
+
+            if(linkText === `${start_time} - ${finish_time}`) {
+              await tableDataLink.click()
+              return true
+            }
+          }
+        }
+      }
     }
 
-    return { markingsResponse }
+    return false
   }
 }
