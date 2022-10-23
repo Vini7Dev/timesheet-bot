@@ -18,6 +18,17 @@ interface IOpenMarkingData {
   finish_time: string
 }
 
+interface ICheckIfTheModalMarkingIsEqualToReceivedMarking {
+  custumer_code: string,
+  project_code: string,
+  work_class: 'PRODUCTION' | 'ABSENCE',
+  description: string,
+  start_time: string,
+  finish_time: string,
+  start_interval_time?: string | null,
+  finish_interval_time?: string | null,
+}
+
 interface IWaitByElement {
   value: string
   by: 'id' | 'className' | 'css' | 'linkText' | 'js' | 'name' | 'partialLinkText' | 'xpath'
@@ -257,67 +268,17 @@ export class SeleniumProvider implements ICrawler {
               continue
             }
 
-            await this.waitByElements([
-              { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado' },
-              { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado' },
-              { by: 'id', value: 'idutbms_classe' },
-              { by: 'id', value: 'narrativa_principal' },
-              { by: 'id', value: 'hora' },
-              { by: 'id', value: 'hora_fim' },
-              { by: 'id', value: 'intervalo_hr_inicial' },
-              { by: 'id', value: 'intervalo_hr_final' },
-            ])
-
-            const markingCustomerCode = await this.driver.findElement(
-              By.css('table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado')
-            ).getText()
-              
-            if (marking.custumer_code.padStart(10, '0') !== markingCustomerCode.split(' - ')[0])
-              throw new Error('Different customer_code recived!')
-              
-            const markingProjectCode = await this.driver.findElement(
-              By.css('table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado')
-            ).getText()
-
-            if (marking.project_code !== markingProjectCode.split(' - ')[0])
-              throw new Error('Different project_code recived!')
-
-            const markingWorkClass = await this.driver
-              .findElement(By.id('idutbms_classe')).getAttribute('value')
-
-            const workClassRecived = marking.work_class === 'PRODUCTION' ? '63' : '57'
-            if (marking.work_class === 'PRODUCTION' && workClassRecived !== markingWorkClass)
-              throw new Error('Different work_class recived!')
-
-            const markingDescription = await this.driver
-              .findElement(By.id('narrativa_principal')).getAttribute('value')
-
-            if (marking.description !== markingDescription)
-              throw new Error('Different description recived!')
-
-            const markingStartTime = await this.driver
-              .findElement(By.id('hora')).getAttribute('value')
-
-            if (marking.start_time !== markingStartTime)
-              throw new Error('Different start_time recived!')
-
-            const markingFinishTime = await this.driver
-              .findElement(By.id('hora_fim')).getAttribute('value')
-
-            if (marking.finish_time !== markingFinishTime)
-              throw new Error('Different finish_time recived!')
-
-            const markingStartIntervalTime = await this.driver
-              .findElement(By.id('intervalo_hr_inicial')).getAttribute('value')
-
-            if (marking.start_interval_time && marking.start_interval_time !== markingStartIntervalTime)
-              throw new Error('Different start_interval_time recived!')
-
-            const markingFinishIntervalTime = await this.driver
-              .findElement(By.id('intervalo_hr_final')).getAttribute('value')
-
-            if (marking.finish_interval_time && marking.finish_interval_time !== markingFinishIntervalTime)
-              throw new Error('Different finish_interval_time recived!')
+            // Check if the modal marking is equal to received marking data
+            await this.checkIfTheModalMarkingIsEqualToReceivedMarking({
+              description: marking.description,
+              start_time: marking.start_time,
+              finish_time: marking.finish_time,
+              start_interval_time: marking.start_interval_time,
+              finish_interval_time: marking.finish_interval_time,
+              work_class: marking.work_class,
+              custumer_code: marking.custumer_code,
+              project_code: marking.project_code,
+            })
 
             await this.waitByElements([{
               by: 'css',
@@ -398,5 +359,71 @@ export class SeleniumProvider implements ICrawler {
     }
 
     return false
+  }
+
+  private async checkIfTheModalMarkingIsEqualToReceivedMarking(
+    marking: ICheckIfTheModalMarkingIsEqualToReceivedMarking
+  ) {
+    await this.waitByElements([
+      { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado' },
+      { by: 'css', value: 'table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado' },
+      { by: 'id', value: 'idutbms_classe' },
+      { by: 'id', value: 'narrativa_principal' },
+      { by: 'id', value: 'hora' },
+      { by: 'id', value: 'hora_fim' },
+      { by: 'id', value: 'intervalo_hr_inicial' },
+      { by: 'id', value: 'intervalo_hr_final' },
+    ])
+
+    const markingCustomerCode = await this.driver.findElement(
+      By.css('table:nth-child(10) > tbody > tr:nth-child(2) > td.colunaDado')
+    ).getText()
+      
+    if (marking.custumer_code.padStart(10, '0') !== markingCustomerCode.split(' - ')[0])
+      throw new Error('Different customer_code received!')
+      
+    const markingProjectCode = await this.driver.findElement(
+      By.css('table:nth-child(10) > tbody > tr:nth-child(3) > td.colunaDado')
+    ).getText()
+
+    if (marking.project_code !== markingProjectCode.split(' - ')[0])
+      throw new Error('Different project_code received!')
+
+    const markingWorkClass = await this.driver
+      .findElement(By.id('idutbms_classe')).getAttribute('value')
+
+    const workClassReceived = marking.work_class === 'PRODUCTION' ? '63' : '57'
+    if (marking.work_class === 'PRODUCTION' && workClassReceived !== markingWorkClass)
+      throw new Error('Different work_class received!')
+
+    const markingDescription = await this.driver
+      .findElement(By.id('narrativa_principal')).getAttribute('value')
+
+    if (marking.description !== markingDescription)
+      throw new Error('Different description received!')
+
+    const markingStartTime = await this.driver
+      .findElement(By.id('hora')).getAttribute('value')
+
+    if (marking.start_time !== markingStartTime)
+      throw new Error('Different start_time received!')
+
+    const markingFinishTime = await this.driver
+      .findElement(By.id('hora_fim')).getAttribute('value')
+
+    if (marking.finish_time !== markingFinishTime)
+      throw new Error('Different finish_time received!')
+
+    const markingStartIntervalTime = await this.driver
+      .findElement(By.id('intervalo_hr_inicial')).getAttribute('value')
+
+    if (marking.start_interval_time && marking.start_interval_time !== markingStartIntervalTime)
+      throw new Error('Different start_interval_time received!')
+
+    const markingFinishIntervalTime = await this.driver
+      .findElement(By.id('intervalo_hr_final')).getAttribute('value')
+
+    if (marking.finish_interval_time && marking.finish_interval_time !== markingFinishIntervalTime)
+      throw new Error('Different finish_interval_time received!')
   }
 }
