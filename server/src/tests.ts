@@ -6,7 +6,7 @@ const MARKINGS = [
   {
     id: 'ID EXAMPLE 1',
     description: 'DESCRIPTION EXAMPLE 1',
-    date: '24/10/2022',
+    date: '26/10/2022',
     start_time: '09:30',
     finish_time: '10:30',
     start_interval_time: '10:00',
@@ -18,13 +18,14 @@ const MARKINGS = [
   {
     id: 'ID EXAMPLE 2',
     description: 'DESCRIPTION EXAMPLE 2',
-    date: '24/10/2022',
+    date: '26/10/2022',
     start_time: '12:00',
     finish_time: '14:00',
     work_class: 'ABSENCE',
     custumer_code: '1090',
     project_code: 'KC3705',
   },
+  /*
   {
     id: 'ID EXAMPLE 3',
     description: 'DESCRIPTION EXAMPLE 3',
@@ -45,6 +46,7 @@ const MARKINGS = [
     custumer_code: '1090',
     project_code: 'KC3705',
   },
+  */
 ]
 
 const addMarkingCrawler = async () => {
@@ -90,6 +92,6 @@ const deleteMarkingCrawler = async () => {
 }
 
 (async function () {
-  // await addMarkingCrawler()
-  await deleteMarkingCrawler()
+  await addMarkingCrawler()
+  // await deleteMarkingCrawler()
 })()

@@ -2,7 +2,7 @@ const BASE_URL = 'https://timesheet.keyrus.com.br'
 
 interface IAddMarkingQuery {
   CMD?: 'listar'
-  SHOW?: 'mes'
+  SHOW?: 'mes' | 'list'
   DATA?: string
 }
 

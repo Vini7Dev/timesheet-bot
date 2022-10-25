@@ -21,6 +21,7 @@ export class FakeCrawlerProvider implements ICrawler {
   }: ISaveMarkingsDTO): Promise<ICrawlerResponseDTO> {
     const markingsResponse = markings.map(marking => ({
       id: marking.id,
+      on_timesheet_id: marking.id,
       on_timesheet_status: OnTimesheetStatus.SENT,
     }))
 
@@ -32,6 +33,7 @@ export class FakeCrawlerProvider implements ICrawler {
   }: IUpdateMarkingsDTO): Promise<ICrawlerResponseDTO> {
     const markingsResponse = markings.map(marking => ({
       id: marking.id,
+      on_timesheet_id: marking.id,
       on_timesheet_status: OnTimesheetStatus.SENT,
     }))
 
@@ -43,6 +45,7 @@ export class FakeCrawlerProvider implements ICrawler {
   }: IDeleteMarkingsDTO): Promise<ICrawlerResponseDTO> {
     const markingsResponse = markings.map(marking => ({
       id: marking.id,
+      on_timesheet_id: marking.id,
       on_timesheet_status: OnTimesheetStatus.NOT_SENT,
     }))
 
