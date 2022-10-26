@@ -14,6 +14,4 @@ interface IUpdateTimesheetMarkingDTO {
   start_interval_time?: string | null
   finish_interval_time?: string | null
   work_class: WorkClass
-  custumer_code: string
-  project_code: string
 }
