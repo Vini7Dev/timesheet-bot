@@ -6,6 +6,7 @@ export interface IUpdateMarkingsDTO {
 
 interface IUpdateTimesheetMarkingDTO {
   id: string
+  on_timesheet_id: string
   description: string
   date: string
   start_time: string

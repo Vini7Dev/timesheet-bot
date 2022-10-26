@@ -133,10 +133,7 @@ export class SeleniumProvider implements ICrawler {
         const markingGroupFullDate = marking.date.split('/').reverse().join('-')
         await this.driver.get(urls.addMarking({ DATA: markingGroupFullDate, SHOW: 'list' }))
 
-        await this.waitByElements([{
-          by: 'css',
-          value: 'td > table.list-table',
-        }])
+        await this.waitByElements([{ by: 'css', value: 'td > table.list-table' }])
 
         // Open modal to add marking
         await this.driver.executeScript(`editHora()`)
@@ -189,7 +186,9 @@ export class SeleniumProvider implements ICrawler {
         }])
 
         // Submit form
-        await this.driver.findElement(By.css('.ui-dialog-buttonset button:nth-child(1)')).click()
+        await this.driver.findElement(
+          By.css('.ui-dialog-buttonset button:nth-child(1)')
+        ).click()
 
         await delay(3000)
 
@@ -262,24 +261,18 @@ export class SeleniumProvider implements ICrawler {
     markings,
   }: IDeleteMarkingsDTO): Promise<ICrawlerResponseDTO> {
     await this.checkDriverStatus()
-
+    
+    // Open markings list page
+    await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+    
     const markingsResponse: IMarkingResponse[] = []
-
     for (const marking of markings) {
-      const markingGroupFullDate = marking.date.split('/').reverse().join('-')
-      
       try {
-        // Open marking page on marking date (to get marking id on timesheet)
-        await this.driver.get(urls.addMarking({ DATA: markingGroupFullDate, SHOW: 'list' }))
-
-        await this.waitByElements([{ by: 'id', value: marking.on_timesheet_id }])
+        // Wait page loading
+        await this.waitByElements([{ by: 'css', value: 'td > table.list-table' }])
 
         // Open marking data modal
-        const markingElement = await this.driver.findElement(By.id(marking.on_timesheet_id))
-
-        const onDblClickScript = await markingElement.getAttribute('ondblclick')
-
-        await this.driver.executeScript(onDblClickScript)
+        await this.driver.executeScript(`editHora('', '', '', '${marking.on_timesheet_id}', 'T')`)
 
         // Click on delete button
         await this.waitByElements([{ by: 'css', value: 'button:nth-child(1)' }])
@@ -304,10 +297,7 @@ export class SeleniumProvider implements ICrawler {
         })
 
         // Reload window
-        await this.driver.get(urls.addMarking({
-          DATA: markingGroupFullDate,
-          SHOW: 'list'
-        }))
+        await this.driver.get(urls.addMarking({ SHOW: 'list' }))
       }
     }
 
