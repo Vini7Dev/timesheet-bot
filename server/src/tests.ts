@@ -13,12 +13,12 @@ const MARKINGS = [
     finish_interval_time: '10:10',
     work_class: 'PRODUCTION',
     custumer_code: '1090',
-    project_code: 'KC3706',
+    project_code: 'KC3705',
   },
   {
     id: 'ID EXAMPLE 2',
     description: 'DESCRIPTION EXAMPLE 2',
-    date: '27/10/2022',
+    date: '26/10/2022',
     start_time: '12:00',
     finish_time: '14:00',
     work_class: 'ABSENCE',
@@ -82,11 +82,11 @@ const updateMarkingCrawler = async () => {
       markings: [
         {
           ...UPDATED_MARKINGS[0],
-          on_timesheet_id: '1539620',
+          on_timesheet_id: '1539724',
         },
         {
-          ...UPDATED_MARKINGS[0],
-          on_timesheet_id: '1539621',
+          ...UPDATED_MARKINGS[1],
+          on_timesheet_id: '1539725',
         }
       ] as any,
     })
@@ -112,11 +112,11 @@ const deleteMarkingCrawler = async () => {
       markings: [
         {
           ...MARKINGS[0],
-          on_timesheet_id: '1539620',
+          on_timesheet_id: '1539724',
         },
         {
-          ...MARKINGS[0],
-          on_timesheet_id: '1539621',
+          ...MARKINGS[1],
+          on_timesheet_id: '1539725',
         }
       ] as any,
     })
@@ -131,6 +131,6 @@ const deleteMarkingCrawler = async () => {
 
 (async function () {
   // await addMarkingCrawler()
-  // await updateMarkingCrawler()
-  await deleteMarkingCrawler()
+  await updateMarkingCrawler()
+  // await deleteMarkingCrawler()
 })()
