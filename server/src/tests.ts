@@ -80,7 +80,16 @@ const deleteMarkingCrawler = async () => {
     })
 
     const response = await seleniumProvider.deleteTimesheetTasks({
-      markings: MARKINGS as any,
+      markings: [
+        {
+          ...MARKINGS[0],
+          on_timesheet_id: '1539586',
+        },
+        {
+          ...MARKINGS[0],
+          on_timesheet_id: '1539587',
+        }
+      ] as any,
     })
 
     await seleniumProvider.stopCrawler()
@@ -92,6 +101,6 @@ const deleteMarkingCrawler = async () => {
 }
 
 (async function () {
-  await addMarkingCrawler()
-  // await deleteMarkingCrawler()
+  // await addMarkingCrawler()
+  await deleteMarkingCrawler()
 })()
