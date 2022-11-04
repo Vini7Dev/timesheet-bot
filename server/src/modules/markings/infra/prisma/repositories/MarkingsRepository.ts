@@ -46,6 +46,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
   }: ICreateMarkingDTO): Promise<Marking> {
     const createdMarking = await this.client.markings.create({
       data: {
+        on_timesheet_status: 'NOT_SENT',
         description,
         date,
         start_time,

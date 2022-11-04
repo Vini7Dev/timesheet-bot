@@ -46,6 +46,7 @@ model Projects {
 
 model Markings {
   id                    String            @id @default(uuid())
+  on_timesheet_id       String?
   on_timesheet_status   OnTimesheetStatus @default(NOT_SENT)
   timesheet_error       String?
   description           String
@@ -69,7 +70,6 @@ enum OnTimesheetStatus {
   NOT_SENT
   SENDING
   SENT
-  ERROR
 }
 
 enum WorkClass {

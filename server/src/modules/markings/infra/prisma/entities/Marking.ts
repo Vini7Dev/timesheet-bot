@@ -1,7 +1,13 @@
-import { WorkClass, Projects, Users } from '@prisma/client'
+import { WorkClass, Projects, Users, OnTimesheetStatus } from '@prisma/client'
 
 export class Marking {
   id: string
+
+  on_timesheet_id?: string | null
+
+  on_timesheet_status: OnTimesheetStatus
+
+  timesheet_error?: string | null
 
   description: string
 

@@ -46,6 +46,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
 
     const createdMarking = {
       id: Math.random().toString(),
+      on_timesheet_status: 'NOT_SENT',
       description,
       date,
       start_time,
@@ -57,7 +58,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
       user_id,
       created_at: createDate,
       updated_at: createDate,
-    }
+    } as Marking
 
     this.markings.push(createdMarking)
 
