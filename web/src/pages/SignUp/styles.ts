@@ -22,7 +22,7 @@ export const MainContent = styled.main`
   align-items: center;
 `
 
-export const SignInForm = styled.form`
+export const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   background-color: #1D272C;
@@ -39,21 +39,12 @@ export const SignInForm = styled.form`
     margin-bottom: 1rem;
   }
 
-  a#forgot-password-link {
-    width: fit-content;
-    margin-left: auto;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.875rem;
-    color: #008BEA;
-    margin-bottom: 1.25rem;
-  }
-
   div.input-margin-bottom {
     margin-bottom: 0.875rem;
   }
 
   div.button-margin-top {
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
   }
 
   span#without-account-message {

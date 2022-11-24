@@ -6,7 +6,6 @@ export const InputContainer = styled.div`
   background-color: #1D272C;
   border: 0.063rem solid #12191d;
   border-radius: 0.125rem;
-  margin-bottom: 0.875rem;
 
   input {
     display: block;

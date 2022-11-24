@@ -18,12 +18,18 @@ export const SignIn: React.FC = () => {
         <SignInForm>
           <h1 id="page-title">Entrar</h1>
 
-          <Input placeholder="Informe seu usuário" />
-          <Input placeholder="Informe sua senha" type="password" />
+          <div className="input-margin-bottom">
+            <Input placeholder="Informe seu usuário ou email" />
+          </div>
+          <div className="input-margin-bottom">
+            <Input placeholder="Informe sua senha" type="password" />
+          </div>
 
           <a id="forgot-password-link" href="/">Esqueceu a senha?</a>
 
-          <Button text="Entrar" />
+          <div className="button-margin-top">
+            <Button text="Entrar" />
+          </div>
 
           <span id="without-account-message">Ainda não tem uma conta?</span>
           <Button text="Cadastrar-se" />
