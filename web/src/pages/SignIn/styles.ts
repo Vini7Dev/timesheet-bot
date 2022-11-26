@@ -5,15 +5,6 @@ export const PageContainer = styled.div`
   height: calc(100vh - 5rem);
 `
 
-export const TopBar = styled.div`
-  height: 5rem;
-  padding: 1.25rem 1.25rem;
-
-  a img {
-    height: 3.125rem;
-  }
-`
-
 export const MainContent = styled.main`
   width: 100%;
   height: 100%;
