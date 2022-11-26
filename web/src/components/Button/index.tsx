@@ -7,11 +7,13 @@ interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<IButtonProps> = ({
-  text
+  text,
+  type = 'button',
+  ...rest
 }) => {
   return (
     <ButtonContainer>
-      <button>{text}</button>
+      <button type={type} {...rest}>{text}</button>
     </ButtonContainer>
   )
 }

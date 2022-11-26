@@ -1,9 +1,13 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import { SignIn } from '../pages/SignIn'
 import { SignUp } from '../pages/SignUp'
 
-export const Router = createBrowserRouter([
-  { path: '/', element: <SignIn /> },
-  { path: '/sign-up', element: <SignUp /> }
-])
+export const MainRoutes: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<SignIn />} index />
+      <Route path="/sign-up" element={<SignUp />} />
+    </Routes>
+  )
+}

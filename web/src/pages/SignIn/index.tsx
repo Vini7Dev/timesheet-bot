@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import MultifyLogo from '../../assets/multify-logo.png'
 import { Button } from '../../components/Button'
@@ -6,6 +7,12 @@ import { Input } from '../../components/Input'
 import { MainContent, PageContainer, SignInForm, TopBar } from './styles'
 
 export const SignIn: React.FC = () => {
+  const navigate = useNavigate()
+
+  const handleGoToSignUp = useCallback(() => {
+    navigate('/sign-up')
+  }, [navigate])
+
   return (
     <PageContainer>
       <TopBar>
@@ -32,7 +39,7 @@ export const SignIn: React.FC = () => {
           </div>
 
           <span id="without-account-message">Ainda não tem uma conta?</span>
-          <Button text="Cadastrar-se" />
+          <Button text="Cadastrar-se" onClick={() => handleGoToSignUp()} />
         </SignInForm>
       </MainContent>
     </PageContainer>
