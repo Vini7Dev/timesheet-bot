@@ -1,16 +1,16 @@
 import React from 'react'
+import { RouterProvider } from 'react-router-dom'
+import { Router } from './routes'
 
 import GlobalStyles from './styles/global'
-// import { SignIn } from './pages/SignIn'
-import { SignUp } from './pages/SignUp'
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <SignUp />
+    <>
+      <RouterProvider router={Router} />
 
       <GlobalStyles />
-    </div>
+    </>
   )
 }
 
