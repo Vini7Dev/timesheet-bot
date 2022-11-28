@@ -6,7 +6,7 @@ interface IButtonContainerProps {
 
 export const ButtonContainer = styled.div<IButtonContainerProps>`
   width: 100%;
-  height: 40px;
+  height: 2.5rem;
   border-radius: 0.125rem;
 
   ${({ buttonStyle }) => {

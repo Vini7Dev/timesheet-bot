@@ -86,10 +86,11 @@ export const TimeTracker: React.FC = () => {
           timerStartedAt === null
             ? (
             <Input
+              disabled
               placeholder="00:00"
               inputStyle="timer"
-              disabled
               value="00:00"
+              style={{ textAlign: 'center' }}
             />
               )
             : <TimeCount timerStartedAt={timerStartedAt} />
@@ -158,10 +159,11 @@ const TimeCount: React.FC<ITimeCountProps> = ({ timerStartedAt }) => {
 
   return (
     <Input
+      disabled
       placeholder="00:00"
       inputStyle="timer"
-      disabled
       value={formatTimer()}
+      style={{ textAlign: 'center' }}
     />
   )
 }

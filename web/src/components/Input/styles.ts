@@ -13,7 +13,7 @@ export const InputContainer = styled.div<IInputContainerProps>`
   ${({ inputStyle }) => {
     switch (inputStyle) {
       case 'normal': return css`
-        border: 0.063rem solid #12191d;
+        border: 1px solid #12191d;
       `
       case 'timer': return css`
         height: 100%;

@@ -6,9 +6,9 @@ export const PageContainer = styled.div`
 `
 
 export const MainContent = styled.main`
-  margin-top: 18px;
+  margin-top: 1.125rem;
 
   #marking-list-container {
-    margin-top: 24px;
+    margin-top: 1.5rem;
   }
 `
