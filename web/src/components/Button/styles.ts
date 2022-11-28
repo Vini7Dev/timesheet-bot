@@ -1,10 +1,27 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export const ButtonContainer = styled.div`
+interface IButtonContainerProps {
+  buttonStyle: 'primary' | 'danger'
+}
+
+export const ButtonContainer = styled.div<IButtonContainerProps>`
   width: 100%;
   height: 40px;
-  background-color: #008BEA;
   border-radius: 0.125rem;
+
+  ${({ buttonStyle }) => {
+    switch (buttonStyle) {
+      case 'primary': return css`
+        background-color: #008BEA;
+      `
+
+      case 'danger': return css`
+        background-color: #F44336;
+      `
+
+      default: return null
+    }
+  }}
 
   button {
     display: block;
