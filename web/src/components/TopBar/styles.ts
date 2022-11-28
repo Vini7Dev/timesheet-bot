@@ -22,6 +22,7 @@ export const TopBarContainer = styled.div<ITopBarContainerProps>`
     height: 2.5rem;
     width: 2.5rem;
     border-radius: 100%;
+    border: none;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     color: #FFF;
