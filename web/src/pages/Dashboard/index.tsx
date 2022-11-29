@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react'
-import { FiDollarSign, FiClock } from 'react-icons/fi'
+import { FiCheck, FiClock, FiDollarSign, FiUpload, FiX } from 'react-icons/fi'
 
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { TimeTracker } from '../../components/TimeTracker'
 import { MainContent, MarkingItemContainer, PageContainer } from './styles'
 import { ProjectPopup } from '../../components/ProjectPopup'
+
+type OnTimesheetStatus = 'SENT' | 'NOT_SENT' | 'ERROR'
 
 export const Dashboard: React.FC = () => {
   return (
@@ -29,7 +31,6 @@ export const Dashboard: React.FC = () => {
               <MarkingItem />
               <MarkingItem />
               <MarkingItem />
-              <MarkingItem />
             </div>
           </div>
         </div>
@@ -42,6 +43,8 @@ const MarkingItem: React.FC = () => {
   const [isBillable, setIsBillable] = useState(false)
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
+  const [onTimesheetStatus, setOnTimesheetStatus] = useState<OnTimesheetStatus>('SENT')
+
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
   }, [isBillable])
@@ -51,8 +54,21 @@ const MarkingItem: React.FC = () => {
   }, [projectPopupIsOpen])
 
   return (
-    <MarkingItemContainer>
+    <MarkingItemContainer onTimesheetStatus={onTimesheetStatus}>
       <div className="marking-row marking-row-first">
+        <button className="margking-timesheet-status">
+          {
+            (() => {
+              switch (onTimesheetStatus) {
+                case 'SENT': return <FiCheck color="#4CAF50" size={20} />
+                case 'NOT_SENT': return <FiUpload color="#FFC107" size={20} />
+                case 'ERROR': return <FiX color="#F44336" size={20} />
+                default: return <FiX color="#F44336" size={20} />
+              }
+            })()
+          }
+        </button>
+
         <Input placeholder="Descrição..." inputStyle="timer" />
 
         <button

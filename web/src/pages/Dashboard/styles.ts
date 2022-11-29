@@ -1,5 +1,11 @@
 import styled from 'styled-components'
 
+type OnTimesheetStatus = 'SENT' | 'NOT_SENT' | 'ERROR'
+
+interface IMarkingItemContainerProps {
+  onTimesheetStatus: OnTimesheetStatus
+}
+
 export const PageContainer = styled.div`
   width: 100vw;
   height: calc(100vh - 5rem);
@@ -50,8 +56,19 @@ export const MainContent = styled.main`
   }
 `
 
-export const MarkingItemContainer = styled.div`
-  border: 1px solid #12191D;
+export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
+  border: 1px solid ${({ onTimesheetStatus }) => {
+    switch (onTimesheetStatus) {
+      case 'SENT': return '#12191D'
+      case 'NOT_SENT': return '#FFC107'
+      case 'ERROR': return '#F44336'
+      default: return '#F44336'
+    }
+  }};
+
+  .marking-row-first {
+    padding: 0 12px 0;
+  }
 
   .marking-row {
     position: relative;
@@ -59,6 +76,12 @@ export const MarkingItemContainer = styled.div`
     display: flex;
     align-items: center;
     height: 4rem;
+
+    .margking-timesheet-status {
+      margin-top: 5px;
+      border: none;
+      background-color: transparent;
+    }
 
     .marking-project-button {
       display: flex;
