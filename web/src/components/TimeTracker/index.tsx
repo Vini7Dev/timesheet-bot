@@ -3,7 +3,8 @@ import { FiDollarSign } from 'react-icons/fi'
 
 import { Input } from '../Input'
 import { Button } from '../Button'
-import { ProjectPopupContainer, TimerTrackerContainer } from './styles'
+import { TimerTrackerContainer } from './styles'
+import { ProjectPopup } from '../ProjectPopup'
 
 interface ITimeCountProps {
   timerStartedAt: number
@@ -105,32 +106,6 @@ export const TimeTracker: React.FC = () => {
         </div>
       </div>
     </TimerTrackerContainer>
-  )
-}
-
-const ProjectPopup: React.FC = () => {
-  return (
-    <ProjectPopupContainer id="timer-project-popup-container">
-      <Input placeholder="Pesquise..." />
-
-      <div id="timer-project-popup-results">
-        <div id="timer-project-popup-empty-container">
-          <p id="timer-project-popup-empty-text">
-            Sem resultados...
-          </p>
-        </div>
-
-        <div className="timer-project-popup-item">
-          <strong className="timer-project-popup-customer">ambev</strong>
-
-          <ul className="timer-project-popup-projects">
-            <li className="timer-project-popup-project">uauness</li>
-          </ul>
-        </div>
-      </div>
-
-      <Button text="Cadastrar projeto" />
-    </ProjectPopupContainer>
   )
 }
 
