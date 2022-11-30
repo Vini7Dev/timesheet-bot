@@ -9,10 +9,24 @@ interface IMarkingItemContainerProps {
 export const PageContainer = styled.div`
   width: 100vw;
   height: calc(100vh - 5rem);
+
+  #markings-page-content {
+    display: block;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 969px) {
+    width: calc(100vw - 30px);
+
+    #markings-page-content {
+    display: flex;
+    }
+  }
 `
 
 export const MainContent = styled.main`
   margin-top: 1.125rem;
+  width: 100%;
 
   #marking-list-container {
     margin-top: 1.5rem;

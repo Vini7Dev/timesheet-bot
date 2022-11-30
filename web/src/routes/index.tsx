@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import { Dashboard } from '../pages/Dashboard'
+import { Markings } from '../pages/Markings'
 
 import { SignIn } from '../pages/SignIn'
 import { SignUp } from '../pages/SignUp'
@@ -10,7 +10,7 @@ export const MainRoutes: React.FC = () => {
       <Route path="/" element={<SignIn />} index />
       <Route path="/sign-up" element={<SignUp />} />
 
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/markings" element={<Markings />} />
     </Routes>
   )
 }

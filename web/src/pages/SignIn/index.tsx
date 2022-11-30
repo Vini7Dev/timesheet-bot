@@ -14,7 +14,7 @@ export const SignIn: React.FC = () => {
   }, [navigate])
 
   const handleLogin = useCallback(() => {
-    navigate('/dashboard')
+    navigate('/markings')
   }, [navigate])
 
   return (

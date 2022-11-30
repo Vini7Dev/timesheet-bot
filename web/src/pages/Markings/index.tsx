@@ -4,37 +4,56 @@ import { FiCheck, FiClock, FiDollarSign, FiUpload, FiX } from 'react-icons/fi'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { TimeTracker } from '../../components/TimeTracker'
-import { MainContent, MarkingItemContainer, PageContainer } from './styles'
 import { ProjectPopup } from '../../components/ProjectPopup'
+import { Navigation } from '../../components/Navigation'
+import { MainContent, MarkingItemContainer, PageContainer } from './styles'
 
 type OnTimesheetStatus = 'SENT' | 'NOT_SENT' | 'ERROR'
 
-export const Dashboard: React.FC = () => {
+export const Markings: React.FC = () => {
   return (
     <PageContainer>
       <TopBar />
 
-      <MainContent>
-        <TimeTracker />
+      <div id="markings-page-content">
+        <Navigation />
 
-        <div id="marking-list-container">
-          <strong id="margking-list-title">Marcações</strong>
+        <MainContent>
+          <TimeTracker />
 
-          <div className="markings-day-group">
-            <div className="markings-day-group-header">
-              <span className="markings-day-group-date">26/11/2022</span>
+          <div id="marking-list-container">
+            <strong id="margking-list-title">Marcações</strong>
 
-              <strong className="markings-day-group-total">8:00</strong>
-            </div>
+            <div className="markings-day-group">
+              <div className="markings-day-group-header">
+                <span className="markings-day-group-date">26/11/2022</span>
 
-            <div className="marking-day-group-list">
-              <MarkingItem />
-              <MarkingItem />
-              <MarkingItem />
+                <strong className="markings-day-group-total">8:00</strong>
+              </div>
+
+              <div className="marking-day-group-list">
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+                <MarkingItem />
+              </div>
             </div>
           </div>
-        </div>
-      </MainContent>
+        </MainContent>
+      </div>
     </PageContainer>
   )
 }

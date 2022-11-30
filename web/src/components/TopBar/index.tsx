@@ -9,17 +9,19 @@ export const TopBar: React.FC = () => {
 
   return (
     <TopBarContainer backgroundColor={tempIsAuthenticated ? '#12191D' : 'transparent'} >
-      <Link to="/" id="top-bar-multify-link">
-        <img src={MultifyLogo} alt="Multify" id="top-bar-multify-logo" />
-      </Link>
+      <div id="top-bar-content">
+        <Link to="/" id="top-bar-multify-link">
+          <img src={MultifyLogo} alt="Multify" id="top-bar-multify-logo" />
+        </Link>
 
-      {
-        tempIsAuthenticated && (
-          <button id="top-bar-user-icon">
-            VG
-          </button>
-        )
-      }
+        {
+          tempIsAuthenticated && (
+            <button id="top-bar-user-icon">
+              VG
+            </button>
+          )
+        }
+      </div>
     </TopBarContainer>
   )
 }
