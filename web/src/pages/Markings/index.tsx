@@ -35,20 +35,6 @@ export const Markings: React.FC = () => {
                 <MarkingItem />
                 <MarkingItem />
                 <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
-                <MarkingItem />
               </div>
             </div>
           </div>
