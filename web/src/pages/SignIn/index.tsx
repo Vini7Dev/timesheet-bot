@@ -20,17 +20,10 @@ export const SignIn: React.FC = () => {
   }, [navigate])
 
   const handleSignIn = useCallback(async () => {
-    console.log('===> 123', {
-      emailOrUsername,
-      password
-    })
-
     await auth.signIn({
       emailOrUsername,
       password
     })
-
-    // navigate('/markings')
   }, [auth, emailOrUsername, password])
 
   return (

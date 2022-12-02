@@ -10,7 +10,8 @@ const SERVER_URI = 'http://localhost:4003/graphql'
 
 export const client = new ApolloClient({
   uri: SERVER_URI,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  credentials: 'include'
 })
 
 const App: React.FC = () => {
