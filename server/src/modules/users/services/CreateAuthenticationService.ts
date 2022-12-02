@@ -14,6 +14,9 @@ interface IServiceProps {
 interface ISerciceResponse {
   token: string
   user_id: string
+  name: string
+  username: string
+  email: string
 }
 
 @injectable()
@@ -55,6 +58,9 @@ export class CreateAuthenticationService {
     return {
       token,
       user_id: userToLogin.id,
+      name: userToLogin.name,
+      username: userToLogin.username,
+      email: userToLogin.email,
     }
   }
 }

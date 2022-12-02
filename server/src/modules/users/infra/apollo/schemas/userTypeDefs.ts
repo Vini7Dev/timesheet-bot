@@ -25,6 +25,9 @@ export const userTypeDefs = gql`
   type LoginUserResponse {
     token: String!
     user_id: ID!
+    name: String
+    username: String
+    email: String
   }
 
   input CreateUserInput {

@@ -58,7 +58,10 @@ import '@shared/containers'
 
   await server.start()
 
-  server.applyMiddleware({app, cors: { origin: "*", credentials: true }})
+  server.applyMiddleware({ app, cors: {
+    origin: ['https://studio.apollographql.com', 'http://localhost:3000'],
+    credentials: true,
+  } })
 
   const SERVER_PORT = process.env.SERVER_PORT ?? 4003;
 
