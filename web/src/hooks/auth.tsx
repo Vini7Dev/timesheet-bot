@@ -36,7 +36,7 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext>({} as unknown as IAuthContext)
 
 export const AuthProvider: React.FC<any> = ({ children }) => {
-  const [loginUser, { loading, error }] = useMutation<ILoginResponse>(LOGIN_USER)
+  const [loginUser] = useMutation<ILoginResponse>(LOGIN_USER)
 
   const [user, setUser] = useState<IUser | undefined>(() => {
     const authUserFromLocalStorage = localStorage.getItem('@Multify:loginUser')
@@ -83,9 +83,6 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
   const signOut = useCallback(() => {
     //
   }, [])
-
-  if (loading) return <p>Loading...</p>
-  if (error != null) return <p>Error!</p>
 
   return (
     <AuthContext.Provider value={{ user, signIn, signOut }}>

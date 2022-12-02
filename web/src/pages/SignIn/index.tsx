@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
