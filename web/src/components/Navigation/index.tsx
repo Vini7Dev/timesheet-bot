@@ -15,7 +15,7 @@ export const Navigation: React.FC = () => {
   const [mobileNavigationIsOpen, setMobileNavigationIsOpen] = useState(false)
 
   const [navigationOptions] = useState<INavigationOptionProps[]>([
-    { url: '/markings', text: 'Marcações', icon: FiClock },
+    { url: '/', text: 'Marcações', icon: FiClock },
     { url: '/projects', text: 'Projetos', icon: FiClipboard },
     { url: '/customers', text: 'Clientes', icon: FiUsers }
   ])
@@ -30,6 +30,8 @@ export const Navigation: React.FC = () => {
         setMobileNavigationIsOpen(true)
       }
     }
+
+    handleWindowResize()
 
     window.addEventListener('resize', handleWindowResize)
 
@@ -56,7 +58,7 @@ export const Navigation: React.FC = () => {
                   <li
                     key={index}
                     className={`left-navigation-item ${
-                      window.location.pathname.includes(url)
+                      url === window.location.pathname
                         ? 'left-navigation-item-select'
                         : ''
                     }`}
