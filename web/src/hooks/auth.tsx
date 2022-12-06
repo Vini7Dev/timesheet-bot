@@ -45,6 +45,12 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
         type: 'error',
         message: 'Credenciais inválidas!'
       })
+    },
+    onCompleted: () => {
+      toast.addToast({
+        type: 'info',
+        message: 'Seja bem-vindo(a)!'
+      })
     }
   })
 

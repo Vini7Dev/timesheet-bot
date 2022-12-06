@@ -6,6 +6,7 @@ import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { CREATE_USER } from '../../graphql/createUser'
+import { useToast } from '../../hooks/toast'
 import { MainContent, PageContainer, SignUpForm } from './styles'
 
 interface ICreateUserResponse {
@@ -15,7 +16,22 @@ interface ICreateUserResponse {
 }
 
 export const SignUp: React.FC = () => {
-  const [createUser] = useMutation<ICreateUserResponse>(CREATE_USER)
+  const toast = useToast()
+
+  const [createUser] = useMutation<ICreateUserResponse>(CREATE_USER, {
+    onError: (error) => {
+      toast.addToast({
+        type: 'error',
+        message: error.message
+      })
+    },
+    onCompleted: () => {
+      toast.addToast({
+        type: 'success',
+        message: 'Conta criada com sucesso!'
+      })
+    }
+  })
 
   const navigate = useNavigate()
 
