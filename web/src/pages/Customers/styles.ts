@@ -25,12 +25,24 @@ export const MainContent = styled.main`
   #customer-list-container {
     margin-top: 1.5rem;
 
-    #customer-list-title {
-      display: block;
-      font-family: 'Roboto', sans-serif;
-      font-size: 1rem;
-      color: #FFF;
-      margin: 1.5rem 10px 20px;
+    #customer-list-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      #customer-list-title {
+        display: block;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1rem;
+        color: #FFF;
+        margin: 1.5rem 20px 20px;
+      }
+
+      #create-customer-button {
+        max-width: 200px;
+        width: 100%;
+        margin-right: 20px;
+      }
     }
 
     .customers-group {

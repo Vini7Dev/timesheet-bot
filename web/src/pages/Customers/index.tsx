@@ -5,6 +5,7 @@ import { TopBar } from '../../components/TopBar'
 import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
+import { Button } from '../../components/Button'
 
 export const Customers: React.FC = () => {
   return (
@@ -16,7 +17,13 @@ export const Customers: React.FC = () => {
 
         <MainContent>
           <div id="customer-list-container">
-            <strong id="customer-list-title">Clientes</strong>
+            <div id="customer-list-head">
+              <strong id="customer-list-title">Clientes</strong>
+
+              <div id="create-customer-button">
+                <Button text="Cadastrar projeto" />
+              </div>
+            </div>
 
             <div className="customers-group">
               <div className="customers-group-header">

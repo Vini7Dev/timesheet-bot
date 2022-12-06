@@ -6,6 +6,7 @@ import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
+import { Button } from '../../components/Button'
 
 export const Projects: React.FC = () => {
   return (
@@ -17,7 +18,13 @@ export const Projects: React.FC = () => {
 
         <MainContent>
           <div id="project-list-container">
-            <strong id="project-list-title">Projetos</strong>
+            <div id="project-list-head">
+              <strong id="project-list-title">Projetos</strong>
+
+              <div id="create-project-button">
+                <Button text="Cadastrar projeto" />
+              </div>
+            </div>
 
             <div className="projects-customer-group">
               <div className="projects-customer-group-header">

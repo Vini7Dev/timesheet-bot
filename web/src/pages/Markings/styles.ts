@@ -36,7 +36,7 @@ export const MainContent = styled.main`
       font-family: 'Roboto', sans-serif;
       font-size: 1rem;
       color: #FFF;
-      margin: 1.5rem 10px 20px;
+      margin: 1.5rem 20px 20px;
     }
 
     .markings-day-group {
