@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 interface IInputContainerProps {
-  inputStyle?: 'normal' | 'timer'
+  inputStyle?: 'normal' | 'high'
 }
 
 export const InputContainer = styled.div<IInputContainerProps>`
@@ -15,7 +15,7 @@ export const InputContainer = styled.div<IInputContainerProps>`
       case 'normal': return css`
         border: 1px solid #12191d;
       `
-      case 'timer': return css`
+      case 'high': return css`
         height: 100%;
       `
       default: return null

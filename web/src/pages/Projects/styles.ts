@@ -38,8 +38,8 @@ export const MainContent = styled.main`
 
       .projects-customer-group-header {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
-        align-items: center;
         padding: 10px 20px;
         border: 1px solid #12191D;
         background-color: #12191D;
@@ -47,6 +47,13 @@ export const MainContent = styled.main`
         .projects-customer-group-name {
           font-family: 'Roboto', sans-serif;
           font-size: 1.286rem;
+          color: #C6D2D9;
+        }
+
+        .projects-customer-group-label {
+          margin-top: 8px;
+          font-family: 'Roboto', sans-serif;
+          font-size: 1rem;
           color: #C6D2D9;
         }
       }

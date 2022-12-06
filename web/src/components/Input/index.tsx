@@ -4,7 +4,7 @@ import { InputContainer } from './styles'
 
 interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder: string
-  inputStyle?: 'normal' | 'timer'
+  inputStyle?: 'normal' | 'high'
 }
 
 export const Input: React.FC<IInputProps> = ({

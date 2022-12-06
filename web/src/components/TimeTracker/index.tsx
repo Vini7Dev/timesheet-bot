@@ -60,7 +60,7 @@ export const TimeTracker: React.FC = () => {
       <div className="timer-row timer-row-first">
         <Input
           placeholder="Descrição..."
-          inputStyle="timer"
+          inputStyle="high"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -89,7 +89,7 @@ export const TimeTracker: React.FC = () => {
             <Input
               disabled
               placeholder="00:00"
-              inputStyle="timer"
+              inputStyle="high"
               value="00:00"
               style={{ textAlign: 'center' }}
             />
@@ -136,7 +136,7 @@ const TimeCount: React.FC<ITimeCountProps> = ({ timerStartedAt }) => {
     <Input
       disabled
       placeholder="00:00"
-      inputStyle="timer"
+      inputStyle="high"
       value={formatTimer()}
       style={{ textAlign: 'center' }}
     />

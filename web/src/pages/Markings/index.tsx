@@ -74,7 +74,7 @@ const MarkingItem: React.FC = () => {
           }
         </button>
 
-        <Input placeholder="Descrição..." inputStyle="timer" />
+        <Input placeholder="Descrição..." inputStyle="high" />
 
         <button
           className="marking-project-button"
@@ -101,9 +101,9 @@ const MarkingItem: React.FC = () => {
           <span className="marking-times-text">Tempo gasto</span>
 
           <div className="marking-time-inputs">
-            <Input placeholder="10:00" inputStyle="timer" />
+            <Input placeholder="10:00" inputStyle="high" />
             :
-            <Input placeholder="11:00" inputStyle="timer" />
+            <Input placeholder="11:00" inputStyle="high" />
           </div>
         </div>
 
@@ -111,9 +111,9 @@ const MarkingItem: React.FC = () => {
           <div className="marking-times-text">Tempo de pausa</div>
 
           <div className="marking-time-inputs">
-            <Input placeholder="10:00" inputStyle="timer" />
+            <Input placeholder="10:00" inputStyle="high" />
             :
-            <Input placeholder="11:00" inputStyle="timer" />
+            <Input placeholder="11:00" inputStyle="high" />
           </div>
         </div>
 

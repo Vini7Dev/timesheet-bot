@@ -39,6 +39,22 @@ export const MainContent = styled.main`
       .customer-group-list {
         border: 1px solid #12191D;
       }
+
+      .customers-group-header {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px 20px;
+        border: 1px solid #12191D;
+        background-color: #12191D;
+
+        .customers-group-label {
+          margin-top: 8px;
+          font-family: 'Roboto', sans-serif;
+          font-size: 1rem;
+          color: #C6D2D9;
+        }
+      }
     }
   }
 `
@@ -65,6 +81,7 @@ export const ProjectItemContainer = styled.div`
 
   @media screen and (min-width: 969px) {
     display: flex;
+    padding: 0 0.625rem;
 
     .customer-row {
       width: 100%;

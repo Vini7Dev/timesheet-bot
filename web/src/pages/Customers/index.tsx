@@ -19,6 +19,10 @@ export const Customers: React.FC = () => {
             <strong id="customer-list-title">Clientes</strong>
 
             <div className="customers-group">
+              <div className="customers-group-header">
+                <span className="customers-group-label">Cliente / Identificador</span>
+              </div>
+
               <div className="customers-group-list">
                 <ProjectItem />
                 <ProjectItem />
@@ -36,9 +40,9 @@ const ProjectItem: React.FC = () => {
   return (
     <ProjectItemContainer>
       <div className="customer-row">
-        <Input placeholder="Uauness" inputStyle="timer" />
+        <Input placeholder="Ambev" inputStyle="high" />
 
-        <Input placeholder="ABC123" inputStyle="timer" />
+        <Input placeholder="XYZ987" inputStyle="high" />
       </div>
 
       <button className="remove-project">
