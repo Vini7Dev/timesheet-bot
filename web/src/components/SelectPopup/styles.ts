@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const ProjectPopupContainer = styled.div`
+export const SelectPopupContainer = styled.div`
   position: absolute;
   top: 2.5rem;
   right: 0;
@@ -10,18 +10,18 @@ export const ProjectPopupContainer = styled.div`
   background-color: #12191D;
   width: 18.75rem;
 
-  #timer-project-popup-results {
+  #popup-results {
     overflow-y: scroll;
     max-height: 14.375rem;
     margin: 0.625rem 0;
     padding-top: 0.625rem;
     border-top: 2px solid #1D272C;
 
-    .timer-project-popup-item {
+    .popup-item {
       padding: 0 0.875rem;
       margin-bottom: 1.125rem;
 
-      .timer-project-popup-customer {
+      .project-popup-customer {
         font-family: 'Roboto', sans-serif;
         font-size: 0.95rem;
         line-height: 1rem;
@@ -29,11 +29,13 @@ export const ProjectPopupContainer = styled.div`
         text-transform: uppercase;
       }
 
-      .timer-project-popup-projects {
+      .project-popup-projects,
+      .customers-popup-list {
         list-style: none;
         padding: 0 0.625rem;
 
-        .timer-project-popup-project {
+        .project-popup-project,
+        .customer-popup-name {
           cursor: pointer;
           margin-top: 0.875rem;
           font-family: 'Roboto', sans-serif;
@@ -45,13 +47,13 @@ export const ProjectPopupContainer = styled.div`
     }
   }
 
-  #timer-project-popup-empty-container {
+  #popup-empty-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0.875rem 0;
 
-    #timer-project-popup-empty-text {
+    #popup-empty-text {
       font-family: 'Roboto', sans-serif;
       font-size: 0.95rem;
       line-height: 1rem;
@@ -61,7 +63,7 @@ export const ProjectPopupContainer = styled.div`
 `
 
 export const CreateProjectOrCustomerForm = styled.form`
-  #create-project-title {
+  #form-title {
     font-family: 'Roboto', sans-serif;
     font-size: 1.25rem;
     font-weight: 500;

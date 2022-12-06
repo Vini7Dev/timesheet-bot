@@ -4,7 +4,7 @@ import { FiDollarSign } from 'react-icons/fi'
 import { Input } from '../Input'
 import { Button } from '../Button'
 import { TimerTrackerContainer } from './styles'
-import { ProjectPopup } from '../ProjectPopup'
+import { SelectPopup } from '../SelectPopup'
 
 interface ITimeCountProps {
   timerStartedAt: number
@@ -72,7 +72,7 @@ export const TimeTracker: React.FC = () => {
           + Projeto
         </button>
 
-        { projectPopupIsOpen && <ProjectPopup /> }
+        { projectPopupIsOpen && <SelectPopup popupType="projects" /> }
       </div>
 
       <div className="timer-row timer-row-second">

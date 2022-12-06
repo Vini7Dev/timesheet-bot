@@ -4,7 +4,7 @@ import { FiCheck, FiClock, FiDollarSign, FiUpload, FiX } from 'react-icons/fi'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { TimeTracker } from '../../components/TimeTracker'
-import { ProjectPopup } from '../../components/ProjectPopup'
+import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
 import { MainContent, MarkingItemContainer, PageContainer } from './styles'
 
@@ -83,7 +83,7 @@ const MarkingItem: React.FC = () => {
           + Projeto
         </button>
 
-        { projectPopupIsOpen && <ProjectPopup /> }
+        { projectPopupIsOpen && <SelectPopup popupType="projects" /> }
       </div>
 
       <div className="marking-row marking-row-second">

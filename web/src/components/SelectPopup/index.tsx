@@ -2,11 +2,15 @@ import React, { useCallback, useState } from 'react'
 
 import { Input } from '../Input'
 import { Button } from '../Button'
-import { CreateProjectOrCustomerForm, ProjectPopupContainer } from './styles'
+import { CreateProjectOrCustomerForm, SelectPopupContainer } from './styles'
 import { CustomPopup } from '../CustomPopup'
 import { Select } from '../Select'
 
-type PopupContentToShow = 'CREATE_PROJECT' | 'CREATE_CUSTOMER'
+type PopupContentToShow = 'projects' | 'customers'
+
+interface ISelectPopupProps {
+  popupType: PopupContentToShow
+}
 
 interface ICreateProjectPopupProps {
   onSubmit: () => void
@@ -17,13 +21,16 @@ interface ICreateCustomerPopupProps {
   onSubmit: () => void
 }
 
-export const ProjectPopup: React.FC = () => {
-  const [showCreateProjectPopup, setShowCreateProjectPopup] = useState(false)
-  const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('CREATE_PROJECT')
+export const SelectPopup: React.FC<ISelectPopupProps> = ({
+  popupType
+}) => {
+  const [showCreatePopupForm, setShowCreatePopupForm] = useState(false)
+  const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>(popupType)
 
-  const toggleShowCreateProjectPopup = useCallback(() => {
-    setShowCreateProjectPopup(!showCreateProjectPopup)
-  }, [showCreateProjectPopup])
+  const toggleShowCreatePopupForm = useCallback(() => {
+    setShowCreatePopupForm(!showCreatePopupForm)
+    setPopupContentToShow(popupType)
+  }, [popupType, showCreatePopupForm])
 
   const handleChangePopupContentToShow = useCallback((contentToSet: PopupContentToShow) => {
     setPopupContentToShow(contentToSet)
@@ -31,53 +38,67 @@ export const ProjectPopup: React.FC = () => {
 
   const handleShowPopup = useCallback((contentToShow: PopupContentToShow) => {
     setPopupContentToShow(contentToShow)
-    setShowCreateProjectPopup(true)
-  }, [])
-
-  const handleClosePopup = useCallback(() => {
-    setPopupContentToShow('CREATE_PROJECT')
-    setShowCreateProjectPopup(false)
+    setShowCreatePopupForm(true)
   }, [])
 
   return (
-    <ProjectPopupContainer id="timer-project-popup-container">
+    <SelectPopupContainer id="popup-container">
       <Input placeholder="Pesquise..." />
 
-      <div id="timer-project-popup-results">
-        <div id="timer-project-popup-empty-container">
-          <p id="timer-project-popup-empty-text">
+      <div id="popup-results">
+        <div id="popup-empty-container">
+          <p id="popup-empty-text">
             Sem resultados...
           </p>
         </div>
 
-        <div className="timer-project-popup-item">
-          <strong className="timer-project-popup-customer">ambev</strong>
+        <div className="popup-item">
+          {
+            popupContentToShow === 'projects'
+              ? (
+                <>
+                  <strong className="project-popup-customer">ambev</strong>
 
-          <ul className="timer-project-popup-projects">
-            <li className="timer-project-popup-project">uauness</li>
-          </ul>
-        </div>
+                  <ul className="project-popup-projects">
+                    <li className="project-popup-project">uauness</li>
+                  </ul>
+                </>
+                )
+              : (
+                <>
+                  <ul className="customers-popup-list">
+                    <li className="customer-popup-name">uauness</li>
+                    <li className="customer-popup-name">uauness</li>
+                    <li className="customer-popup-name">uauness</li>
+                  </ul>
+                </>
+                )
+          }
+          </div>
       </div>
 
-      <Button text="Cadastrar projeto" onClick={() => handleShowPopup('CREATE_PROJECT')} />
+      <Button
+        onClick={() => handleShowPopup(popupContentToShow)}
+        text={popupContentToShow === 'projects' ? 'Cadastrar projeto' : 'Cadastrar cliente'}
+      />
 
       {
-        showCreateProjectPopup && (
+        showCreatePopupForm && (
           <CustomPopup>
             {
-              popupContentToShow === 'CREATE_PROJECT'
+              popupContentToShow === 'projects'
                 ? (
                   <CreateProjectPopup
-                    onSubmit={toggleShowCreateProjectPopup}
-                    onSelectCreateCustomer={() => handleChangePopupContentToShow('CREATE_CUSTOMER')}
+                    onSubmit={toggleShowCreatePopupForm}
+                    onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
                   />
                   )
-                : <CreateCustomerPopup onSubmit={toggleShowCreateProjectPopup} />
+                : <CreateCustomerPopup onSubmit={toggleShowCreatePopupForm} />
             }
           </CustomPopup>
         )
       }
-    </ProjectPopupContainer>
+    </SelectPopupContainer>
   )
 }
 
@@ -87,7 +108,7 @@ const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
 }) => {
   return (
     <CreateProjectOrCustomerForm>
-      <h1 id="create-project-title">Cadastrar projeto</h1>
+      <h1 id="form-title">Cadastrar projeto</h1>
 
       <div className="input-margin-bottom">
         <Select
@@ -124,7 +145,7 @@ const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
 }) => {
   return (
     <CreateProjectOrCustomerForm>
-      <h1 id="create-project-title">Cadastrar cliente</h1>
+      <h1 id="form-title">Cadastrar cliente</h1>
 
       <div className="input-margin-bottom">
         <Input placeholder="Código do projeto no multidados" />

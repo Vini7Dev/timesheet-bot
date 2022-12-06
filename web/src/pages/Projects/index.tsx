@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
-import { ProjectPopup } from '../../components/ProjectPopup'
+import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 
@@ -57,7 +57,7 @@ const ProjectItem: React.FC = () => {
           + Cliente
         </button>
 
-        { customerPopupIsOpen && <ProjectPopup /> }
+        { customerPopupIsOpen && <SelectPopup popupType="customers" /> }
       </div>
     </ProjectItemContainer>
   )
