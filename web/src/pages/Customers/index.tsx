@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
@@ -6,8 +6,15 @@ import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
 import { Button } from '../../components/Button'
+import { CreateCustomerPopup, CustomPopup } from '../../components/CustomPopup'
 
 export const Customers: React.FC = () => {
+  const [showCreateCustomerForm, setShowCreateCustomerForm] = useState(false)
+
+  const toggleShowCreateCustomerForm = useCallback(() => {
+    setShowCreateCustomerForm(!showCreateCustomerForm)
+  }, [showCreateCustomerForm])
+
   return (
     <PageContainer>
       <TopBar />
@@ -21,7 +28,7 @@ export const Customers: React.FC = () => {
               <strong id="customer-list-title">Clientes</strong>
 
               <div id="create-customer-button">
-                <Button text="Cadastrar projeto" />
+                <Button text="Cadastrar projeto" onClick={toggleShowCreateCustomerForm} />
               </div>
             </div>
 
@@ -39,6 +46,16 @@ export const Customers: React.FC = () => {
           </div>
         </MainContent>
       </div>
+
+      {
+        showCreateCustomerForm && (
+          <CustomPopup>
+            <CreateCustomerPopup
+              onSubmit={toggleShowCreateCustomerForm}
+            />
+          </CustomPopup>
+        )
+      }
     </PageContainer>
   )
 }

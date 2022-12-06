@@ -2,23 +2,13 @@ import React, { useCallback, useState } from 'react'
 
 import { Input } from '../Input'
 import { Button } from '../Button'
-import { CreateProjectOrCustomerForm, SelectPopupContainer } from './styles'
-import { CustomPopup } from '../CustomPopup'
-import { Select } from '../Select'
+import { SelectPopupContainer } from './styles'
+import { CustomPopup, CreateProjectPopup, CreateCustomerPopup } from '../CustomPopup'
 
 type PopupContentToShow = 'projects' | 'customers'
 
 interface ISelectPopupProps {
   popupType: PopupContentToShow
-}
-
-interface ICreateProjectPopupProps {
-  onSubmit: () => void
-  onSelectCreateCustomer: () => void
-}
-
-interface ICreateCustomerPopupProps {
-  onSubmit: () => void
 }
 
 export const SelectPopup: React.FC<ISelectPopupProps> = ({
@@ -99,65 +89,5 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
         )
       }
     </SelectPopupContainer>
-  )
-}
-
-const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
-  onSubmit,
-  onSelectCreateCustomer
-}) => {
-  return (
-    <CreateProjectOrCustomerForm>
-      <h1 id="form-title">Cadastrar projeto</h1>
-
-      <div className="input-margin-bottom">
-        <Select
-          options={[
-            { value: 'ambev123', label: 'AMBEV' },
-            { value: 'ambev123', label: 'AMBEV' },
-            { value: 'ambev123', label: 'AMBEV' },
-            { value: 'ambev123', label: 'AMBEV' }
-          ]}
-        />
-
-        <span id="create-customer-link" onClick={onSelectCreateCustomer}>
-          Cadastrar um novo cliente
-        </span>
-      </div>
-
-      <div className="input-margin-bottom">
-        <Input placeholder="Código do projeto no multidados" />
-      </div>
-
-      <div className="input-margin-bottom">
-        <Input placeholder="Nome do projeto" />
-      </div>
-
-      <div className="button-margin-top">
-        <Button text="Cadastrar" onClick={onSubmit} />
-      </div>
-    </CreateProjectOrCustomerForm>
-  )
-}
-
-const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
-  onSubmit
-}) => {
-  return (
-    <CreateProjectOrCustomerForm>
-      <h1 id="form-title">Cadastrar cliente</h1>
-
-      <div className="input-margin-bottom">
-        <Input placeholder="Código do projeto no multidados" />
-      </div>
-
-      <div className="input-margin-bottom">
-        <Input placeholder="Nome do projeto" />
-      </div>
-
-      <div className="button-margin-top">
-        <Button text="Cadastrar" onClick={onSubmit} />
-      </div>
-    </CreateProjectOrCustomerForm>
   )
 }

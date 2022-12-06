@@ -7,8 +7,28 @@ import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
 import { Button } from '../../components/Button'
+import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
+
+type PopupContentToShow = 'projects' | 'customers'
 
 export const Projects: React.FC = () => {
+  const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
+  const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('projects')
+
+  const toggleShowCreateProjectForm = useCallback(() => {
+    setShowCreateProjectForm(!showCreateProjectForm)
+    setPopupContentToShow('projects')
+  }, [showCreateProjectForm])
+
+  const handleChangePopupContentToShow = useCallback((contentToSet: PopupContentToShow) => {
+    setPopupContentToShow(contentToSet)
+  }, [])
+
+  const toggleShowCreatePopupForm = useCallback(() => {
+    setShowCreateProjectForm(!showCreateProjectForm)
+    setPopupContentToShow('projects')
+  }, [showCreateProjectForm])
+
   return (
     <PageContainer>
       <TopBar />
@@ -22,7 +42,7 @@ export const Projects: React.FC = () => {
               <strong id="project-list-title">Projetos</strong>
 
               <div id="create-project-button">
-                <Button text="Cadastrar projeto" />
+                <Button text="Cadastrar projeto" onClick={toggleShowCreateProjectForm} />
               </div>
             </div>
 
@@ -42,6 +62,27 @@ export const Projects: React.FC = () => {
           </div>
         </MainContent>
       </div>
+
+      {
+        showCreateProjectForm && (
+          <CustomPopup>
+            {
+              popupContentToShow === 'projects'
+                ? (
+                  <CreateProjectPopup
+                    onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
+                    onSubmit={toggleShowCreatePopupForm}
+                  />
+                  )
+                : (
+                  <CreateCustomerPopup
+                    onSubmit={toggleShowCreatePopupForm}
+                  />
+                  )
+            }
+          </CustomPopup>
+        )
+      }
     </PageContainer>
   )
 }
