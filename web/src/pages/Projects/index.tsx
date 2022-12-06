@@ -5,6 +5,7 @@ import { TopBar } from '../../components/TopBar'
 import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
+import { FiTrash } from 'react-icons/fi'
 
 export const Projects: React.FC = () => {
   return (
@@ -59,6 +60,10 @@ const ProjectItem: React.FC = () => {
 
         { customerPopupIsOpen && <SelectPopup popupType="customers" /> }
       </div>
+
+      <button className="remove-project">
+        <FiTrash size={20} color="#C53030" />
+      </button>
     </ProjectItemContainer>
   )
 }

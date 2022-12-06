@@ -44,6 +44,7 @@ export const MainContent = styled.main`
 `
 
 export const ProjectItemContainer = styled.div`
+  position: relative;
   border: 1px solid #12191D;
 
   .customer-row {
@@ -52,6 +53,14 @@ export const ProjectItemContainer = styled.div`
     display: flex;
     align-items: center;
     height: 4rem;
+  }
+
+  .remove-project {
+    position: absolute;
+    right: 12px;
+    top: 22px;
+    background: none;
+    border: none;
   }
 
   @media screen and (min-width: 969px) {

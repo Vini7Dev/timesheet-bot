@@ -59,6 +59,7 @@ export const MainContent = styled.main`
 `
 
 export const ProjectItemContainer = styled.div`
+  position: relative;
   border: 1px solid #12191D;
 
   .project-row {
@@ -81,6 +82,14 @@ export const ProjectItemContainer = styled.div`
       color: #008BEA;
       text-decoration: underline;
     }
+  }
+
+  .remove-project {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: none;
+    border: none;
   }
 
   @media screen and (min-width: 969px) {

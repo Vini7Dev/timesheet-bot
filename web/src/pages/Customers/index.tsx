@@ -4,6 +4,7 @@ import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { Navigation } from '../../components/Navigation'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
+import { FiTrash } from 'react-icons/fi'
 
 export const Customers: React.FC = () => {
   return (
@@ -39,6 +40,10 @@ const ProjectItem: React.FC = () => {
 
         <Input placeholder="ABC123" inputStyle="timer" />
       </div>
+
+      <button className="remove-project">
+        <FiTrash size={20} color="#C53030" />
+      </button>
     </ProjectItemContainer>
   )
 }
