@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useState } from 'react'
 
 import { LOGIN_USER } from '../graphql/loginUser'
 import { useMutation } from '@apollo/client'
+import { useToast } from './toast'
 
 interface IUser {
   id: string
@@ -36,7 +37,16 @@ interface IAuthContext {
 const AuthContext = createContext<IAuthContext>({} as unknown as IAuthContext)
 
 export const AuthProvider: React.FC<any> = ({ children }) => {
-  const [loginUser] = useMutation<ILoginResponse>(LOGIN_USER)
+  const toast = useToast()
+
+  const [loginUser] = useMutation<ILoginResponse>(LOGIN_USER, {
+    onError: () => {
+      toast.addToast({
+        type: 'error',
+        message: 'Credenciais inválidas!'
+      })
+    }
+  })
 
   const [user, setUser] = useState<IUser | undefined>(() => {
     const authUserFromLocalStorage = localStorage.getItem('@Multify:loginUser')
@@ -93,6 +103,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
 
 export const useAuth = (): IAuthContext => {
   const context = useContext(AuthContext)
+
+  if (!context) {
+    throw new Error('useAuth must be used within a AuthProvider.')
+  }
 
   return context
 }
