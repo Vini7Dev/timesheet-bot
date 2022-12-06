@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/auth'
 import { SignIn } from '../pages/SignIn'
 import { SignUp } from '../pages/SignUp'
 import { Markings } from '../pages/Markings'
+import { Projects } from '../pages/Projects'
 
 export const MainRoutes: React.FC = () => {
   const { user } = useAuth()
@@ -14,7 +15,8 @@ export const MainRoutes: React.FC = () => {
   ]
 
   const authRoutes = [
-    { path: '/', element: Markings, isIndex: true }
+    { path: '/', element: Markings, isIndex: true },
+    { path: '/projects', element: Projects }
   ]
 
   const routesToUse = user?.id ? authRoutes : withoutAuthRoutes

@@ -22,7 +22,7 @@ export const Markings: React.FC = () => {
           <TimeTracker />
 
           <div id="marking-list-container">
-            <strong id="margking-list-title">Marcações</strong>
+            <strong id="marking-list-title">Marcações</strong>
 
             <div className="markings-day-group">
               <div className="markings-day-group-header">
@@ -61,7 +61,7 @@ const MarkingItem: React.FC = () => {
   return (
     <MarkingItemContainer onTimesheetStatus={onTimesheetStatus}>
       <div className="marking-row marking-row-first">
-        <button className="margking-timesheet-status">
+        <button className="marking-timesheet-status">
           {
             (() => {
               switch (onTimesheetStatus) {
@@ -100,7 +100,7 @@ const MarkingItem: React.FC = () => {
         <div className="marking-times-container marking-times-start-end">
           <span className="marking-times-text">Tempo gasto</span>
 
-          <div className="margking-time-inputs">
+          <div className="marking-time-inputs">
             <Input placeholder="10:00" inputStyle="timer" />
             :
             <Input placeholder="11:00" inputStyle="timer" />
@@ -110,7 +110,7 @@ const MarkingItem: React.FC = () => {
         <div className="marking-times-container marking-times-pause">
           <div className="marking-times-text">Tempo de pausa</div>
 
-          <div className="margking-time-inputs">
+          <div className="marking-time-inputs">
             <Input placeholder="10:00" inputStyle="timer" />
             :
             <Input placeholder="11:00" inputStyle="timer" />

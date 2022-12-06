@@ -41,7 +41,7 @@ export const TimeTracker: React.FC = () => {
         : `${formatPad(minutes)}:${formatPad(seconds)}`
     }
 
-    const timerInterval = setInterval(() => formatTimer(timerStartedAt ?? 0))
+    setInterval(() => formatTimer(timerStartedAt ?? 0))
   }, [timerStartedAt])
 
   const handleStartTimer = useCallback(() => {
