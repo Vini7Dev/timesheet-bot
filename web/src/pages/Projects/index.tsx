@@ -68,7 +68,7 @@ export const Projects: React.FC = () => {
 
       {
         showCreateProjectForm && (
-          <CustomPopup>
+          <CustomPopup onClickToClose={toggleShowCreatePopupForm}>
             {
               popupContentToShow === 'projects'
                 ? (

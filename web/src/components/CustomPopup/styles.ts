@@ -12,6 +12,7 @@ export const CustomPopupContainer = styled.div`
   background-color: #0000004F;
 
   .custom-popup-content-area {
+    position: relative;
     display: flex;
     flex-direction: column;
     background-color: #1D272C;
@@ -21,6 +22,14 @@ export const CustomPopupContainer = styled.div`
     margin: 0.625rem;
     box-shadow: 0 0 1.25rem #0000008f;
     z-index: 1;
+
+    #custom-popup-close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      border: none;
+      background: none;
+    }
   }
 `
 

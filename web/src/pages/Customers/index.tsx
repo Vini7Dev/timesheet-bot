@@ -52,7 +52,7 @@ export const Customers: React.FC = () => {
 
       {
         showCreateCustomerForm && (
-          <CustomPopup>
+          <CustomPopup onClickToClose={toggleShowCreateCustomerForm}>
             <CreateCustomerPopup
               onSubmit={toggleShowCreateCustomerForm}
             />

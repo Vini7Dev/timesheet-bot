@@ -74,7 +74,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
 
       {
         showCreatePopupForm && (
-          <CustomPopup>
+          <CustomPopup onClickToClose={toggleShowCreatePopupForm}>
             {
               popupContentToShow === 'projects'
                 ? (
