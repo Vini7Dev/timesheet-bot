@@ -10,7 +10,7 @@ export const PageContainer = styled.div`
   }
 
   @media screen and (min-width: 969px) {
-    width: calc(100vw - 30px);
+    width: calc(100vw - 1.875rem);
 
     #projects-page-content {
     display: flex;
@@ -35,13 +35,13 @@ export const MainContent = styled.main`
         font-family: 'Roboto', sans-serif;
         font-size: 1rem;
         color: #FFF;
-        margin: 1.5rem 20px 20px;
+        margin: 1.5rem 1.25rem 1.25rem;
       }
 
       #create-project-button {
-        max-width: 200px;
+        max-width: 12.5rem;
         width: 100%;
-        margin-right: 20px;
+        margin-right: 1.25rem;
       }
     }
 
@@ -52,7 +52,7 @@ export const MainContent = styled.main`
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 10px 20px;
+        padding: 0.625rem 1.25rem;
         border: 1px solid #12191D;
         background-color: #12191D;
 
@@ -63,7 +63,7 @@ export const MainContent = styled.main`
         }
 
         .projects-customer-group-label {
-          margin-top: 8px;
+          margin-top: 0.5rem;
           font-family: 'Roboto', sans-serif;
           font-size: 1rem;
           color: #C6D2D9;

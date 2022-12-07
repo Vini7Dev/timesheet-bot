@@ -17,7 +17,7 @@ export const TopBarContainer = styled.div<ITopBarContainerProps>`
     align-items: center;
     height: 5rem;
     padding: 1.25rem;
-    padding-left: 50px;
+    padding-left: 3.125rem;
     background-color: ${({ backgroundColor }) => backgroundColor};
     z-index: 10;
 

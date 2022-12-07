@@ -2,11 +2,11 @@ import styled from 'styled-components'
 
 export const NavigationContainer = styled.aside`
   width: 100%;
-  height: 20px;
+  height: 1.25rem;
 
   #left-navigation-bar {
     position: fixed;
-    top: 80px;
+    top: 5rem;
     width: 100%;
     background-color: #1D272C;
     box-shadow: 1px 0 #12191D;
@@ -14,8 +14,8 @@ export const NavigationContainer = styled.aside`
 
     #toggle-mobile-navigation-menu {
       position: absolute;
-      top: -50px;
-      left: 12px;
+      top: -3.125rem;
+      left: 0.75rem;
       border: none;
       background-color: transparent;
     }
@@ -28,8 +28,8 @@ export const NavigationContainer = styled.aside`
       .left-navigation-item {
         display: flex;
         align-items: center;
-        height: 50px;
-        padding-left: 18px;
+        height: 3.125rem;
+        padding-left: 1.125rem;
         width: 100%;
 
         a {
@@ -42,7 +42,7 @@ export const NavigationContainer = styled.aside`
           align-items: center;
 
           svg {
-            margin-right: 8px;
+            margin-right: 0.5rem;
           }
         }
       }
@@ -55,13 +55,13 @@ export const NavigationContainer = styled.aside`
   }
 
   @media screen and (min-width: 969px) {
-    width: 200px;
+    width: 12.5rem;
 
     #left-navigation-bar {
       position: fixed;
-      top: 80px;
+      top: 5rem;
       height: 100%;
-      width: 150px;
+      width: 9.375rem;
 
       #toggle-mobile-navigation-menu {
         display: none;

@@ -6,9 +6,9 @@ interface IToastProps {
 
 export const Container = styled.div`
   position: absolute;
-  right: 0px;
-  bottom: 0px;
-  padding: 30px;
+  right: 0;
+  bottom: 0;
+  padding: 1.875rem;
   overflow: hidden;
 `
 
@@ -31,11 +31,11 @@ export const Toast = styled.div<IToastProps>`
   cursor: pointer;
   position: relative;
   display: flex;
-  width: 360px;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  width: 22.5rem;
+  padding: 0.75rem;
+  margin-top: 0.625rem;
+  border-radius: 0.625rem;
+  box-shadow: 0.125rem 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
 
   ${props => toastTypes[props.type]}
 
@@ -45,10 +45,10 @@ export const Toast = styled.div<IToastProps>`
     align-items: center;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    line-height: 20px;
+    line-height: 1.25rem;
 
     svg {
-      margin-right: 4px;
+      margin-right: 0.25rem;
     }
   }
 `

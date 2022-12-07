@@ -16,7 +16,7 @@ export const PageContainer = styled.div`
   }
 
   @media screen and (min-width: 969px) {
-    width: calc(100vw - 30px);
+    width: calc(100vw - 1.875rem);
 
     #markings-page-content {
     display: flex;
@@ -36,7 +36,7 @@ export const MainContent = styled.main`
       font-family: 'Roboto', sans-serif;
       font-size: 1rem;
       color: #FFF;
-      margin: 1.5rem 20px 20px;
+      margin: 1.5rem 1.25rem 1.25rem;
     }
 
     .markings-day-group {
@@ -46,7 +46,7 @@ export const MainContent = styled.main`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 20px;
+        padding: 0.625rem 1.25rem;
         border: 1px solid #12191D;
         background-color: #12191D;
 
@@ -81,7 +81,7 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
   }};
 
   .marking-row-first {
-    padding: 0 12px 0;
+    padding: 0 0.75rem 0;
   }
 
   .marking-row {
@@ -92,7 +92,7 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
     height: 4rem;
 
     .marking-timesheet-status {
-      margin-top: 5px;
+      margin-top: 0.313rem;
       border: none;
       background-color: transparent;
     }
@@ -125,14 +125,14 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
         font-family: 'Roboto', sans-serif;
         font-size: 1rem;
         color: #C6D2D9;
-        padding-left: 12px;
+        padding-left: 0.75rem;
       }
 
       .marking-time-inputs {
         display: flex;
         align-items: center;
-        max-width: 400px;
-        height: 25px;
+        max-width: 25rem;
+        height: 1.563rem;
       }
     }
 
@@ -144,11 +144,11 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-width: 70px;
+      min-width: 4.375rem;
       font-family: 'Roboto', sans-serif;
       font-size: 1rem;
       color: #C6D2D9;
-      padding: 0 12px 0 6px;
+      padding: 0 0.75rem 0 0.375rem;
     }
   }
 
@@ -164,7 +164,7 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
       border: none;
 
       .marking-times-container {
-        max-width: 250px;
+        max-width: 15.625rem;
       }
     }
   }

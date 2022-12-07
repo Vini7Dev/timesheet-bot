@@ -43,7 +43,7 @@ export const CreateProjectOrCustomerForm = styled.form`
   #create-customer-link {
     display: block;
     width: fit-content;
-    margin: 10px 0 1.25rem auto;
+    margin: 0.625rem 0 1.25rem auto;
     font-family: 'Roboto', sans-serif;
     font-size: 0.875rem;
     color: #008BEA;
