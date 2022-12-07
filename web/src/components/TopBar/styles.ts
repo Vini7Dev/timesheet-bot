@@ -45,3 +45,62 @@ export const TopBarContainer = styled.div<ITopBarContainerProps>`
     }
   }
 `
+
+export const PopupContentContainer = styled.div`
+  #popup-container {
+    display: flex;
+    margin-bottom: 0.85rem;
+
+    #popup-user-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 100%;
+      border: none;
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      color: #FFF;
+      background-color: #3F51B5;
+      margin-right: 1rem;
+    }
+
+    #popup-user-info-name {
+      display: block;
+      font-family: 'Roboto',sans-serif;
+      font-size: 1rem;
+      color: #FFFFFF;
+      margin: -0.05rem 0 0.40rem;
+    }
+
+    .popup-user-info-email-username {
+      display: block;
+      font-family: 'Roboto',sans-serif;
+      font-size: 0.8571rem;
+      color: #90A4AE;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  @media screen and (min-width: 969px) {
+    #popup-container {
+      margin-bottom: 1.5rem;
+
+      #popup-user-icon {
+        height: 4rem;
+        width: 4rem;
+        font-size: 1.5rem;
+      }
+
+      #popup-user-info-name {
+        font-size: 2rem;
+        margin: -0.15rem 0 0.5rem;
+      }
+
+      .popup-user-info-email-username {
+        font-size: 1rem;
+      }
+    }
+  }
+`
