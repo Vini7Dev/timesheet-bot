@@ -97,7 +97,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
   }, [loginUser])
 
   const signOut = useCallback(() => {
-    //
+    setUser(undefined)
+    localStorage.removeItem('@Multify:loginUser')
+
+    window.location.reload()
   }, [])
 
   return (

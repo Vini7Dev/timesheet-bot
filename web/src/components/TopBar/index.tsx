@@ -8,7 +8,7 @@ import { CustomPopup } from '../CustomPopup'
 import { PopupContentContainer, TopBarContainer } from './styles'
 
 export const TopBar: React.FC = () => {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
 
   const [showUserPopup, setShowUserPopup] = useState(false)
 
@@ -73,7 +73,11 @@ export const TopBar: React.FC = () => {
                   </div>
                 </div>
 
-                <Button text="Sair" buttonStyle="danger" />
+                <Button
+                  text="Sair"
+                  buttonStyle="danger"
+                  onClick={signOut}
+                />
               </PopupContentContainer>
             </CustomPopup>
           )
