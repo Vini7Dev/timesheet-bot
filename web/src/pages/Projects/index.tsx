@@ -8,6 +8,7 @@ import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
 import { Button } from '../../components/Button'
 import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
+import { TimeTracker } from '../../components/TimeTracker'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -37,6 +38,8 @@ export const Projects: React.FC = () => {
         <Navigation />
 
         <MainContent>
+          <TimeTracker />
+
           <div id="project-list-container">
             <div id="project-list-head">
               <strong id="project-list-title">Projetos</strong>

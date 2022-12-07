@@ -7,6 +7,7 @@ import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
 import { Button } from '../../components/Button'
 import { CreateCustomerPopup, CustomPopup } from '../../components/CustomPopup'
+import { TimeTracker } from '../../components/TimeTracker'
 
 export const Customers: React.FC = () => {
   const [showCreateCustomerForm, setShowCreateCustomerForm] = useState(false)
@@ -23,6 +24,8 @@ export const Customers: React.FC = () => {
         <Navigation />
 
         <MainContent>
+          <TimeTracker />
+
           <div id="customer-list-container">
             <div id="customer-list-head">
               <strong id="customer-list-title">Clientes</strong>

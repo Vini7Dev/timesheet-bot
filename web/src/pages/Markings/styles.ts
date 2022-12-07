@@ -29,7 +29,7 @@ export const MainContent = styled.main`
   width: 100%;
 
   #marking-list-container {
-    margin-top: 1.5rem;
+    margin-top: 3rem;
 
     #marking-list-title {
       display: block;
