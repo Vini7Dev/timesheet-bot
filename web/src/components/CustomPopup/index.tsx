@@ -1,7 +1,8 @@
 import { useApolloClient } from '@apollo/client'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FiX } from 'react-icons/fi'
 import { CREATE_CUSTOMER } from '../../graphql/createCustomer'
+import { CUSTOMERS } from '../../graphql/getCustomers'
 import { useToast } from '../../hooks/toast'
 
 import { Button } from '../Button'
@@ -19,12 +20,17 @@ interface ICreateCustomerResponse {
   createCustomer: ICustomerProps
 }
 
+interface IGetCustomersResponse {
+  customers: ICustomerProps[]
+}
+
 interface ICustomPopupProps {
   hideCloseButton?: boolean
   onClickToClose: () => void
 }
 
 interface ICreateProjectPopupProps {
+  customersList?: ICustomerProps[]
   onSubmit: () => void
   onSelectCreateCustomer: () => void
 }
@@ -56,21 +62,50 @@ export const CustomPopup: React.FC<ICustomPopupProps & any> = ({
 }
 
 export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
+  customersList,
   onSubmit,
   onSelectCreateCustomer
 }) => {
+  const client = useApolloClient()
+  const toast = useToast()
+
+  const [customers, setCustomers] = useState<ICustomerProps[]>(customersList ?? [])
+
+  const handleGetCustomers = useCallback(async () => {
+    const { data: customersResponse, error } = await client.query<IGetCustomersResponse>({
+      query: CUSTOMERS,
+      variables: {
+        data: {}
+      },
+      fetchPolicy: 'no-cache'
+    })
+
+    if (error) {
+      toast.addToast({
+        type: 'error',
+        message: error.message
+      })
+    } else {
+      setCustomers(customersResponse.customers)
+    }
+  }, [client, toast])
+
+  useEffect(() => {
+    handleGetCustomers()
+  }, [handleGetCustomers])
+
   return (
     <CreateProjectOrCustomerForm>
       <h1 id="form-title">Cadastrar projeto</h1>
 
       <div className="input-margin-bottom">
         <Select
-          options={[
-            { value: 'ambev123', label: 'AMBEV' },
-            { value: 'ambev123', label: 'AMBEV' },
-            { value: 'ambev123', label: 'AMBEV' },
-            { value: 'ambev123', label: 'AMBEV' }
-          ]}
+          options={
+            customers.map(({ id, name }) => ({
+              value: id,
+              label: name.toUpperCase()
+            }))
+          }
         />
 
         <span id="create-customer-link" onClick={onSelectCreateCustomer}>

@@ -1,9 +1,12 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useApolloClient } from '@apollo/client'
 
 import { Input } from '../Input'
 import { Button } from '../Button'
-import { SelectPopupContainer } from './styles'
+import { useToast } from '../../hooks/toast'
+import { CUSTOMERS } from '../../graphql/getCustomers'
 import { CustomPopup, CreateProjectPopup, CreateCustomerPopup } from '../CustomPopup'
+import { SelectPopupContainer } from './styles'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -11,9 +14,31 @@ interface ISelectPopupProps {
   popupType: PopupContentToShow
 }
 
+interface ICustomerProps {
+  id: string
+  code: string
+  name: string
+}
+
+interface IProjectProps {
+  id: string
+  code: string
+  name: string
+}
+
+interface IGetCustomersResponse {
+  customers: ICustomerProps[]
+}
+
 export const SelectPopup: React.FC<ISelectPopupProps> = ({
   popupType
 }) => {
+  const client = useApolloClient()
+  const toast = useToast()
+
+  const [customers, setCustomers] = useState<ICustomerProps[]>([])
+  const [projects, setProjects] = useState<IProjectProps[]>([])
+
   const [showCreatePopupForm, setShowCreatePopupForm] = useState(false)
   const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>(popupType)
 
@@ -31,40 +56,86 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     setShowCreatePopupForm(true)
   }, [])
 
+  const handleGetCustomers = useCallback(async () => {
+    const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
+      query: CUSTOMERS,
+      variables: {
+        data: {}
+      },
+      fetchPolicy: 'no-cache'
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    } else {
+      setCustomers(customersResponse.customers)
+    }
+  }, [client, toast])
+
+  const handleReloadCustomers = useCallback(async () => {
+    handleGetCustomers()
+
+    toggleShowCreatePopupForm()
+  }, [handleGetCustomers, toggleShowCreatePopupForm])
+
+  useEffect(() => {
+    if (popupType === 'customers') {
+      handleGetCustomers()
+    }
+  }, [handleGetCustomers, popupType])
+
   return (
     <SelectPopupContainer id="popup-container">
       <Input placeholder="Pesquise..." />
 
       <div id="popup-results">
-        <div id="popup-empty-container">
-          <p id="popup-empty-text">
-            Sem resultados...
-          </p>
-        </div>
+        {
+          (
+            (popupContentToShow === 'customers' && customers.length === 0) ||
+            (popupContentToShow === 'projects' && projects.length === 0)
+          )
+            ? (
+              <div id="popup-empty-container">
+                <p id="popup-empty-text">
+                  Sem resultados...
+                </p>
+              </div>
+              )
+            : (
+                <div className="popup-item">
+                  {
+                    popupContentToShow === 'projects'
+                      ? (
+                        <>
+                          <strong className="project-popup-customer">ambev</strong>
 
-        <div className="popup-item">
-          {
-            popupContentToShow === 'projects'
-              ? (
-                <>
-                  <strong className="project-popup-customer">ambev</strong>
-
-                  <ul className="project-popup-projects">
-                    <li className="project-popup-project">uauness</li>
-                  </ul>
-                </>
-                )
-              : (
-                <>
-                  <ul className="customers-popup-list">
-                    <li className="customer-popup-name">uauness</li>
-                    <li className="customer-popup-name">uauness</li>
-                    <li className="customer-popup-name">uauness</li>
-                  </ul>
-                </>
-                )
-          }
-          </div>
+                          <ul className="project-popup-projects">
+                            <li className="project-popup-project">uauness</li>
+                          </ul>
+                        </>
+                        )
+                      : (
+                        <>
+                          <ul className="customers-popup-list">
+                            {
+                              customers.map(({ id, name }) => (
+                                <li key={id} className="customer-popup-name">
+                                  {name}
+                                </li>
+                              ))
+                            }
+                          </ul>
+                        </>
+                        )
+                  }
+                </div>
+              )
+        }
       </div>
 
       <Button
@@ -83,7 +154,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                     onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
                   />
                   )
-                : <CreateCustomerPopup afterSubmit={toggleShowCreatePopupForm} />
+                : <CreateCustomerPopup afterSubmit={handleReloadCustomers} />
             }
           </CustomPopup>
         )
