@@ -35,7 +35,7 @@ export const Customers: React.FC = () => {
     setShowCreateCustomerForm(!showCreateCustomerForm)
   }, [showCreateCustomerForm])
 
-  const handleReloadCustomersList = useCallback(async (createdCustomer: ICustomerProps) => {
+  const handleAddCreatedCustomer = useCallback(async (createdCustomer: ICustomerProps) => {
     setCustomers([createdCustomer, ...customers])
 
     toggleShowCreateCustomerForm()
@@ -110,7 +110,7 @@ export const Customers: React.FC = () => {
         showCreateCustomerForm && (
           <CustomPopup onClickToClose={toggleShowCreateCustomerForm}>
             <CreateCustomerPopup
-              afterSubmit={handleReloadCustomersList}
+              afterSubmit={handleAddCreatedCustomer}
             />
           </CustomPopup>
         )
