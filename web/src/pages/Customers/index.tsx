@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { Navigation } from '../../components/Navigation'
-import { MainContent, ProjectItemContainer, PageContainer } from './styles'
+import { MainContent, CustomerItemContainer, PageContainer } from './styles'
 import { FiTrash } from 'react-icons/fi'
 import { Button } from '../../components/Button'
 import { CreateCustomerPopup, CustomPopup } from '../../components/CustomPopup'
@@ -31,7 +31,7 @@ export const Customers: React.FC = () => {
               <strong id="customer-list-title">Clientes</strong>
 
               <div id="create-customer-button">
-                <Button text="Cadastrar projeto" onClick={toggleShowCreateCustomerForm} />
+                <Button text="Cadastrar cliente" onClick={toggleShowCreateCustomerForm} />
               </div>
             </div>
 
@@ -41,9 +41,9 @@ export const Customers: React.FC = () => {
               </div>
 
               <div className="customers-group-list">
-                <ProjectItem />
-                <ProjectItem />
-                <ProjectItem />
+                <CustomerItem />
+                <CustomerItem />
+                <CustomerItem />
               </div>
             </div>
           </div>
@@ -63,9 +63,9 @@ export const Customers: React.FC = () => {
   )
 }
 
-const ProjectItem: React.FC = () => {
+const CustomerItem: React.FC = () => {
   return (
-    <ProjectItemContainer>
+    <CustomerItemContainer>
       <div className="customer-row">
         <Input placeholder="Ambev" inputStyle="high" />
 
@@ -75,6 +75,6 @@ const ProjectItem: React.FC = () => {
       <button className="remove-project">
         <FiTrash size={20} color="#C53030" />
       </button>
-    </ProjectItemContainer>
+    </CustomerItemContainer>
   )
 }

@@ -71,7 +71,7 @@ export const MainContent = styled.main`
   }
 `
 
-export const ProjectItemContainer = styled.div`
+export const CustomerItemContainer = styled.div`
   position: relative;
   border: 1px solid #12191D;
 
