@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FiTrash } from 'react-icons/fi'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 
 import { CUSTOMERS } from '../../graphql/getCustomers'
 import { Input } from '../../components/Input'
@@ -12,6 +12,7 @@ import { CreateCustomerPopup, CustomPopup } from '../../components/CustomPopup'
 import { MainContent, CustomerItemContainer, PageContainer } from './styles'
 import { useToast } from '../../hooks/toast'
 import { EmptyListAlert } from '../../components/EmptyListAlert'
+import { DELETE_CUSTOMER } from '../../graphql/deleteCustomer'
 
 interface ICustomerProps {
   id: string
@@ -21,6 +22,10 @@ interface ICustomerProps {
 
 interface IGetCustomersResponse {
   customers: ICustomerProps[]
+}
+
+interface ICustomerItemProps extends ICustomerProps {
+  onDelete: (id: string) => Promise<void>
 }
 
 export const Customers: React.FC = () => {
@@ -35,18 +40,13 @@ export const Customers: React.FC = () => {
     setShowCreateCustomerForm(!showCreateCustomerForm)
   }, [showCreateCustomerForm])
 
-  const handleAddCreatedCustomer = useCallback(async (createdCustomer: ICustomerProps) => {
-    setCustomers([createdCustomer, ...customers])
-
-    toggleShowCreateCustomerForm()
-  }, [customers, toggleShowCreateCustomerForm])
-
   const handleGetCustomers = useCallback(async () => {
     const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
       query: CUSTOMERS,
       variables: {
         data: {}
-      }
+      },
+      fetchPolicy: 'no-cache'
     })
 
     if (errors && errors.length > 0) {
@@ -60,6 +60,35 @@ export const Customers: React.FC = () => {
       setCustomers(customersResponse.customers)
     }
   }, [client, toast])
+
+  const handleReloadCustomers = useCallback(async () => {
+    handleGetCustomers()
+
+    toggleShowCreateCustomerForm()
+  }, [handleGetCustomers, toggleShowCreateCustomerForm])
+
+  const handleDeleteCustomer = useCallback(async (id: string) => {
+    const response = confirm('Deseja apagar o cliente? Essa ação não pode ser desfeita!')
+
+    if (!response) {
+      return
+    }
+
+    const { errors } = await client.mutate<{ deleteCustomer: string }>({
+      mutation: DELETE_CUSTOMER, variables: { deleteCustomerId: id }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    } else {
+      await handleGetCustomers()
+    }
+  }, [client, handleGetCustomers, toast])
 
   useEffect(() => {
     handleGetCustomers()
@@ -93,7 +122,13 @@ export const Customers: React.FC = () => {
                 {
                   customers.length > 0
                     ? customers.map(({ id, code, name }) => (
-                      <CustomerItem key={id} id={id} code={code} name={name} />
+                      <CustomerItem
+                        key={id}
+                        id={id}
+                        code={code}
+                        name={name}
+                        onDelete={handleDeleteCustomer}
+                      />
                     ))
                     : <EmptyListAlert alertButton={{
                       buttonText: 'Cadastrar cliente',
@@ -110,7 +145,7 @@ export const Customers: React.FC = () => {
         showCreateCustomerForm && (
           <CustomPopup onClickToClose={toggleShowCreateCustomerForm}>
             <CreateCustomerPopup
-              afterSubmit={handleAddCreatedCustomer}
+              afterSubmit={handleReloadCustomers}
             />
           </CustomPopup>
         )
@@ -119,10 +154,11 @@ export const Customers: React.FC = () => {
   )
 }
 
-const CustomerItem: React.FC<ICustomerProps> = ({
+const CustomerItem: React.FC<ICustomerItemProps> = ({
   id,
   code,
-  name
+  name,
+  onDelete
 }) => {
   return (
     <CustomerItemContainer>
@@ -132,7 +168,7 @@ const CustomerItem: React.FC<ICustomerProps> = ({
         <Input placeholder={code} inputStyle="high" />
       </div>
 
-      <button className="remove-project">
+      <button className="remove-project" onClick={async () => await onDelete(id)}>
         <FiTrash size={20} color="#C53030" />
       </button>
     </CustomerItemContainer>
