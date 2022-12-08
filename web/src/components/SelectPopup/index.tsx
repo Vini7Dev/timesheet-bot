@@ -83,7 +83,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                     onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
                   />
                   )
-                : <CreateCustomerPopup onSubmit={toggleShowCreatePopupForm} />
+                : <CreateCustomerPopup afterSubmit={toggleShowCreatePopupForm} />
             }
           </CustomPopup>
         )

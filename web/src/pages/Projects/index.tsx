@@ -79,7 +79,7 @@ export const Projects: React.FC = () => {
                   )
                 : (
                   <CreateCustomerPopup
-                    onSubmit={toggleShowCreatePopupForm}
+                    afterSubmit={toggleShowCreatePopupForm}
                   />
                   )
             }

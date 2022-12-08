@@ -35,6 +35,12 @@ export const Customers: React.FC = () => {
     setShowCreateCustomerForm(!showCreateCustomerForm)
   }, [showCreateCustomerForm])
 
+  const handleReloadCustomersList = useCallback(async (createdCustomer: ICustomerProps) => {
+    setCustomers([createdCustomer, ...customers])
+
+    toggleShowCreateCustomerForm()
+  }, [customers, toggleShowCreateCustomerForm])
+
   const handleGetCustomers = useCallback(async () => {
     const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
       query: CUSTOMERS,
@@ -104,7 +110,7 @@ export const Customers: React.FC = () => {
         showCreateCustomerForm && (
           <CustomPopup onClickToClose={toggleShowCreateCustomerForm}>
             <CreateCustomerPopup
-              onSubmit={toggleShowCreateCustomerForm}
+              afterSubmit={handleReloadCustomersList}
             />
           </CustomPopup>
         )
