@@ -2,6 +2,7 @@ import { useApolloClient } from '@apollo/client'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FiX } from 'react-icons/fi'
 import { CREATE_CUSTOMER } from '../../graphql/createCustomer'
+import { CREATE_PROJECT } from '../../graphql/createProject'
 import { CUSTOMERS } from '../../graphql/getCustomers'
 import { useToast } from '../../hooks/toast'
 
@@ -9,6 +10,20 @@ import { Button } from '../Button'
 import { Input } from '../Input'
 import { Select } from '../Select'
 import { CreateProjectOrCustomerForm, CustomPopupContainer } from './styles'
+
+interface IProjectProps {
+  id: string
+  code: string
+  name: string
+  customer: {
+    id: string
+    name: string
+  }
+}
+
+interface ICreateProjectResponse {
+  createProject: IProjectProps
+}
 
 interface ICustomerProps {
   id: string
@@ -31,7 +46,7 @@ interface ICustomPopupProps {
 
 interface ICreateProjectPopupProps {
   customersList?: ICustomerProps[]
-  afterSubmit: () => void
+  afterSubmit: (response: IProjectProps) => void
   onSelectCreateCustomer: () => void
 }
 
@@ -69,7 +84,38 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
   const client = useApolloClient()
   const toast = useToast()
 
+  const [code, setCode] = useState('')
+  const [name, setName] = useState('')
+  const [customerId, setCustomerId] = useState('')
+
   const [customers, setCustomers] = useState<ICustomerProps[]>(customersList ?? [])
+
+  const handleCreateProject = useCallback(async () => {
+    const {
+      data: createProjectResponse,
+      errors
+    } = await client.mutate<ICreateProjectResponse>({
+      mutation: CREATE_PROJECT,
+      variables: {
+        data: {
+          code,
+          name,
+          customer_id: customerId
+        }
+      }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    } else {
+      afterSubmit(createProjectResponse?.createProject as IProjectProps)
+    }
+  }, [afterSubmit, client, code, customerId, name, toast])
 
   const handleGetCustomers = useCallback(async () => {
     const { data: customersResponse, error } = await client.query<IGetCustomersResponse>({
@@ -109,6 +155,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
               }))
             ]
           }
+          onChange={(e) => setCustomerId(e.target.value)}
         />
 
         <span id="create-customer-link" onClick={onSelectCreateCustomer}>
@@ -117,15 +164,23 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
       </div>
 
       <div className="input-margin-bottom">
-        <Input placeholder="Código do projeto no multidados" />
+        <Input
+          placeholder="Código do projeto no multidados"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+        />
       </div>
 
       <div className="input-margin-bottom">
-        <Input placeholder="Nome do projeto" />
+        <Input
+          placeholder="Nome do projeto"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </div>
 
       <div className="button-margin-top">
-        <Button text="Cadastrar" onClick={afterSubmit} />
+        <Button text="Cadastrar" onClick={handleCreateProject} />
       </div>
     </CreateProjectOrCustomerForm>
   )
