@@ -6,6 +6,10 @@ export const PROJECTS = gql`
       id
       code
       name
+      customer {
+        id
+        name
+      }
     }
   }
 `

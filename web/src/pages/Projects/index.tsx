@@ -20,6 +20,10 @@ interface IProjectProps {
   id: string
   code: string
   name: string
+  customer: {
+    id: string
+    name: string
+  }
 }
 
 interface IGetProjectsResponse {
@@ -109,12 +113,13 @@ export const Projects: React.FC = () => {
               <div className="project-customer-group-list">
               {
                   projects.length > 0
-                    ? projects.map(({ id, code, name }) => (
+                    ? projects.map(({ id, code, name, customer }) => (
                       <ProjectItem
                         key={id}
                         id={id}
                         code={code}
                         name={name}
+                        customer={customer}
                       />
                     ))
                     : <EmptyListAlert alertButton={{
@@ -155,7 +160,8 @@ export const Projects: React.FC = () => {
 const ProjectItem: React.FC<IProjectProps> = ({
   id,
   code,
-  name
+  name,
+  customer
 }) => {
   const [customerPopupIsOpen, setCustomerPopupIsOpen] = useState(false)
 
@@ -174,7 +180,7 @@ const ProjectItem: React.FC<IProjectProps> = ({
           className="project-project-button"
           onClick={toggleCustomerPopupIsOpen}
         >
-          + Cliente
+          {customer.name}
         </button>
 
         { customerPopupIsOpen && <SelectPopup popupType="customers" /> }
