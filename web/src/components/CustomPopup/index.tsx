@@ -31,7 +31,7 @@ interface ICustomPopupProps {
 
 interface ICreateProjectPopupProps {
   customersList?: ICustomerProps[]
-  onSubmit: () => void
+  afterSubmit: () => void
   onSelectCreateCustomer: () => void
 }
 
@@ -63,7 +63,7 @@ export const CustomPopup: React.FC<ICustomPopupProps & any> = ({
 
 export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
   customersList,
-  onSubmit,
+  afterSubmit,
   onSelectCreateCustomer
 }) => {
   const client = useApolloClient()
@@ -101,10 +101,13 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
       <div className="input-margin-bottom">
         <Select
           options={
-            customers.map(({ id, name }) => ({
-              value: id,
-              label: name.toUpperCase()
-            }))
+            [
+              { value: '', label: 'Selecione um cliente' },
+              ...customers.map(({ id, name }) => ({
+                value: id,
+                label: name.toUpperCase()
+              }))
+            ]
           }
         />
 
@@ -122,7 +125,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
       </div>
 
       <div className="button-margin-top">
-        <Button text="Cadastrar" onClick={onSubmit} />
+        <Button text="Cadastrar" onClick={afterSubmit} />
       </div>
     </CreateProjectOrCustomerForm>
   )

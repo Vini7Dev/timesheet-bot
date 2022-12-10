@@ -150,7 +150,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
               popupContentToShow === 'projects'
                 ? (
                   <CreateProjectPopup
-                    onSubmit={toggleShowCreatePopupForm}
+                    afterSubmit={toggleShowCreatePopupForm}
                     onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
                   />
                   )
