@@ -135,7 +135,9 @@ export const Projects: React.FC = () => {
               <div className="projects-customer-group-header">
                 <span className="projects-customer-group-name">Ambev</span>
 
-                <span className="projects-customer-group-label">Projeto / Identificador</span>
+                <span className="projects-customer-group-label">
+                  Projeto / Identificador / Cliente
+                </span>
               </div>
 
               <div className="project-customer-group-list">
