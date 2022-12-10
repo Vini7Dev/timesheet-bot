@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { useApolloClient } from '@apollo/client'
+import { FiTrash } from 'react-icons/fi'
 
+import { useToast } from '../../hooks/toast'
+import { PROJECTS_GROUP_BY_CUSTOMERS } from '../../graphql/getProjectsGroupByCustomers'
+import { DELETE_PROJECT } from '../../graphql/deleteProject'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
-import { MainContent, ProjectItemContainer, PageContainer } from './styles'
-import { FiTrash } from 'react-icons/fi'
 import { Button } from '../../components/Button'
-import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
 import { TimeTracker } from '../../components/TimeTracker'
-import { PROJECTS } from '../../graphql/getProjects'
-import { useApolloClient } from '@apollo/client'
-import { useToast } from '../../hooks/toast'
 import { EmptyListAlert } from '../../components/EmptyListAlert'
-import { DELETE_PROJECT } from '../../graphql/deleteProject'
+import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
+import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -21,17 +21,20 @@ interface IProjectProps {
   id: string
   code: string
   name: string
-  customer: {
-    id: string
-    name: string
-  }
 }
 
-interface IGetProjectsResponse {
+interface IProectsByCustomerProps {
+  id: string
+  name: string
   projects: IProjectProps[]
 }
 
+interface IGetProjectsGroupByCustomersResponse {
+  customers: IProectsByCustomerProps[]
+}
+
 interface IProjectItemProps extends IProjectProps {
+  customerName: string
   onDelete: (id: string) => Promise<void>
 }
 
@@ -42,7 +45,7 @@ export const Projects: React.FC = () => {
   const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
   const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('projects')
 
-  const [projects, setProjects] = useState<IProjectProps[]>([])
+  const [projectsByCustomers, setProjectsByCustomers] = useState<IProectsByCustomerProps[]>([])
 
   const toggleShowCreateProjectForm = useCallback(() => {
     setShowCreateProjectForm(!showCreateProjectForm)
@@ -53,14 +56,14 @@ export const Projects: React.FC = () => {
     setPopupContentToShow(contentToSet)
   }, [])
 
-  const toggleShowCreatePopupForm = useCallback(() => {
+  const toggleShowCreateCustomerForm = useCallback(() => {
     setShowCreateProjectForm(!showCreateProjectForm)
-    setPopupContentToShow('projects')
+    setPopupContentToShow('customers')
   }, [showCreateProjectForm])
 
   const handleGetProjects = useCallback(async () => {
-    const { data: projectsResponse, errors } = await client.query<IGetProjectsResponse>({
-      query: PROJECTS,
+    const { data: projectsResponse, errors } = await client.query<IGetProjectsGroupByCustomersResponse>({
+      query: PROJECTS_GROUP_BY_CUSTOMERS,
       variables: {
         data: {}
       },
@@ -75,7 +78,7 @@ export const Projects: React.FC = () => {
         })
       }
     } else {
-      setProjects(projectsResponse.projects)
+      setProjectsByCustomers(projectsResponse.customers)
     }
   }, [client, toast])
 
@@ -131,42 +134,75 @@ export const Projects: React.FC = () => {
               </div>
             </div>
 
-            <div className="projects-customer-group">
-              <div className="projects-customer-group-header">
-                <span className="projects-customer-group-name">Ambev</span>
+            {
+              projectsByCustomers.length > 0
+                ? projectsByCustomers.map(({
+                  id,
+                  name: customerName,
+                  projects
+                }) => (
+                  <div className="projects-customer-group" key={id}>
+                    <div className="projects-customer-group-header">
+                      <span className="projects-customer-group-name">{customerName}</span>
 
-                <span className="projects-customer-group-label">
-                  Projeto / Identificador / Cliente
-                </span>
-              </div>
+                      <span className="projects-customer-group-label">
+                        Projeto / Identificador / Cliente
+                      </span>
+                    </div>
 
-              <div className="project-customer-group-list">
-              {
-                  projects.length > 0
-                    ? projects.map(({ id, code, name, customer }) => (
-                      <ProjectItem
-                        key={id}
-                        id={id}
-                        code={code}
-                        name={name}
-                        customer={customer}
-                        onDelete={handleDeleteProject}
-                      />
-                    ))
-                    : <EmptyListAlert alertButton={{
-                      buttonText: 'Cadastrar projeto',
-                      onClick: toggleShowCreateProjectForm
+                    <div className="project-customer-group-list">
+                      {
+                        projects.length > 0
+                          ? projects.map(({
+                            id: projectId,
+                            code: projectCode,
+                            name: projectName
+                          }) => (
+                          <ProjectItem
+                              key={projectId}
+                              id={projectId}
+                              code={projectCode}
+                              name={projectName}
+                              customerName={customerName}
+                              onDelete={handleDeleteProject}
+                            />
+                          ))
+                          : (
+                            <EmptyListAlert alertButton={{
+                              buttonText: 'Cadastrar projeto',
+                              onClick: toggleShowCreateProjectForm
+                            }} />
+                            )
+                      }
+                    </div>
+                  </div>
+                ))
+                : (
+                  <div className="projects-customer-group">
+                    <div className="projects-customer-group-header">
+                      <span className="projects-customer-group-name">Ambev</span>
+
+                      <span className="projects-customer-group-label">
+                        Projeto / Identificador / Cliente
+                      </span>
+                    </div>
+
+                    <div className="project-customer-group-list">
+                    <EmptyListAlert alertButton={{
+                      buttonText: 'Cadastrar cliente',
+                      onClick: toggleShowCreateCustomerForm
                     }} />
-                }
-              </div>
-            </div>
+                    </div>
+                  </div>
+                  )
+            }
           </div>
         </MainContent>
       </div>
 
       {
         showCreateProjectForm && (
-          <CustomPopup onClickToClose={toggleShowCreatePopupForm}>
+          <CustomPopup onClickToClose={toggleShowCreateProjectForm}>
             {
               popupContentToShow === 'projects'
                 ? (
@@ -192,7 +228,7 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
   id,
   code,
   name,
-  customer,
+  customerName,
   onDelete
 }) => {
   const [customerPopupIsOpen, setCustomerPopupIsOpen] = useState(false)
@@ -212,7 +248,7 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
           className="project-project-button"
           onClick={toggleCustomerPopupIsOpen}
         >
-          {customer.name}
+          {customerName}
         </button>
 
         { customerPopupIsOpen && <SelectPopup popupType="customers" /> }

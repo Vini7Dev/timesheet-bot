@@ -47,6 +47,7 @@ export const MainContent = styled.main`
 
     .projects-customer-group {
       background-color: #1D272C;
+      margin-bottom: 1rem;
 
       .projects-customer-group-header {
         display: flex;
