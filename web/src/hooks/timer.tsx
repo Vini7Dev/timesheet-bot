@@ -10,6 +10,7 @@ interface ITimerContext {
   getTimerFormated: () => string
   startTimer: () => void
   stopTimer: () => IStopTimerResponse
+  changeStartTime: (newStartTime: number) => void
 }
 
 const TimerContext = createContext<ITimerContext>({} as unknown as ITimerContext)
@@ -57,12 +58,17 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
     }
   }, [timerInterval, timerStartedAt])
 
+  const changeStartTime = useCallback((newStartTime: number) => {
+    setTimerStartedAt(newStartTime)
+  }, [])
+
   return (
     <TimerContext.Provider value={{
       timerRunning,
       getTimerFormated,
       startTimer,
-      stopTimer
+      stopTimer,
+      changeStartTime
     }}>
       {children}
     </TimerContext.Provider>
