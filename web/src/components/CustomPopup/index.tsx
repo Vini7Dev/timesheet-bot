@@ -169,7 +169,7 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
 
       <div className="input-margin-bottom">
         <Input
-          placeholder="Nome do projeto"
+          placeholder="Nome do cliente"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -177,7 +177,7 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
 
       <div className="input-margin-bottom">
         <Input
-          placeholder="Código do projeto no multidados"
+          placeholder="Código do cliente no multidados"
           value={code}
           onChange={(e) => setCode(e.target.value)}
         />
