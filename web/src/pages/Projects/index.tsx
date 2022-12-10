@@ -13,6 +13,7 @@ import { PROJECTS } from '../../graphql/getProjects'
 import { useApolloClient } from '@apollo/client'
 import { useToast } from '../../hooks/toast'
 import { EmptyListAlert } from '../../components/EmptyListAlert'
+import { DELETE_PROJECT } from '../../graphql/deleteProject'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -28,6 +29,10 @@ interface IProjectProps {
 
 interface IGetProjectsResponse {
   projects: IProjectProps[]
+}
+
+interface IProjectItemProps extends IProjectProps {
+  onDelete: (id: string) => Promise<void>
 }
 
 export const Projects: React.FC = () => {
@@ -73,6 +78,29 @@ export const Projects: React.FC = () => {
       setProjects(projectsResponse.projects)
     }
   }, [client, toast])
+
+  const handleDeleteProject = useCallback(async (id: string) => {
+    const response = confirm('Deseja apagar o projeto? Essa ação não pode ser desfeita!')
+
+    if (!response) {
+      return
+    }
+
+    const { errors } = await client.mutate<{ deleteProject: string }>({
+      mutation: DELETE_PROJECT, variables: { deleteProjectId: id }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    } else {
+      await handleGetProjects()
+    }
+  }, [client, handleGetProjects, toast])
 
   const handleReloadProjects = useCallback(async () => {
     handleGetProjects()
@@ -120,6 +148,7 @@ export const Projects: React.FC = () => {
                         code={code}
                         name={name}
                         customer={customer}
+                        onDelete={handleDeleteProject}
                       />
                     ))
                     : <EmptyListAlert alertButton={{
@@ -157,11 +186,12 @@ export const Projects: React.FC = () => {
   )
 }
 
-const ProjectItem: React.FC<IProjectProps> = ({
+const ProjectItem: React.FC<IProjectItemProps> = ({
   id,
   code,
   name,
-  customer
+  customer,
+  onDelete
 }) => {
   const [customerPopupIsOpen, setCustomerPopupIsOpen] = useState(false)
 
@@ -186,7 +216,7 @@ const ProjectItem: React.FC<IProjectProps> = ({
         { customerPopupIsOpen && <SelectPopup popupType="customers" /> }
       </div>
 
-      <button className="remove-project">
+      <button className="remove-project" onClick={async () => await onDelete(id)}>
         <FiTrash size={20} color="#C53030" />
       </button>
     </ProjectItemContainer>
