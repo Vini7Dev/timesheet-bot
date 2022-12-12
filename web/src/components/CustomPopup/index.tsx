@@ -88,9 +88,12 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
   const [name, setName] = useState('')
   const [customerId, setCustomerId] = useState('')
 
+  const [createIsLoading, setCreateIsLoading] = useState(false)
   const [customers, setCustomers] = useState<ICustomerProps[]>(customersList ?? [])
 
   const handleCreateProject = useCallback(async () => {
+    setCreateIsLoading(true)
+
     const {
       data: createProjectResponse,
       errors
@@ -115,6 +118,8 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
     } else {
       afterSubmit(createProjectResponse?.createProject as IProjectProps)
     }
+
+    setCreateIsLoading(false)
   }, [afterSubmit, client, code, customerId, name, toast])
 
   const handleGetCustomers = useCallback(async () => {
@@ -180,7 +185,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
       </div>
 
       <div className="button-margin-top">
-        <Button text="Cadastrar" onClick={handleCreateProject} />
+        <Button text="Cadastrar" onClick={handleCreateProject} isLoading={createIsLoading} />
       </div>
     </CreateProjectOrCustomerForm>
   )
@@ -195,7 +200,11 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
 
+  const [createIsLoading, setCreateIsLoading] = useState(false)
+
   const handleCreateCustomer = useCallback(async () => {
+    setCreateIsLoading(true)
+
     const {
       data: createCustomerResponse,
       errors
@@ -219,6 +228,8 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
     } else {
       afterSubmit(createCustomerResponse?.createCustomer as ICustomerProps)
     }
+
+    setCreateIsLoading(false)
   }, [afterSubmit, client, code, name, toast])
 
   return (
@@ -242,7 +253,7 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
       </div>
 
       <div className="button-margin-top">
-        <Button text="Cadastrar" onClick={handleCreateCustomer} />
+        <Button text="Cadastrar" onClick={handleCreateCustomer} isLoading={createIsLoading} />
       </div>
     </CreateProjectOrCustomerForm>
   )

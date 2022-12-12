@@ -11,7 +11,7 @@ import { TimeTracker } from '../../components/TimeTracker'
 import { CreateCustomerPopup, CustomPopup } from '../../components/CustomPopup'
 import { MainContent, CustomerItemContainer, PageContainer } from './styles'
 import { useToast } from '../../hooks/toast'
-import { EmptyListAlert } from '../../components/EmptyListAlert'
+import { ListAlert } from '../../components/ListAlert'
 import { DELETE_CUSTOMER } from '../../graphql/deleteCustomer'
 
 interface ICustomerProps {
@@ -33,7 +33,7 @@ export const Customers: React.FC = () => {
   const toast = useToast()
 
   const [customers, setCustomers] = useState<ICustomerProps[]>([])
-
+  const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [showCreateCustomerForm, setShowCreateCustomerForm] = useState(false)
 
   const toggleShowCreateCustomerForm = useCallback(() => {
@@ -41,6 +41,8 @@ export const Customers: React.FC = () => {
   }, [showCreateCustomerForm])
 
   const handleGetCustomers = useCallback(async () => {
+    setLoadingCustomers(true)
+
     const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
       query: CUSTOMERS,
       variables: {
@@ -59,6 +61,8 @@ export const Customers: React.FC = () => {
     } else {
       setCustomers(customersResponse.customers)
     }
+
+    setLoadingCustomers(false)
   }, [client, toast])
 
   const handleReloadCustomers = useCallback(async () => {
@@ -130,10 +134,15 @@ export const Customers: React.FC = () => {
                         onDelete={handleDeleteCustomer}
                       />
                     ))
-                    : <EmptyListAlert alertButton={{
-                      buttonText: 'Cadastrar cliente',
-                      onClick: toggleShowCreateCustomerForm
-                    }} />
+                    : <ListAlert
+                        alertType={loadingCustomers ? 'loading' : 'empty'}
+                        alertButton={loadingCustomers
+                          ? {
+                              buttonText: 'Cadastrar cliente',
+                              onClick: toggleShowCreateCustomerForm
+                            }
+                          : undefined}
+                      />
                 }
               </div>
             </div>

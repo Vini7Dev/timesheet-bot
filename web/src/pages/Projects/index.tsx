@@ -11,7 +11,7 @@ import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
 import { Button } from '../../components/Button'
 import { TimeTracker } from '../../components/TimeTracker'
-import { EmptyListAlert } from '../../components/EmptyListAlert'
+import { ListAlert } from '../../components/ListAlert'
 import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 
@@ -44,8 +44,8 @@ export const Projects: React.FC = () => {
 
   const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
   const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('projects')
-
   const [projectsByCustomers, setProjectsByCustomers] = useState<IProectsByCustomerProps[]>([])
+  const [loadingProjects, setLoadingProjects] = useState(false)
 
   const toggleShowCreateProjectForm = useCallback(() => {
     setShowCreateProjectForm(!showCreateProjectForm)
@@ -62,6 +62,8 @@ export const Projects: React.FC = () => {
   }, [showCreateProjectForm])
 
   const handleGetProjects = useCallback(async () => {
+    setLoadingProjects(true)
+
     const { data: projectsResponse, errors } = await client.query<IGetProjectsGroupByCustomersResponse>({
       query: PROJECTS_GROUP_BY_CUSTOMERS,
       variables: {
@@ -80,6 +82,8 @@ export const Projects: React.FC = () => {
     } else {
       setProjectsByCustomers(projectsResponse.customers)
     }
+
+    setLoadingProjects(true)
   }, [client, toast])
 
   const handleDeleteProject = useCallback(async (id: string) => {
@@ -168,10 +172,15 @@ export const Projects: React.FC = () => {
                             />
                           ))
                           : (
-                            <EmptyListAlert alertButton={{
-                              buttonText: 'Cadastrar projeto',
-                              onClick: toggleShowCreateProjectForm
-                            }} />
+                            <ListAlert
+                              alertType={loadingProjects ? 'loading' : 'empty'}
+                              alertButton={loadingProjects
+                                ? {
+                                    buttonText: 'Cadastrar projeto',
+                                    onClick: toggleShowCreateProjectForm
+                                  }
+                                : undefined}
+                            />
                             )
                       }
                     </div>
@@ -188,7 +197,7 @@ export const Projects: React.FC = () => {
                     </div>
 
                     <div className="project-customer-group-list">
-                    <EmptyListAlert alertButton={{
+                    <ListAlert alertButton={{
                       buttonText: 'Cadastrar cliente',
                       onClick: toggleShowCreateCustomerForm
                     }} />

@@ -18,7 +18,7 @@ interface ICreateUserResponse {
 export const SignUp: React.FC = () => {
   const toast = useToast()
 
-  const [createUser] = useMutation<ICreateUserResponse>(CREATE_USER, {
+  const [createUser, { loading }] = useMutation<ICreateUserResponse>(CREATE_USER, {
     onError: (error) => {
       toast.addToast({
         type: 'error',
@@ -99,7 +99,7 @@ export const SignUp: React.FC = () => {
           </div>
 
           <div className="button-margin-top">
-            <Button text="Cadastrar-se" onClick={handleCreateUser} />
+            <Button text="Cadastrar-se" onClick={handleCreateUser} isLoading={loading} />
           </div>
 
           <span id="without-account-message">Já possuí uma conta?</span>

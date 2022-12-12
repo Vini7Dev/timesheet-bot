@@ -11,6 +11,7 @@ export const SignIn: React.FC = () => {
   const navigate = useNavigate()
   const auth = useAuth()
 
+  const [authIsLoading, setAuthIsLoading] = useState(false)
   const [emailOrUsername, setEmailOrUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -19,10 +20,14 @@ export const SignIn: React.FC = () => {
   }, [navigate])
 
   const handleSignIn = useCallback(async () => {
+    setAuthIsLoading(true)
+
     await auth.signIn({
       emailOrUsername,
       password
     })
+
+    setAuthIsLoading(false)
   }, [auth, emailOrUsername, password])
 
   return (
@@ -52,7 +57,7 @@ export const SignIn: React.FC = () => {
           <a id="forgot-password-link" href="/">Esqueceu a senha?</a>
 
           <div className="button-margin-top">
-            <Button text="Entrar" onClick={handleSignIn} />
+            <Button text="Entrar" onClick={handleSignIn} isLoading={authIsLoading} />
           </div>
 
           <span id="without-account-message">Ainda não tem uma conta?</span>
