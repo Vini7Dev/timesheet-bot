@@ -13,6 +13,7 @@ import { MainContent, CustomerItemContainer, PageContainer } from './styles'
 import { useToast } from '../../hooks/toast'
 import { ListAlert } from '../../components/ListAlert'
 import { DELETE_CUSTOMER } from '../../graphql/deleteCustomer'
+import { UPDATE_CUSTOMER } from '../../graphql/updateCustomer'
 
 interface ICustomerProps {
   id: string
@@ -24,8 +25,19 @@ interface IGetCustomersResponse {
   customers: ICustomerProps[]
 }
 
+interface IUpdateCustomerResponse {
+  updateCustomer: ICustomerProps
+}
+
+interface IUpdateCustomerProps {
+  customerId: string
+  code?: string
+  name?: string
+}
+
 interface ICustomerItemProps extends ICustomerProps {
   onDelete: (id: string) => Promise<void>
+  onUpdate: (data: IUpdateCustomerProps) => Promise<void>
 }
 
 export const Customers: React.FC = () => {
@@ -94,6 +106,36 @@ export const Customers: React.FC = () => {
     }
   }, [client, handleGetCustomers, toast])
 
+  const handleUpdateCustomer = useCallback(async ({
+    customerId,
+    code,
+    name
+  }: IUpdateCustomerProps) => {
+    const {
+      errors
+    } = await client.mutate<IUpdateCustomerResponse>({
+      mutation: UPDATE_CUSTOMER,
+      variables: {
+        data: {
+          customerId,
+          code,
+          name
+        }
+      }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    }
+
+    handleGetCustomers()
+  }, [client, handleGetCustomers, toast])
+
   useEffect(() => {
     handleGetCustomers()
   }, [handleGetCustomers])
@@ -132,6 +174,7 @@ export const Customers: React.FC = () => {
                         code={code}
                         name={name}
                         onDelete={handleDeleteCustomer}
+                        onUpdate={handleUpdateCustomer}
                       />
                     ))
                     : <ListAlert
@@ -167,14 +210,42 @@ const CustomerItem: React.FC<ICustomerItemProps> = ({
   id,
   code,
   name,
-  onDelete
+  onDelete,
+  onUpdate
 }) => {
+  const updateCustomer = useCallback(({
+    newName, newCode
+  }: {
+    newName?: string
+    newCode?: string
+  }) => {
+    if (code === newCode || name === newName) {
+      return
+    }
+
+    onUpdate({
+      customerId: id,
+      code: newCode,
+      name: newName
+    })
+  }, [code, id, name, onUpdate])
+
   return (
     <CustomerItemContainer>
       <div className="customer-row">
-        <Input placeholder={name} inputStyle="high" defaultValue={name} />
+        <Input
+          placeholder={name}
+          inputStyle="high"
+          defaultValue={name}
+          onBlur={(e) => updateCustomer({ newName: e.target.value })}
+          />
 
-        <Input placeholder={code} inputStyle="high" defaultValue={code} />
+        <Input
+          placeholder={code}
+          inputStyle="high"
+          defaultValue={code}
+          onBlur={(e) => updateCustomer({ newCode: e.target.value })}
+          />
       </div>
 
       <button className="remove-project" onClick={async () => await onDelete(id)}>
