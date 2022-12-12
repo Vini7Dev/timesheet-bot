@@ -11,14 +11,18 @@ export const TimeTracker: React.FC = () => {
   const {
     timerRunning,
     getTimerFormated,
+    getStartTimerFormated,
     startTimer,
     stopTimer,
     changeStartTime
   } = useTimer()
 
+  const [showChangeStartinput, setShowChangeStartinput] = useState(false)
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
+
   const [isBillable, setIsBillable] = useState(true)
   const [description, setDescription] = useState('')
+  const [changeStartInputValue, setChangeStartInputValue] = useState('')
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
@@ -28,28 +32,35 @@ export const TimeTracker: React.FC = () => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
   }, [projectPopupIsOpen])
 
+  const toggleShowChangeStartinput = useCallback(() => {
+    if (!showChangeStartinput && timerRunning) {
+      setShowChangeStartinput(!showChangeStartinput)
+    } else {
+      setShowChangeStartinput(false)
+    }
+  }, [showChangeStartinput, timerRunning])
+
   const handleStartTimer = useCallback(() => {
     startTimer()
   }, [startTimer])
 
   const handleStopTimer = useCallback(() => {
+    setShowChangeStartinput(false)
     stopTimer()
   }, [stopTimer])
 
   const handleChangeStartTime = useCallback(() => {
-    if (!timerRunning) {
+    if (!timerRunning || !changeStartInputValue) {
       return
     }
 
-    const newTime = prompt('Informe o horário no formato HH:MM')
-
-    if (!newTime?.includes(':')) {
+    if (!changeStartInputValue?.includes(':')) {
       alert('Fomato inválido!')
 
       return
     }
 
-    const [hours, minutes] = newTime.split(':')
+    const [hours, minutes] = changeStartInputValue.split(':')
 
     if (!hours || !minutes) {
       alert('Fomato inválido!')
@@ -63,7 +74,7 @@ export const TimeTracker: React.FC = () => {
     todayDate.setMinutes(parseInt(minutes))
 
     changeStartTime(todayDate.getTime())
-  }, [changeStartTime, timerRunning])
+  }, [changeStartInputValue, changeStartTime, timerRunning])
 
   return (
     <TimerTrackerContainer>
@@ -93,14 +104,35 @@ export const TimeTracker: React.FC = () => {
           />
         </button>
 
-        <Input
-          disabled
-          placeholder="00:00"
-          inputStyle="high"
-          value={timerRunning ? getTimerFormated() : '00:00'}
-          style={{ textAlign: 'center' }}
-          onClickInContainer={handleChangeStartTime}
-        />
+        <div id="timer-count-container">
+          <Input
+            disabled
+            placeholder="00:00"
+            inputStyle="high"
+            value={timerRunning ? getTimerFormated() : '00:00'}
+            style={{ textAlign: 'center' }}
+            onClickInContainer={toggleShowChangeStartinput}
+          />
+
+          {
+            showChangeStartinput && (
+              <div id="timer-change-start-input-container">
+                <span>HORÁRIO DO INÍCIO</span>
+
+                <div>
+                  <Input
+                    placeholder={getStartTimerFormated()}
+                    inputStyle="high"
+                    value={changeStartInputValue}
+                    onChange={(e) => setChangeStartInputValue(e.target.value)}
+                    onBlur={() => handleChangeStartTime()}
+                    style={{ textAlign: 'center' }}
+                  />
+                </div>
+              </div>
+            )
+          }
+        </div>
 
         <div id="timer-start-stop-button">
           <Button

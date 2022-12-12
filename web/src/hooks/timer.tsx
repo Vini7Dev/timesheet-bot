@@ -8,6 +8,7 @@ interface IStopTimerResponse {
 interface ITimerContext {
   timerRunning: boolean
   getTimerFormated: () => string
+  getStartTimerFormated: () => string
   startTimer: () => void
   stopTimer: () => IStopTimerResponse
   changeStartTime: (newStartTime: number) => void
@@ -38,6 +39,15 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
       : `${formatPad(minutes)}:${formatPad(seconds)}`
   }, [formatPad, timer, timerStartedAt])
 
+  const getStartTimerFormated = useCallback(() => {
+    const startetTimerDate = new Date(timerStartedAt)
+
+    const hours = startetTimerDate.getHours()
+    const minutes = startetTimerDate.getMinutes()
+
+    return `${formatPad(hours)}:${formatPad(minutes)}`
+  }, [formatPad, timerStartedAt])
+
   const startTimer = useCallback(() => {
     setTimerStartedAt(Date.now())
     setTimer(Date.now())
@@ -66,6 +76,7 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
     <TimerContext.Provider value={{
       timerRunning,
       getTimerFormated,
+      getStartTimerFormated,
       startTimer,
       stopTimer,
       changeStartTime

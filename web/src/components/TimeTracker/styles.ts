@@ -35,6 +35,28 @@ export const TimerTrackerContainer = styled.div`
       min-width: 2.5rem;
     }
 
+    #timer-count-container {
+      position: relative;
+
+      #timer-change-start-input-container {
+        position: absolute;
+        bottom: -74px;
+        right: 0;
+        display: flex;
+        align-items: center;
+        background-color: #12191D;
+        padding: 12px 8px;
+
+        & > span {
+          font-family: 'Roboto', sans-serif;
+          font-size: 0.8571rem;
+          color: #90A4AE;
+          display: block;
+          width: 225px;
+        }
+      }
+    }
+
     #timer-start-stop-button {
       min-width: 5rem;
     }
