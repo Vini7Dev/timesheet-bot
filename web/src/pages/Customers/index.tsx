@@ -172,9 +172,9 @@ const CustomerItem: React.FC<ICustomerItemProps> = ({
   return (
     <CustomerItemContainer>
       <div className="customer-row">
-        <Input placeholder={name} inputStyle="high" />
+        <Input placeholder={name} inputStyle="high" defaultValue={name} />
 
-        <Input placeholder={code} inputStyle="high" />
+        <Input placeholder={code} inputStyle="high" defaultValue={code} />
       </div>
 
       <button className="remove-project" onClick={async () => await onDelete(id)}>

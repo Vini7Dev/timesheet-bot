@@ -89,7 +89,7 @@ export const ProjectItemContainer = styled.div`
     align-items: center;
     height: 4rem;
 
-    .project-project-button {
+    .project-select-project-or-customer-button {
       display: flex;
       justify-content: center;
       align-items: center;

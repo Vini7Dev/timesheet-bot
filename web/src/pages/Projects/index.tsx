@@ -173,13 +173,11 @@ export const Projects: React.FC = () => {
                           ))
                           : (
                             <ListAlert
-                              alertType={loadingProjects ? 'loading' : 'empty'}
-                              alertButton={loadingProjects
-                                ? {
-                                    buttonText: 'Cadastrar projeto',
-                                    onClick: toggleShowCreateProjectForm
-                                  }
-                                : undefined}
+                              alertType="empty"
+                              alertButton={{
+                                buttonText: 'Cadastrar projeto',
+                                onClick: toggleShowCreateProjectForm
+                              }}
                             />
                             )
                       }
@@ -197,10 +195,15 @@ export const Projects: React.FC = () => {
                     </div>
 
                     <div className="project-customer-group-list">
-                    <ListAlert alertButton={{
-                      buttonText: 'Cadastrar cliente',
-                      onClick: toggleShowCreateCustomerForm
-                    }} />
+                    <ListAlert
+                      alertType={loadingProjects ? 'loading' : 'empty'}
+                      alertButton={loadingProjects
+                        ? {
+                            buttonText: 'Cadastrar cliente',
+                            onClick: toggleShowCreateCustomerForm
+                          }
+                        : undefined}
+                    />
                     </div>
                   </div>
                   )
@@ -249,12 +252,12 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
   return (
     <ProjectItemContainer>
       <div className="project-row">
-        <Input placeholder={name} inputStyle="high" />
+        <Input placeholder={name} inputStyle="high" defaultValue={name} />
 
-        <Input placeholder={code} inputStyle="high" />
+        <Input placeholder={code} inputStyle="high" defaultValue={code} />
 
         <button
-          className="project-project-button"
+          className="project-select-project-or-customer-button"
           onClick={toggleCustomerPopupIsOpen}
         >
           {customerName}
