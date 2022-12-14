@@ -14,6 +14,7 @@ import { TimeTracker } from '../../components/TimeTracker'
 import { ListAlert } from '../../components/ListAlert'
 import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
+import { UPDATE_PROJECT } from '../../graphql/updateProject'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -33,9 +34,16 @@ interface IGetProjectsGroupByCustomersResponse {
   customers: IProectsByCustomerProps[]
 }
 
+interface IUpdateProjectProps {
+  projectId: string
+  code?: string
+  name?: string
+}
+
 interface IProjectItemProps extends IProjectProps {
   customerName: string
   onDelete: (id: string) => Promise<void>
+  onUpdate: (data: IUpdateProjectProps) => Promise<void>
 }
 
 export const Projects: React.FC = () => {
@@ -115,6 +123,36 @@ export const Projects: React.FC = () => {
     toggleShowCreateProjectForm()
   }, [handleGetProjects, toggleShowCreateProjectForm])
 
+  const handleUpdateProject = useCallback(async ({
+    projectId,
+    code,
+    name
+  }: IUpdateProjectProps) => {
+    const {
+      errors
+    } = await client.mutate({
+      mutation: UPDATE_PROJECT,
+      variables: {
+        data: {
+          projectId,
+          code,
+          name
+        }
+      }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    }
+
+    handleGetProjects()
+  }, [client, handleGetProjects, toast])
+
   useEffect(() => {
     handleGetProjects()
   }, [handleGetProjects])
@@ -169,6 +207,7 @@ export const Projects: React.FC = () => {
                               name={projectName}
                               customerName={customerName}
                               onDelete={handleDeleteProject}
+                              onUpdate={handleUpdateProject}
                             />
                           ))
                           : (
@@ -185,27 +224,19 @@ export const Projects: React.FC = () => {
                   </div>
                 ))
                 : (
-                  <div className="projects-customer-group">
-                    <div className="projects-customer-group-header">
-                      <span className="projects-customer-group-name">Ambev</span>
-
-                      <span className="projects-customer-group-label">
-                        Projeto / Identificador / Cliente
-                      </span>
+                    <div className="projects-customer-group">
+                      <div className="project-customer-group-list">
+                        <ListAlert
+                          alertType={loadingProjects ? 'loading' : 'empty'}
+                          alertButton={loadingProjects
+                            ? undefined
+                            : {
+                                buttonText: 'Cadastrar cliente',
+                                onClick: toggleShowCreateCustomerForm
+                              }}
+                        />
+                      </div>
                     </div>
-
-                    <div className="project-customer-group-list">
-                    <ListAlert
-                      alertType={loadingProjects ? 'loading' : 'empty'}
-                      alertButton={loadingProjects
-                        ? {
-                            buttonText: 'Cadastrar cliente',
-                            onClick: toggleShowCreateCustomerForm
-                          }
-                        : undefined}
-                    />
-                    </div>
-                  </div>
                   )
             }
           </div>
@@ -241,7 +272,8 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
   code,
   name,
   customerName,
-  onDelete
+  onDelete,
+  onUpdate
 }) => {
   const [customerPopupIsOpen, setCustomerPopupIsOpen] = useState(false)
 
@@ -249,12 +281,39 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
     setCustomerPopupIsOpen(!customerPopupIsOpen)
   }, [customerPopupIsOpen])
 
+  const updateProject = useCallback(({
+    newName, newCode
+  }: {
+    newName?: string
+    newCode?: string
+  }) => {
+    if (code === newCode || name === newName) {
+      return
+    }
+
+    onUpdate({
+      projectId: id,
+      code: newCode,
+      name: newName
+    })
+  }, [code, id, name, onUpdate])
+
   return (
     <ProjectItemContainer>
       <div className="project-row">
-        <Input placeholder={name} inputStyle="high" defaultValue={name} />
+        <Input
+          placeholder={name}
+          inputStyle="high"
+          defaultValue={name}
+          onBlur={(e) => updateProject({ newName: e.target.value })}
+        />
 
-        <Input placeholder={code} inputStyle="high" defaultValue={code} />
+        <Input
+          placeholder={code}
+          inputStyle="high"
+          defaultValue={code}
+          onBlur={(e) => updateProject({ newCode: e.target.value })}
+        />
 
         <button
           className="project-select-project-or-customer-button"

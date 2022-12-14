@@ -25,10 +25,6 @@ interface IGetCustomersResponse {
   customers: ICustomerProps[]
 }
 
-interface IUpdateCustomerResponse {
-  updateCustomer: ICustomerProps
-}
-
 interface IUpdateCustomerProps {
   customerId: string
   code?: string
@@ -113,7 +109,7 @@ export const Customers: React.FC = () => {
   }: IUpdateCustomerProps) => {
     const {
       errors
-    } = await client.mutate<IUpdateCustomerResponse>({
+    } = await client.mutate({
       mutation: UPDATE_CUSTOMER,
       variables: {
         data: {
@@ -180,11 +176,11 @@ export const Customers: React.FC = () => {
                     : <ListAlert
                         alertType={loadingCustomers ? 'loading' : 'empty'}
                         alertButton={loadingCustomers
-                          ? {
+                          ? undefined
+                          : {
                               buttonText: 'Cadastrar cliente',
                               onClick: toggleShowCreateCustomerForm
-                            }
-                          : undefined}
+                            }}
                       />
                 }
               </div>
