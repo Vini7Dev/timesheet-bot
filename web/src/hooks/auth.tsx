@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useContext, useState } from 'react'
 import { LOGIN_USER } from '../graphql/loginUser'
 import { useMutation } from '@apollo/client'
 import { useToast } from './toast'
+import { useNavigate } from 'react-router-dom'
 
 interface IUser {
   id: string
@@ -38,6 +39,7 @@ const AuthContext = createContext<IAuthContext>({} as unknown as IAuthContext)
 
 export const AuthProvider: React.FC<any> = ({ children }) => {
   const toast = useToast()
+  const navigate = useNavigate()
 
   const [loginUser] = useMutation<ILoginResponse>(LOGIN_USER, {
     onError: () => {
@@ -100,8 +102,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     setUser(undefined)
     localStorage.removeItem('@Multify:loginUser')
 
-    window.location.reload()
-  }, [])
+    navigate({
+      pathname: '/'
+    })
+  }, [navigate])
 
   return (
     <AuthContext.Provider value={{ user, signIn, signOut }}>

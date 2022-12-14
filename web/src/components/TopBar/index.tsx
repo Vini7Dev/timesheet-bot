@@ -30,17 +30,15 @@ export const TopBar: React.FC = () => {
     setShowUserPopup(!showUserPopup)
   }, [showUserPopup])
 
-  const tempIsAuthenticated = true
-
   return (
-    <TopBarContainer backgroundColor={tempIsAuthenticated ? '#12191D' : 'transparent'} >
+    <TopBarContainer backgroundColor={user ? '#12191D' : 'transparent'} >
       <div id="top-bar-content">
         <Link to="/" id="top-bar-multify-link">
           <img src={MultifyLogo} alt="Multify" id="top-bar-multify-logo" />
         </Link>
 
         {
-          tempIsAuthenticated && (
+          user && (
             <button id="top-bar-user-icon" onClick={toggleShowUserPopup}>
               {handleGetProfileImageLetters()}
             </button>
