@@ -1,10 +1,15 @@
-export class AppError {
-  readonly message: string
-  
+import { GraphQLError } from "graphql"
+
+export class AppError extends GraphQLError {
   readonly status: number
 
   constructor(message: string, status = 400) {
-    this.message = message
+    super(message, {
+      extensions: {
+        code: status
+      }
+    })
+
     this.status = status
   }
 }
