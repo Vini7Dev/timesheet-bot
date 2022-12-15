@@ -18,7 +18,7 @@ export const marking = async (
   const showMarkingService = container.resolve(ShowMarkingService)
 
   const markingFinded = await showMarkingService.execute({
-    markingId: id,
+    marking_id: id,
   })
 
   return markingFinded

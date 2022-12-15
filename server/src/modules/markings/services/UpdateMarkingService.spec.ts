@@ -54,7 +54,7 @@ describe('UpdateMarkingService', () => {
     })
 
     const updatedMarking = await updateMarkingService.execute({
-      markingId: createdMarking.id,
+      marking_id: createdMarking.id,
       description: 'Updated Description Example',
       date: '02/01/2022',
       start_time: '10:00',
@@ -104,7 +104,7 @@ describe('UpdateMarkingService', () => {
     })
 
     const updatedMarking = await updateMarkingService.execute({
-      markingId: createdMarking.id,
+      marking_id: createdMarking.id,
       authenticatedUserId: authenticatedUser.id,
     })
 
@@ -136,7 +136,7 @@ describe('UpdateMarkingService', () => {
 
     await expect(
       updateMarkingService.execute({
-        markingId: 'invalid-marking-id',
+        marking_id: 'invalid-marking-id',
         description: 'Updated Description Example',
         date: '02/01/2022',
         start_time: '10:00',
@@ -177,7 +177,7 @@ describe('UpdateMarkingService', () => {
 
     await expect(
       updateMarkingService.execute({
-        markingId: createdMarking.id,
+        marking_id: createdMarking.id,
         description: 'Updated Description Example',
         date: '02/01/2022',
         start_time: '10:00',
@@ -229,7 +229,7 @@ describe('UpdateMarkingService', () => {
     })
 
     const dataToUpdateMarkingWithoutTimes = {
-      markingId: newMarkingToUpdate.id,
+      marking_id: newMarkingToUpdate.id,
       description: 'Description Example 2',
       date: '01/01/2022',
       work_class: WorkClass.PRODUCTION,
@@ -294,7 +294,7 @@ describe('UpdateMarkingService', () => {
     })
 
     const dataToUpdateMarkingWithoutIntervalTimes = {
-      markingId: createdMarking.id,
+      marking_id: createdMarking.id,
       description: 'Description Example 2',
       date: '01/01/2022',
       work_class: WorkClass.PRODUCTION,
@@ -343,7 +343,7 @@ describe('UpdateMarkingService', () => {
     })
 
     const dataToUpdateMarkingWithoutIntervalTimes = {
-      markingId: createdMarking.id,
+      marking_id: createdMarking.id,
       description: 'Description Example 2',
       date: '01/01/2022',
       work_class: WorkClass.PRODUCTION,
@@ -412,7 +412,7 @@ describe('UpdateMarkingService', () => {
     })
 
     const dataToUpdateMarkingWithoutIntervalTimes = {
-      markingId: createdMarking.id,
+      marking_id: createdMarking.id,
       description: 'Updated Description Example',
       date: '02/01/2022',
       work_class: WorkClass.ABSENCE,

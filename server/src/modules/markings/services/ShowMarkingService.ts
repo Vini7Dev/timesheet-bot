@@ -5,7 +5,7 @@ import { Marking } from '../infra/prisma/entities/Marking';
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 
 interface IServiceProps {
-  markingId: string
+  marking_id: string
 }
 
 @injectable()
@@ -15,8 +15,8 @@ export class ShowMarkingService {
     private markingsRepository: IMarkingsRepository,
   ) {}
 
-  public async execute({ markingId }: IServiceProps): Promise<Marking> {
-    const findedMarking = await this.markingsRepository.findById(markingId)
+  public async execute({ marking_id }: IServiceProps): Promise<Marking> {
+    const findedMarking = await this.markingsRepository.findById(marking_id)
 
     if(!findedMarking) {
       throw new AppError('Marking not found!', 404)

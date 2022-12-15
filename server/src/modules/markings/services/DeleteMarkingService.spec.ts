@@ -32,7 +32,7 @@ describe('DeleteMarkingService', () => {
     })
 
     const result = await deleteMarkingService.execute({
-      markingId: createdMarking.id,
+      marking_id: createdMarking.id,
     })
 
     expect(result).toEqual(createdMarking.id)
@@ -41,7 +41,7 @@ describe('DeleteMarkingService', () => {
   it('should not be able to delete a non-existent marking', async () => {
     await expect(
       deleteMarkingService.execute({
-        markingId: 'invalid-marking-id',
+        marking_id: 'invalid-marking-id',
       })
     ).rejects.toEqual(new AppError('Marking not found!', 404))
   })

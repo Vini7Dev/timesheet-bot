@@ -7,7 +7,7 @@ import { UpdateMarkingService } from '@modules/markings/services/UpdateMarkingSe
 
 interface IUpdateMarkingInput {
   data: {
-    markingId: string
+    marking_id: string
     description?: string
     date?: string
     start_time?: string
@@ -21,7 +21,7 @@ interface IUpdateMarkingInput {
 export const updateMarking = async (
   _: any,
   { data: {
-    markingId,
+    marking_id,
     description,
     date,
     start_time,
@@ -38,7 +38,7 @@ export const updateMarking = async (
 
   const updatedMarking = await updateMarkingService.execute({
     authenticatedUserId,
-    markingId,
+    marking_id,
     description,
     date,
     start_time,

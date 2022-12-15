@@ -18,7 +18,7 @@ export const deleteMarking = async (
   const deleteMarkingService = container.resolve(DeleteMarkingService)
 
   const deletedMarkingId = await deleteMarkingService.execute({
-    markingId: id,
+    marking_id: id,
   })
 
   return deletedMarkingId

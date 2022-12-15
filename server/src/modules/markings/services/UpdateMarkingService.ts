@@ -8,7 +8,7 @@ import { Marking } from '../infra/prisma/entities/Marking'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 
 interface IServiceProps {
-  markingId: string
+  marking_id: string
   description?: string
   date?: string
   start_time?: string
@@ -30,7 +30,7 @@ export class UpdateMarkingService {
   ) {}
 
   public async execute({
-    markingId,
+    marking_id,
     description,
     date,
     start_time,
@@ -70,7 +70,7 @@ export class UpdateMarkingService {
       }
     }
 
-    const markingToUpdate = await this.markingsRepository.findById(markingId)
+    const markingToUpdate = await this.markingsRepository.findById(marking_id)
     if (!markingToUpdate) {
       throw new AppError('Marking not found!', 404)
     }

@@ -41,7 +41,7 @@ export const markingsTypeDefs = gql`
   }
 
   input UpdateMarkingInput {
-    markingId: String!
+    marking_id: String!
     description: String
     date: String
     start_time: String
