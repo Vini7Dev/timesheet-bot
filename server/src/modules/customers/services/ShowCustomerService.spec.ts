@@ -23,7 +23,7 @@ describe('ShowCustomerService', () => {
     })
 
     const customerData = await showCustomerService.execute({
-      customerId: createdCustomer.id,
+      customer_id: createdCustomer.id,
     })
 
     expect(customerData).toEqual(createdCustomer)
@@ -32,7 +32,7 @@ describe('ShowCustomerService', () => {
   it('should not be able to show a non-existent customer', async () => {
     await expect(
       showCustomerService.execute({
-        customerId: 'invalid-customer-id',
+        customer_id: 'invalid-customer-id',
       })
     ).rejects.toEqual(new AppError('Customer not found!', 404))
   })

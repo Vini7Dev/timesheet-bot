@@ -6,7 +6,7 @@ import { ensureAuthenticated } from '@utils/ensureAuthenticated'
 
 interface IUpdateCustomerInput {
   data: {
-    customerId: string
+    customer_id: string
     code?: string
     name?: string
   }
@@ -16,7 +16,7 @@ export const updateCustomer = async (
   _: any,
   {
     data: {
-      customerId,
+      customer_id,
       code,
       name,
     }
@@ -28,7 +28,7 @@ export const updateCustomer = async (
   const customerProfileService = container.resolve(UpdateCustomerService)
 
   const updatedCustomer = await customerProfileService.execute({
-    customerId,
+    customer_id,
     code,
     name,
   })

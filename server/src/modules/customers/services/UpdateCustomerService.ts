@@ -7,7 +7,7 @@ import { ICustomersRepository } from '../repositories/ICustomersRepository'
 interface IServiceProps {
   code?: string
   name?: string
-  customerId: string
+  customer_id: string
 }
 
 @injectable()
@@ -18,11 +18,11 @@ export class UpdateCustomerService {
   ) {}
 
   public async execute({
-    customerId,
+    customer_id,
     code,
     name,
   }: IServiceProps): Promise<Customer> {
-    const customerToUpdate = await this.customersRepository.findById(customerId)
+    const customerToUpdate = await this.customersRepository.findById(customer_id)
 
     if (!customerToUpdate) {
       throw new AppError('Customer not found!', 404)
@@ -37,7 +37,7 @@ export class UpdateCustomerService {
     }
 
     const dataToUpdateCustomer = {
-      id: customerId,
+      id: customer_id,
       code: code ?? customerToUpdate.code,
       name: name ?? customerToUpdate.name,
     }

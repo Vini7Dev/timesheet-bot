@@ -14,7 +14,7 @@ export const deleteCustomer = async (_: any, { id }: IDeleteCustomerInput, ctx: 
   const deleteCustomerService = container.resolve(DeleteCustomerService)
 
   const userIdDeleted = await deleteCustomerService.execute({
-    customerId: id,
+    customer_id: id,
   })
 
   return userIdDeleted

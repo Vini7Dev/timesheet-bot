@@ -14,7 +14,7 @@ export const customer = async (_: any, { id }: ICustomerInput, ctx: IAppContext)
   const showCustomerService = container.resolve(ShowCustomerService)
 
   const findedCustomer = await showCustomerService.execute({
-    customerId: id,
+    customer_id: id,
   })
 
   return findedCustomer

@@ -27,7 +27,7 @@ export const customersTypeDefs = gql`
   }
 
   input UpdateCustomerInput {
-    customerId: String!
+    customer_id: String!
     code: String
     name: String
   }

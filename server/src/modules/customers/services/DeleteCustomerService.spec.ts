@@ -23,7 +23,7 @@ describe('DeleteCustomerService', () => {
     })
 
     const result = await deleteCustomerService.execute({
-      customerId: createdCustomer.id,
+      customer_id: createdCustomer.id,
     })
 
     expect(result).toEqual(createdCustomer.id)
@@ -32,7 +32,7 @@ describe('DeleteCustomerService', () => {
   it('should not be able to delete a non-existent customer', async () => {
     await expect(
       deleteCustomerService.execute({
-        customerId: 'invalid-customer-id',
+        customer_id: 'invalid-customer-id',
       })
     ).rejects.toEqual(new AppError('Customer not found!', 404))
   })

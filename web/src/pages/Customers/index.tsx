@@ -26,7 +26,7 @@ interface IGetCustomersResponse {
 }
 
 interface IUpdateCustomerProps {
-  customerId: string
+  customer_id: string
   code?: string
   name?: string
 }
@@ -103,7 +103,7 @@ export const Customers: React.FC = () => {
   }, [client, handleGetCustomers, toast])
 
   const handleUpdateCustomer = useCallback(async ({
-    customerId,
+    customer_id,
     code,
     name
   }: IUpdateCustomerProps) => {
@@ -113,7 +113,7 @@ export const Customers: React.FC = () => {
       mutation: UPDATE_CUSTOMER,
       variables: {
         data: {
-          customerId,
+          customer_id,
           code,
           name
         }
@@ -220,7 +220,7 @@ const CustomerItem: React.FC<ICustomerItemProps> = ({
     }
 
     onUpdate({
-      customerId: id,
+      customer_id: id,
       code: newCode,
       name: newName
     })

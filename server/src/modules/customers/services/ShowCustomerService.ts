@@ -5,7 +5,7 @@ import { ICustomersRepository } from '../repositories/ICustomersRepository'
 import { Customer } from '../infra/prisma/entities/Customer';
 
 interface IServiceProps {
-  customerId: string
+  customer_id: string
 }
 
 @injectable()
@@ -16,9 +16,9 @@ export class ShowCustomerService {
   ) {}
 
   public async execute({
-    customerId,
+    customer_id,
   }: IServiceProps): Promise<Customer> {
-    const findedCustomer = await this.customersRepository.findById(customerId)
+    const findedCustomer = await this.customersRepository.findById(customer_id)
 
     if (!findedCustomer) {
       throw new AppError('Customer not found!', 404)

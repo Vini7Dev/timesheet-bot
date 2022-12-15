@@ -23,7 +23,7 @@ describe('UpdateCustomerService', () => {
     })
 
     const updatedCustomer = await updateCustomerService.execute({
-      customerId: createdCustomer.id,
+      customer_id: createdCustomer.id,
       name: 'Updated Customer Example',
       code: '9876543210',
     })
@@ -42,7 +42,7 @@ describe('UpdateCustomerService', () => {
     })
 
     const updatedCustomer = await updateCustomerService.execute({
-      customerId: createdCustomer.id,
+      customer_id: createdCustomer.id,
     })
 
     expect(updatedCustomer).toHaveProperty('id')
@@ -55,7 +55,7 @@ describe('UpdateCustomerService', () => {
   it('should not be able to update a non-existent customer', async () => {
     await expect(
       updateCustomerService.execute({
-        customerId: 'invalid-customer-id',
+        customer_id: 'invalid-customer-id',
       })
     ).rejects.toEqual(new AppError('Customer not found!', 404))
   })
@@ -73,7 +73,7 @@ describe('UpdateCustomerService', () => {
 
     await expect(
       updateCustomerService.execute({
-        customerId: secondCustomer.id,
+        customer_id: secondCustomer.id,
         name: 'Updated Customer Example - 2',
         code: '1111111111',
       })
