@@ -29,7 +29,7 @@ describe('DeleteProfileService', () => {
     })
 
     const deletedProfileId = await deleteProfileService.execute({
-      userId: createdUser.id,
+      user_id: createdUser.id,
       authenticatedUserId: createdUser.id,
     })
 
@@ -46,7 +46,7 @@ describe('DeleteProfileService', () => {
 
     await expect(
       deleteProfileService.execute({
-        userId: 'invalid-user-id',
+        user_id: 'invalid-user-id',
         authenticatedUserId: createdUser.id,
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
@@ -69,7 +69,7 @@ describe('DeleteProfileService', () => {
 
     await expect(
       deleteProfileService.execute({
-        userId: firstUser.id,
+        user_id: firstUser.id,
         authenticatedUserId: secondUser.id,
       })
     ).rejects.toEqual(

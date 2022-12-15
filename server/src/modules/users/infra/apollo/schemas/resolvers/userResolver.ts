@@ -14,7 +14,7 @@ export const user = async (_: any, { id }: IUserInput, ctx: IAppContext) => {
   const showProfileService = container.resolve(ShowProfileService)
 
   const findedUser = await showProfileService.execute({
-    userId: id,
+    user_id: id,
     authenticatedUserId,
   })
 

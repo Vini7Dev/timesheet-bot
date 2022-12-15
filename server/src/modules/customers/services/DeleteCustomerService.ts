@@ -23,8 +23,8 @@ export class DeleteCustomerService {
       throw new AppError('Customer not found!', 404)
     }
 
-    const customer_idDeleted = await this.customersRepository.delete(customer_id)
+    const customerIdDeleted = await this.customersRepository.delete(customer_id)
 
-    return customer_idDeleted
+    return customerIdDeleted
   }
 }

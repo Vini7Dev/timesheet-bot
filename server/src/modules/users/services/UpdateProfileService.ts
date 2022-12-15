@@ -7,7 +7,7 @@ import { IUsersRepository } from '../repositories/IUsersRepository'
 
 interface IServiceProps {
   authenticatedUserId: string
-  userId: string
+  user_id: string
   name?: string
   email?: string
   username?: string
@@ -27,14 +27,14 @@ export class UpdateProfileService {
 
   public async execute({
     authenticatedUserId,
-    userId,
+    user_id,
     name,
     email,
     username,
     newPassword,
     currentPassword,
   }: IServiceProps): Promise<User> {
-    const profileToUpdate = await this.usersRepository.findById(userId)
+    const profileToUpdate = await this.usersRepository.findById(user_id)
     if (!profileToUpdate) {
       throw new AppError('Profile not found!', 404)
     }
@@ -56,7 +56,7 @@ export class UpdateProfileService {
     }
 
     const dataToUpdateProfile = {
-      id: userId,
+      id: user_id,
       name: name ?? profileToUpdate.name,
       email: email ?? profileToUpdate.email,
       username: username ?? profileToUpdate.username,

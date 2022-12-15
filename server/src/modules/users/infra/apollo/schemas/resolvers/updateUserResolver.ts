@@ -6,7 +6,7 @@ import { ensureAuthenticated } from '@utils/ensureAuthenticated'
 
 interface IUpdateUserInput {
   data: {
-    userId: string
+    user_id: string
     name?: string
     email?: string
     username?: string
@@ -19,7 +19,7 @@ export const updateUser = async (
   _: any,
   {
     data: {
-      userId,
+      user_id,
       name,
       email,
       username,
@@ -35,7 +35,7 @@ export const updateUser = async (
 
   const updatedUser = await updateProfileService.execute({
     authenticatedUserId,
-    userId,
+    user_id,
     name,
     email,
     username,

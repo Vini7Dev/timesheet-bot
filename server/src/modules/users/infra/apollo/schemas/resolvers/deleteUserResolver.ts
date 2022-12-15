@@ -14,7 +14,7 @@ export const deleteUser = async (_: any, { id }: IDeleteUserInput, ctx: IAppCont
   const deleteProfileService = container.resolve(DeleteProfileService)
 
   const userIdDeleted = await deleteProfileService.execute({
-    userId: id,
+    user_id: id,
     authenticatedUserId,
   })
 

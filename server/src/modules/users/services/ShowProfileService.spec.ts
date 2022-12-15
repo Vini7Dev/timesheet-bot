@@ -29,7 +29,7 @@ describe('ShowProfileService', () => {
     })
 
     const profileData = await showProfileService.execute({
-      userId: createdUser.id,
+      user_id: createdUser.id,
       authenticatedUserId: createdUser.id,
     })
 
@@ -47,7 +47,7 @@ describe('ShowProfileService', () => {
 
     await expect(
       showProfileService.execute({
-        userId: 'non-existent-user',
+        user_id: 'non-existent-user',
         authenticatedUserId: createdUser.id,
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
@@ -70,7 +70,7 @@ describe('ShowProfileService', () => {
 
     await expect(
       showProfileService.execute({
-        userId: firstUser.id,
+        user_id: firstUser.id,
         authenticatedUserId: secondUser.id,
       })
     ).rejects.toEqual(

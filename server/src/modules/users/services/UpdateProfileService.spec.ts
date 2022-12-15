@@ -31,7 +31,7 @@ describe('UpdateProfileService', () => {
 
     const updatedUser = await updateProfileService.execute({
       authenticatedUserId: createdUser.id,
-      userId: createdUser.id,
+      user_id: createdUser.id,
       name: 'New name',
       email: 'newemail@mail.com',
       username: 'new.username',
@@ -58,7 +58,7 @@ describe('UpdateProfileService', () => {
 
     const updatedUser = await updateProfileService.execute({
       authenticatedUserId: createdUser.id,
-      userId: createdUser.id,
+      user_id: createdUser.id,
       currentPassword: 'jhon123',
     })
 
@@ -89,7 +89,7 @@ describe('UpdateProfileService', () => {
     await expect(
       updateProfileService.execute({
         authenticatedUserId: secondUser.id,
-        userId: secondUser.id,
+        user_id: secondUser.id,
         name: 'New name',
         email: 'sameEmail',
         username: 'new.username',
@@ -117,7 +117,7 @@ describe('UpdateProfileService', () => {
     await expect(
       updateProfileService.execute({
         authenticatedUserId: secondUser.id,
-        userId: secondUser.id,
+        user_id: secondUser.id,
         name: 'New name',
         email: 'newemail@mail.com',
         username: 'same.username',
@@ -138,7 +138,7 @@ describe('UpdateProfileService', () => {
     await expect(
       updateProfileService.execute({
         authenticatedUserId: createdUser.id,
-        userId: createdUser.id,
+        user_id: createdUser.id,
         name: 'New name',
         email: 'newemail@mail.com',
         username: 'new.username',
@@ -166,7 +166,7 @@ describe('UpdateProfileService', () => {
     await expect(
       updateProfileService.execute({
         authenticatedUserId: secondUser.id,
-        userId: firstUser.id,
+        user_id: firstUser.id,
         name: 'New name',
         email: 'newemail@mail.com',
         username: 'new.username',
@@ -182,7 +182,7 @@ describe('UpdateProfileService', () => {
     await expect(
       updateProfileService.execute({
         authenticatedUserId: 'non-existent-profile',
-        userId: 'non-existent-profile',
+        user_id: 'non-existent-profile',
         name: 'New name',
         email: 'newemail@mail.com',
         username: 'new.username',

@@ -5,7 +5,7 @@ import { User } from '../infra/prisma/entities/User'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 
 interface IServiceProps {
-  userId: string
+  user_id: string
   authenticatedUserId: string
 }
 
@@ -17,10 +17,10 @@ export class ShowProfileService {
   ) {}
 
   public async execute({
-    userId,
+    user_id,
     authenticatedUserId
   }: IServiceProps): Promise<User> {
-    const userData = await this.usersRepository.findById(userId)
+    const userData = await this.usersRepository.findById(user_id)
 
     if (!userData) {
       throw new AppError('User not found!', 404)

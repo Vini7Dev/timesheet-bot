@@ -4,7 +4,7 @@ import { inject, injectable } from 'tsyringe'
 import { IUsersRepository } from '../repositories/IUsersRepository'
 
 interface IServiceProps {
-  userId: string
+  user_id: string
   authenticatedUserId: string
 }
 
@@ -16,10 +16,10 @@ export class DeleteProfileService {
   ) {}
 
   public async execute({
-    userId,
+    user_id,
     authenticatedUserId,
   }: IServiceProps): Promise<string> {
-    const userToDelete = await this.usersRepository.findById(userId)
+    const userToDelete = await this.usersRepository.findById(user_id)
     if (!userToDelete) {
       throw new AppError('User not found!', 404)
     }
@@ -28,7 +28,7 @@ export class DeleteProfileService {
       throw new AppError('You do not have permission to delete this profile!', 403)
     }
 
-    const userIdDeleted = await this.usersRepository.delete(userId)
+    const userIdDeleted = await this.usersRepository.delete(user_id)
 
     return userIdDeleted
   }

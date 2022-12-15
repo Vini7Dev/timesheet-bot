@@ -38,7 +38,7 @@ export const userTypeDefs = gql`
   }
 
   input UpdateUserInput {
-    userId: String!
+    user_id: String!
     name: String
     email: String
     username: String
