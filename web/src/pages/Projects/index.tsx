@@ -35,7 +35,7 @@ interface IGetProjectsGroupByCustomersResponse {
 }
 
 interface IUpdateProjectProps {
-  projectId: string
+  project_id: string
   code?: string
   name?: string
 }
@@ -124,7 +124,7 @@ export const Projects: React.FC = () => {
   }, [handleGetProjects, toggleShowCreateProjectForm])
 
   const handleUpdateProject = useCallback(async ({
-    projectId,
+    project_id,
     code,
     name
   }: IUpdateProjectProps) => {
@@ -134,7 +134,7 @@ export const Projects: React.FC = () => {
       mutation: UPDATE_PROJECT,
       variables: {
         data: {
-          projectId,
+          project_id,
           code,
           name
         }
@@ -196,13 +196,13 @@ export const Projects: React.FC = () => {
                       {
                         projects.length > 0
                           ? projects.map(({
-                            id: projectId,
+                            id: project_id,
                             code: projectCode,
                             name: projectName
                           }) => (
                           <ProjectItem
-                              key={projectId}
-                              id={projectId}
+                              key={project_id}
+                              id={project_id}
                               code={projectCode}
                               name={projectName}
                               customerName={customerName}
@@ -292,7 +292,7 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
     }
 
     onUpdate({
-      projectId: id,
+      project_id: id,
       code: newCode,
       name: newName
     })
@@ -322,7 +322,14 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
           {customerName}
         </button>
 
-        { customerPopupIsOpen && <SelectPopup popupType="customers" /> }
+        { customerPopupIsOpen && (
+          <SelectPopup
+            popupType="customers"
+            onSelect={() => {
+              setCustomerPopupIsOpen(false)
+            }}
+          />
+        ) }
       </div>
 
       <button className="remove-project" onClick={async () => await onDelete(id)}>

@@ -24,7 +24,7 @@ describe('ShowProjectService', () => {
     })
 
     const findedProject = await showProjectService.execute({
-      projectId: createdProject.id,
+      project_id: createdProject.id,
     })
 
     expect(findedProject).toEqual(createdProject)
@@ -33,7 +33,7 @@ describe('ShowProjectService', () => {
   it('should not be able to show a non-existent project', async () => {
     await expect(
       showProjectService.execute({
-        projectId: 'invalid-project-id',
+        project_id: 'invalid-project-id',
       })
     ).rejects.toEqual(new AppError('Project not found!', 404))
   })

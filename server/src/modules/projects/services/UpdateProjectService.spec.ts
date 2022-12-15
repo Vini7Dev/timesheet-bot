@@ -24,7 +24,7 @@ describe('UpdateProjectService', () => {
     })
 
     const updatedProject = await updateProjectService.execute({
-      projectId: createdProject.id,
+      project_id: createdProject.id,
       name: 'Updated Project Example',
       code: 'VWXYZ',
     })
@@ -44,7 +44,7 @@ describe('UpdateProjectService', () => {
     })
 
     const updatedProject = await updateProjectService.execute({
-      projectId: createdProject.id,
+      project_id: createdProject.id,
     })
 
     expect(updatedProject).toHaveProperty('id')
@@ -57,7 +57,7 @@ describe('UpdateProjectService', () => {
   it('should not be able to update a non-existent project', async () => {
     await expect(
       updateProjectService.execute({
-        projectId: 'invalid-project-id',
+        project_id: 'invalid-project-id',
       })
     ).rejects.toEqual(new AppError('Project not found!', 404))
   })
@@ -77,7 +77,7 @@ describe('UpdateProjectService', () => {
 
     await expect(
       updateProjectService.execute({
-        projectId: secondProject.id,
+        project_id: secondProject.id,
         name: 'Updated Project Example - 2',
         code: 'ABCDE',
       })

@@ -24,7 +24,7 @@ describe('DeleteProjectService', () => {
     })
 
     const result = await deleteProjectService.execute({
-      projectId: projectToDelete.id
+      project_id: projectToDelete.id
     })
 
     expect(result).toEqual(projectToDelete.id)
@@ -33,7 +33,7 @@ describe('DeleteProjectService', () => {
   it('should not be able to delete a non-existent project', async () => {
     await expect(
       deleteProjectService.execute({
-        projectId: 'invalid-project-id',
+        project_id: 'invalid-project-id',
       })
     ).rejects.toEqual(new AppError('Project not found!', 404))
   })

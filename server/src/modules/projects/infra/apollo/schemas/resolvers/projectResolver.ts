@@ -17,7 +17,7 @@ export const project = async (
 
   const showProjectService = container.resolve(ShowProjectService)
 
-  const findedProject = await showProjectService.execute({ projectId: id })
+  const findedProject = await showProjectService.execute({ project_id: id })
 
   return findedProject
 }

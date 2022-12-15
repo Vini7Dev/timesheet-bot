@@ -18,7 +18,7 @@ export const deleteProject = async (
   const deleteProjectService = container.resolve(DeleteProjectService)
 
   const deletedProjectId = await deleteProjectService.execute({
-    projectId: id
+    project_id: id
   })
 
   return deletedProjectId

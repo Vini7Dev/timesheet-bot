@@ -5,7 +5,7 @@ import { Project } from '../infra/prisma/entities/Project';
 import { IProjectsRepository } from '../repositories/IProjectsRepository'
 
 interface IServiceProps {
-  projectId: string
+  project_id: string
   code?: string
   name?: string
 }
@@ -18,11 +18,11 @@ export class UpdateProjectService {
   ) {}
 
   public async execute({
-    projectId,
+    project_id,
     code,
     name,
   }: IServiceProps): Promise<Project> {
-    const projectToUpdate = await this.projectsRepository.findById(projectId)
+    const projectToUpdate = await this.projectsRepository.findById(project_id)
 
     if (!projectToUpdate) {
       throw new AppError('Project not found!', 404)
@@ -37,7 +37,7 @@ export class UpdateProjectService {
     }
 
     const dataToUpdateProject = {
-      id: projectId,
+      id: project_id,
       code: code ?? projectToUpdate.code,
       name: name ?? projectToUpdate.name,
     }

@@ -6,7 +6,7 @@ import { UpdateProjectService } from '@modules/projects/services/UpdateProjectSe
 
 interface IUpdateProjectInput {
   data: {
-    projectId: string
+    project_id: string
     code?: string
     name?: string
   }
@@ -14,7 +14,7 @@ interface IUpdateProjectInput {
 
 export const updateProject = async (
   _: any,
-  { data: { projectId, code, name } }: IUpdateProjectInput,
+  { data: { project_id, code, name } }: IUpdateProjectInput,
   ctx: IAppContext
 ) => {
   ensureAuthenticated(ctx)
@@ -22,7 +22,7 @@ export const updateProject = async (
   const updateProjectService = container.resolve(UpdateProjectService)
 
   const updatedProject = await updateProjectService.execute({
-    projectId,
+    project_id,
     code,
     name,
   })

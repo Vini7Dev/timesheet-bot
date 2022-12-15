@@ -28,7 +28,7 @@ export const projectsTypeDefs = gql`
   }
 
   input UpdateProjectInput {
-    projectId: String!
+    project_id: String!
     code: String
     name: String
   }
