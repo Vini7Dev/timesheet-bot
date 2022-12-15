@@ -57,6 +57,7 @@ export class FakeProjectsRepository implements IProjectsRepository {
     id,
     code,
     name,
+    customer_id,
   }: IUpdateProjectDTO): Promise<Project> {
     const projectToUpdateIndex = this.projects.findIndex(project => project.id === id)
 
@@ -67,6 +68,7 @@ export class FakeProjectsRepository implements IProjectsRepository {
     const updatedProject = this.projects[projectToUpdateIndex]
     if (code) updatedProject.code = code
     if (name) updatedProject.name = name
+    if (customer_id) updatedProject.customer_id = customer_id
     updatedProject.updated_at = (new Date(Date.now() + 10000))
 
     this.projects[projectToUpdateIndex] = updatedProject

@@ -7,6 +7,7 @@ import { UpdateProjectService } from '@modules/projects/services/UpdateProjectSe
 interface IUpdateProjectInput {
   data: {
     project_id: string
+    customer_id?: string
     code?: string
     name?: string
   }
@@ -14,7 +15,7 @@ interface IUpdateProjectInput {
 
 export const updateProject = async (
   _: any,
-  { data: { project_id, code, name } }: IUpdateProjectInput,
+  { data: { project_id, code, name, customer_id } }: IUpdateProjectInput,
   ctx: IAppContext
 ) => {
   ensureAuthenticated(ctx)
@@ -25,6 +26,7 @@ export const updateProject = async (
     project_id,
     code,
     name,
+    customer_id,
   })
 
   return updatedProject

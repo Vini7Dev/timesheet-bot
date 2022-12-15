@@ -31,5 +31,6 @@ export const projectsTypeDefs = gql`
     project_id: String!
     code: String
     name: String
+    customer_id: String
   }
 `

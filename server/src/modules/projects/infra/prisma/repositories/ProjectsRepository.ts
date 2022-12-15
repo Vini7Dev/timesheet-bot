@@ -57,6 +57,7 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
     id,
     code,
     name,
+    customer_id,
   }: IUpdateProjectDTO): Promise<Project> {
     const updatedProject = await this.client.projects.update({
       where: { id },
@@ -64,6 +65,7 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
         id,
         code,
         name,
+        customer_id,
         updated_at: new Date(),
       },
       include: { customer: true },
