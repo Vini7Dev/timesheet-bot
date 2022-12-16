@@ -12,6 +12,7 @@ type PopupContentToShow = 'projects' | 'customers'
 
 interface ISelectPopupProps {
   popupType: PopupContentToShow
+  onSelect: (selectedId: string) => void
 }
 
 interface ICustomerProps {
@@ -31,11 +32,13 @@ interface IGetCustomersResponse {
 }
 
 export const SelectPopup: React.FC<ISelectPopupProps> = ({
+  onSelect,
   popupType
 }) => {
   const client = useApolloClient()
   const toast = useToast()
 
+  const [searchText, setSearchText] = useState('')
   const [customers, setCustomers] = useState<ICustomerProps[]>([])
   const [projects, setProjects] = useState<IProjectProps[]>([])
 
@@ -91,7 +94,11 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
 
   return (
     <SelectPopupContainer id="popup-container">
-      <Input placeholder="Pesquise..." />
+      <Input
+        placeholder="Pesquise..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
 
       <div id="popup-results">
         {
@@ -124,7 +131,11 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                           <ul className="customers-popup-list">
                             {
                               customers.map(({ id, name }) => (
-                                <li key={id} className="customer-popup-name">
+                                <li
+                                  key={id}
+                                  className="customer-popup-name"
+                                  onClick={() => onSelect(id)}
+                                >
                                   {name}
                                 </li>
                               ))

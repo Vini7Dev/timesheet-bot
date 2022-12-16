@@ -7,6 +7,7 @@ import { ICustomersRepository } from '../repositories/ICustomersRepository'
 interface IServiceProps {
   page?: number
   perPage?: number
+  search?: string
 }
 
 @injectable()
@@ -19,8 +20,9 @@ export class ListCustomersService {
   public async execute({
     page,
     perPage,
+    search,
   }: IServiceProps): Promise<Customer[]> {
-    const customersList = await this.customersRepository.list({ page, perPage })
+    const customersList = await this.customersRepository.list({ page, perPage, search })
 
     return customersList
   }

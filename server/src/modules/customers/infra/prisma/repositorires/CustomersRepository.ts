@@ -3,6 +3,7 @@ import { IUpdateCustomerDTO } from '@modules/customers/dtos/IUpdateCustomerDTO';
 import { ICustomersRepository } from '@modules/customers/repositories/ICustomersRepository'
 import { Customer } from '../entities/Customer';
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository';
+import { IListCustomersDTO } from '@modules/customers/dtos/IListCustomersDTO';
 
 export class CustomersRepository extends AppRepository implements ICustomersRepository {
   public async findById(id: string): Promise<Customer | null> {
@@ -26,11 +27,15 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number }): Promise<Customer[]> {
+    search = '',
+  }: IListCustomersDTO): Promise<Customer[]> {
     const customerList = await this.client.customers.findMany({
       skip: page,
       take: perPage,
       include: { projects: true },
+      where: {
+        name: { contains: search, mode: 'insensitive' },
+      },
     })
 
     return customerList

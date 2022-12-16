@@ -9,12 +9,13 @@ interface IApiFiltersInput {
   data: {
     page?: number
     perPage?: number
+    search?: string
   }
 }
 
 export const customers = async (
   _: any, {
-    data: { page, perPage }
+    data: { page, perPage, search }
   }: IApiFiltersInput,
   ctx: IAppContext,
 ) => {
@@ -25,6 +26,7 @@ export const customers = async (
   const customerList = await listCustomersService.execute({
     page,
     perPage,
+    search,
   })
 
   return customerList

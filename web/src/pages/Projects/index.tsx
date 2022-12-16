@@ -38,10 +38,12 @@ interface IUpdateProjectProps {
   project_id: string
   code?: string
   name?: string
+  customer_id?: string
 }
 
 interface IProjectItemProps extends IProjectProps {
-  customerName: string
+  customer_id: string
+  customer_name: string
   onDelete: (id: string) => Promise<void>
   onUpdate: (data: IUpdateProjectProps) => Promise<void>
 }
@@ -126,7 +128,8 @@ export const Projects: React.FC = () => {
   const handleUpdateProject = useCallback(async ({
     project_id,
     code,
-    name
+    name,
+    customer_id
   }: IUpdateProjectProps) => {
     const {
       errors
@@ -136,7 +139,8 @@ export const Projects: React.FC = () => {
         data: {
           project_id,
           code,
-          name
+          name,
+          customer_id
         }
       }
     })
@@ -179,13 +183,13 @@ export const Projects: React.FC = () => {
             {
               projectsByCustomers.length > 0
                 ? projectsByCustomers.map(({
-                  id,
-                  name: customerName,
+                  id: customer_id,
+                  name: customer_name,
                   projects
                 }) => (
-                  <div className="projects-customer-group" key={id}>
+                  <div className="projects-customer-group" key={customer_id}>
                     <div className="projects-customer-group-header">
-                      <span className="projects-customer-group-name">{customerName}</span>
+                      <span className="projects-customer-group-name">{customer_name}</span>
 
                       <span className="projects-customer-group-label">
                         Projeto / Identificador / Cliente
@@ -205,7 +209,8 @@ export const Projects: React.FC = () => {
                               id={project_id}
                               code={projectCode}
                               name={projectName}
-                              customerName={customerName}
+                              customer_id={customer_id}
+                              customer_name={customer_name}
                               onDelete={handleDeleteProject}
                               onUpdate={handleUpdateProject}
                             />
@@ -271,7 +276,8 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
   id,
   code,
   name,
-  customerName,
+  customer_id,
+  customer_name,
   onDelete,
   onUpdate
 }) => {
@@ -282,21 +288,23 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
   }, [customerPopupIsOpen])
 
   const updateProject = useCallback(({
-    newName, newCode
+    newName, newCode, newCustomerId
   }: {
     newName?: string
     newCode?: string
+    newCustomerId?: string
   }) => {
-    if (code === newCode || name === newName) {
+    if (code === newCode || name === newName || newCustomerId === customer_id) {
       return
     }
 
     onUpdate({
       project_id: id,
       code: newCode,
-      name: newName
+      name: newName,
+      customer_id: newCustomerId
     })
-  }, [code, id, name, onUpdate])
+  }, [code, customer_id, id, name, onUpdate])
 
   return (
     <ProjectItemContainer>
@@ -319,13 +327,14 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
           className="project-select-project-or-customer-button"
           onClick={toggleCustomerPopupIsOpen}
         >
-          {customerName}
+          {customer_name}
         </button>
 
         { customerPopupIsOpen && (
           <SelectPopup
             popupType="customers"
-            onSelect={() => {
+            onSelect={(customer_id: string) => {
+              updateProject({ newCustomerId: customer_id })
               setCustomerPopupIsOpen(false)
             }}
           />

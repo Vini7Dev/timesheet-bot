@@ -1,4 +1,5 @@
 import { ICreateCustomerDTO } from '@modules/customers/dtos/ICreateCustomerDTO';
+import { IListCustomersDTO } from '@modules/customers/dtos/IListCustomersDTO';
 import { IUpdateCustomerDTO } from '@modules/customers/dtos/IUpdateCustomerDTO';
 import { Customer } from '@modules/customers/infra/prisma/entities/Customer';
 import { AppError } from '@shared/errors/AppError';
@@ -20,8 +21,17 @@ export class FakeCustomersRepository implements ICustomersRepository {
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number }): Promise<Customer[]> {
+    search,
+  }: IListCustomersDTO): Promise<Customer[]> {
     const filteredCustomers = this.customers.slice(page, perPage + page)
+
+    if (search) {
+      return filteredCustomers.filter(
+        customer => customer.name
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase())
+      )
+    }
 
     return filteredCustomers
   }

@@ -29,17 +29,17 @@ describe('ListCustomersService', () => {
 
   it('should be able to list customers with pagination filters', async () => {
     await customersRepository.create({
-      name: 'Customer Example - 1',
+      name: 'First Customer Example',
       code: '1111111111',
     })
 
     const secondCustomer = await customersRepository.create({
-      name: 'Customer Example - 2',
+      name: 'Second Customer Example',
       code: '2222222222',
     })
 
     await customersRepository.create({
-      name: 'Customer Example - 3',
+      name: 'Third Customer Example',
       code: '3333333333',
     })
 
@@ -50,5 +50,30 @@ describe('ListCustomersService', () => {
 
     expect(customersList).toHaveLength(1)
     expect(customersList[0].id).toEqual(secondCustomer.id)
+  })
+
+  it('should be able to list customers with search filter', async () => {
+    await customersRepository.create({
+      name: 'First Customer Example',
+      code: '1111111111',
+    })
+
+    const secondCustomer = await customersRepository.create({
+      name: 'Second Customer Example',
+      code: '2222222222',
+    })
+
+    const thirdCustomer = await customersRepository.create({
+      name: 'Third Customer Example',
+      code: '3333333333',
+    })
+
+    const customersList = await listCustomersService.execute({
+      search: 'd custo'
+    })
+
+    expect(customersList).toHaveLength(2)
+    expect(customersList[0].id).toEqual(secondCustomer.id)
+    expect(customersList[1].id).toEqual(thirdCustomer.id)
   })
 })

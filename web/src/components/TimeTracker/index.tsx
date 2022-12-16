@@ -93,7 +93,14 @@ export const TimeTracker: React.FC = () => {
           + Projeto
         </button>
 
-        { projectPopupIsOpen && <SelectPopup popupType="projects" /> }
+        { projectPopupIsOpen && (
+          <SelectPopup
+            popupType="projects"
+            onSelect={() => {
+              //
+            }}
+          />
+        ) }
       </div>
 
       <div className="timer-row timer-row-second">
