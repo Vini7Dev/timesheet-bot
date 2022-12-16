@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
+import { PulseLoader } from 'react-spinners'
 
 import { Input } from '../Input'
 import { Button } from '../Button'
@@ -39,6 +40,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
   const toast = useToast()
 
   const [searchText, setSearchText] = useState('')
+  const [searchLoading, setSearchLoading] = useState(false)
   const [customers, setCustomers] = useState<ICustomerProps[]>([])
   const [projects, setProjects] = useState<IProjectProps[]>([])
 
@@ -59,11 +61,13 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     setShowCreatePopupForm(true)
   }, [])
 
-  const handleGetCustomers = useCallback(async () => {
+  const handleGetCustomers = useCallback(async (search?: string) => {
+    setSearchLoading(true)
+
     const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
       query: CUSTOMERS,
       variables: {
-        data: {}
+        data: { search }
       },
       fetchPolicy: 'no-cache'
     })
@@ -78,19 +82,21 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     } else {
       setCustomers(customersResponse.customers)
     }
+
+    setSearchLoading(false)
   }, [client, toast])
 
   const handleReloadCustomers = useCallback(async () => {
-    handleGetCustomers()
+    handleGetCustomers(searchText)
 
     toggleShowCreatePopupForm()
-  }, [handleGetCustomers, toggleShowCreatePopupForm])
+  }, [handleGetCustomers, searchText, toggleShowCreatePopupForm])
 
   useEffect(() => {
     if (popupType === 'customers') {
-      handleGetCustomers()
+      handleGetCustomers(searchText)
     }
-  }, [handleGetCustomers, popupType])
+  }, [handleGetCustomers, popupType, searchText])
 
   return (
     <SelectPopupContainer id="popup-container">
@@ -130,15 +136,21 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                         <>
                           <ul className="customers-popup-list">
                             {
-                              customers.map(({ id, name }) => (
-                                <li
-                                  key={id}
-                                  className="customer-popup-name"
-                                  onClick={() => onSelect(id)}
-                                >
-                                  {name}
-                                </li>
-                              ))
+                              searchLoading
+                                ? (
+                                  <li className="customer-popup-name">
+                                    <PulseLoader color="#FFF" size={8} />
+                                  </li>
+                                  )
+                                : customers.map(({ id, name }) => (
+                                  <li
+                                    key={id}
+                                    className="customer-popup-name"
+                                    onClick={() => onSelect(id)}
+                                  >
+                                    {name}
+                                  </li>
+                                ))
                             }
                           </ul>
                         </>
