@@ -59,6 +59,7 @@ export const TimerTrackerContainer = styled.div`
 
     #timer-start-stop-button {
       min-width: 5rem;
+      margin-left: auto;
     }
   }
 
