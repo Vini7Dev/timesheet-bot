@@ -1,4 +1,6 @@
 import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO';
+import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO';
+import { IListMarkingsDTO } from '@modules/markings/dtos/IListMarkingsDTO';
 import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO';
 import { Marking } from '@modules/markings/infra/prisma/entities/Marking';
 import { AppError } from '@shared/errors/AppError';
@@ -21,11 +23,23 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     page = 0,
     perPage = 10,
     date,
-  }: { page?: number, perPage?: number, date?: string }): Promise<Marking[]> {
+  }: IListMarkingsDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
       .filter(marking => {
         return (date ? marking.date === date : true)
       })
+      .slice(page, perPage + page)
+
+    return filteredMarkings
+  }
+
+  public async listByUserId({
+    user_id,
+    page = 0,
+    perPage = 10,
+  }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
+    const filteredMarkings = this.markings
+      .filter(marking => marking.user_id === user_id)
       .slice(page, perPage + page)
 
     return filteredMarkings
