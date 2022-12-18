@@ -1,4 +1,5 @@
 import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO'
+import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO'
 import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO'
 import { IMarkingsRepository } from '@modules/markings/repositories/IMarkingsRepository'
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
@@ -31,6 +32,22 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     })
 
     return filteredMarkings as Marking[]
+  }
+
+  public async listByUserId({
+    user_id,
+    page,
+    perPage,
+  }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
+    const filteredMarkings = await this.client.markings.findMany({
+      skip: page,
+      take: perPage,
+      where: {
+        user_id,
+      }
+    })
+
+    return filteredMarkings
   }
 
   public async create({

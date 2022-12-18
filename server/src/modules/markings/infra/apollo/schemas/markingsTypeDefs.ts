@@ -4,6 +4,7 @@ export const markingsTypeDefs = gql`
   extend type Query {
     marking(id: ID!): Marking!
     markings(data: ApiFiltersInput!): [Marking!]!
+    markingsByUserId(data: ApiFiltersInput!): [Marking!]!
   }
 
   extend type Mutation {
