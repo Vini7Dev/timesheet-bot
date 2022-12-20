@@ -156,26 +156,26 @@ export const Customers: React.FC = () => {
 
               <div className="customers-group-list">
                 {
-                  customers.length > 0
-                    ? customers.map(({ id, code, name }) => (
-                      <CustomerItem
-                        key={id}
-                        id={id}
-                        code={code}
-                        name={name}
-                        onDelete={handleDeleteCustomer}
-                        onUpdate={handleUpdateCustomer}
-                      />
-                    ))
-                    : <ListAlert
-                        alertType={loadingCustomers ? 'loading' : 'empty'}
-                        alertButton={loadingCustomers
-                          ? undefined
-                          : {
-                              buttonText: 'Cadastrar cliente',
-                              onClick: toggleShowCreateCustomerForm
-                            }}
-                      />
+                  loadingCustomers
+                    ? <ListAlert alertType={'loading'} />
+                    : customers.length > 0
+                      ? customers.map(({ id, code, name }) => (
+                        <CustomerItem
+                          key={id}
+                          id={id}
+                          code={code}
+                          name={name}
+                          onDelete={handleDeleteCustomer}
+                          onUpdate={handleUpdateCustomer}
+                        />
+                      ))
+                      : (<ListAlert
+                          alertType={'empty'}
+                          alertButton={{
+                            buttonText: 'Cadastrar cliente',
+                            onClick: toggleShowCreateCustomerForm
+                          }}
+                        />)
                 }
               </div>
             </div>

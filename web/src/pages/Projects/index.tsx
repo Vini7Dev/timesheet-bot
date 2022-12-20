@@ -87,7 +87,7 @@ export const Projects: React.FC = () => {
       setProjectsByCustomers(projectsResponse.customers)
     }
 
-    setLoadingProjects(true)
+    setLoadingProjects(false)
   }, [client, toast])
 
   const handleDeleteProject = useCallback(async (id: string) => {
@@ -175,70 +175,70 @@ export const Projects: React.FC = () => {
             </div>
 
             {
-              projectsByCustomers.length > 0
-                ? projectsByCustomers.map(({
-                  id: customer_id,
-                  name: customer_name,
-                  projects
-                }) => (
-                  <div className="projects-customer-group" key={customer_id}>
-                    <div className="projects-customer-group-header">
-                      <span className="projects-customer-group-name">{customer_name}</span>
-
-                      <span className="projects-customer-group-label">
-                        Projeto / Identificador / Cliente
-                      </span>
-                    </div>
-
+              loadingProjects
+                ? (<div className="projects-customer-group">
                     <div className="project-customer-group-list">
-                      {
-                        projects.length > 0
-                          ? projects.map(({
-                            id: project_id,
-                            code: projectCode,
-                            name: projectName
-                          }) => (
-                          <ProjectItem
-                              key={project_id}
-                              id={project_id}
-                              code={projectCode}
-                              name={projectName}
-                              customer_id={customer_id}
-                              customer_name={customer_name}
-                              onDelete={handleDeleteProject}
-                              onUpdate={handleUpdateProject} customer={{
-                                id: '',
-                                name: ''
-                              }} />
-                          ))
-                          : (
-                            <ListAlert
-                              alertType="empty"
-                              alertButton={{
-                                buttonText: 'Cadastrar projeto',
-                                onClick: toggleShowCreateProjectForm
-                              }}
-                            />
-                            )
-                      }
+                      <ListAlert alertType={'loading'} />
                     </div>
-                  </div>
-                ))
-                : (
-                    <div className="projects-customer-group">
+                  </div>)
+                : projectsByCustomers.length > 0
+                  ? projectsByCustomers.map(({
+                    id: customer_id,
+                    name: customer_name,
+                    projects
+                  }) => (
+                    <div className="projects-customer-group" key={customer_id}>
+                      <div className="projects-customer-group-header">
+                        <span className="projects-customer-group-name">{customer_name}</span>
+
+                        <span className="projects-customer-group-label">
+                          Projeto / Identificador / Cliente
+                        </span>
+                      </div>
+
                       <div className="project-customer-group-list">
-                        <ListAlert
-                          alertType={loadingProjects ? 'loading' : 'empty'}
-                          alertButton={loadingProjects
-                            ? undefined
-                            : {
-                                buttonText: 'Cadastrar cliente',
-                                onClick: toggleShowCreateCustomerForm
-                              }}
-                        />
+                        {
+                          projects.length > 0
+                            ? projects.map(({
+                              id: project_id,
+                              code: projectCode,
+                              name: projectName
+                            }) => (
+                            <ProjectItem
+                                key={project_id}
+                                id={project_id}
+                                code={projectCode}
+                                name={projectName}
+                                customer_id={customer_id}
+                                customer_name={customer_name}
+                                onDelete={handleDeleteProject}
+                                onUpdate={handleUpdateProject} customer={{
+                                  id: '',
+                                  name: ''
+                                }} />
+                            ))
+                            : (<ListAlert
+                                alertType="empty"
+                                alertButton={{
+                                  buttonText: 'Cadastrar projeto',
+                                  onClick: toggleShowCreateProjectForm
+                                }}
+                              />)
+                        }
                       </div>
                     </div>
-                  )
+                  ))
+                  : (<div className="projects-customer-group">
+                      <div className="project-customer-group-list">
+                        <ListAlert
+                          alertType={'empty'}
+                          alertButton={{
+                            buttonText: 'Cadastrar cliente',
+                            onClick: toggleShowCreateCustomerForm
+                          }}
+                        />
+                      </div>
+                    </div>)
             }
           </div>
         </MainContent>

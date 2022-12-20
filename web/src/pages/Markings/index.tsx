@@ -16,6 +16,7 @@ import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
 import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
 import { formatTimeNumberToString } from '../../utils/formatTimeNumberToString'
 import { calculateTotalHoursOfMarking } from '../../utils/calculateTotalHoursOfMarking'
+import { ListAlert } from '../../components/ListAlert'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
@@ -78,7 +79,7 @@ export const Markings: React.FC = () => {
       setMarkings(markingsResponse.markingsByUserId)
     }
 
-    setLoadingMarkings(true)
+    setLoadingMarkings(false)
   }, [client, toast])
 
   useEffect(() => {
@@ -99,37 +100,43 @@ export const Markings: React.FC = () => {
             <strong id="marking-list-title">Marcações</strong>
 
             {
-              groupMarkingsByDate(markings).map((markingGroup) => (
-                <div className="markings-day-group" key={markingGroup.date}>
-                  <div className="markings-day-group-header">
-                    <span className="markings-day-group-date">
-                      {markingGroup.date}
-                    </span>
+              loadingMarkings
+                ? <ListAlert alertType={'loading'} />
+                : markings.length > 0
+                  ? groupMarkingsByDate(markings).map((markingGroup) => (
+                    <div className="markings-day-group" key={markingGroup.date}>
+                      <div className="markings-day-group-header">
+                        <span className="markings-day-group-date">
+                          {markingGroup.date}
+                        </span>
 
-                    <strong className="markings-day-group-total">
-                      {formatTimeNumberToString({
-                        timeStartedAt: 0,
-                        currentTime: markingGroup.totalHours,
-                        hideSecondsWhenHoursExist: true
-                      })}
-                    </strong>
-                  </div>
+                        <strong className="markings-day-group-total">
+                          {formatTimeNumberToString({
+                            timeStartedAt: 0,
+                            currentTime: markingGroup.totalHours,
+                            hideSecondsWhenHoursExist: true
+                          })}
+                        </strong>
+                      </div>
 
-                  <div className="marking-day-group-list">
-                    {
-                      orderMarkingsByTime(markingGroup.markings).map(marking => (
-                        <MarkingItem
-                          key={marking.id}
-                          marking={marking}
-                          onEdit={() => {
-                            handleSetEditMarking(marking.id)
-                          }}
-                        />
-                      ))
-                    }
-                  </div>
-                </div>
-              ))
+                      <div className="marking-day-group-list">
+                        {
+                          markingGroup.markings.length > 0
+                            ? orderMarkingsByTime(markingGroup.markings).map(marking => (
+                              <MarkingItem
+                                key={marking.id}
+                                marking={marking}
+                                onEdit={() => {
+                                  handleSetEditMarking(marking.id)
+                                }}
+                              />
+                            ))
+                            : (<ListAlert alertType={'empty'} />)
+                        }
+                      </div>
+                    </div>
+                  ))
+                  : (<ListAlert alertType={'empty'} />)
             }
           </div>
         </MainContent>
