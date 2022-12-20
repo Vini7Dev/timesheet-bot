@@ -18,12 +18,6 @@ import { UPDATE_PROJECT } from '../../graphql/updateProject'
 
 type PopupContentToShow = 'projects' | 'customers'
 
-interface IProjectProps {
-  id: string
-  code: string
-  name: string
-}
-
 interface IProectsByCustomerProps {
   id: string
   name: string
@@ -212,8 +206,10 @@ export const Projects: React.FC = () => {
                               customer_id={customer_id}
                               customer_name={customer_name}
                               onDelete={handleDeleteProject}
-                              onUpdate={handleUpdateProject}
-                            />
+                              onUpdate={handleUpdateProject} customer={{
+                                id: '',
+                                name: ''
+                              }} />
                           ))
                           : (
                             <ListAlert

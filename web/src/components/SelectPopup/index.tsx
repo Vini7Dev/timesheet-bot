@@ -16,18 +16,6 @@ interface ISelectPopupProps {
   onSelect: (selectedId: string) => void
 }
 
-interface ICustomerProps {
-  id: string
-  code: string
-  name: string
-}
-
-interface IProjectProps {
-  id: string
-  code: string
-  name: string
-}
-
 interface IGetCustomersResponse {
   customers: ICustomerProps[]
 }

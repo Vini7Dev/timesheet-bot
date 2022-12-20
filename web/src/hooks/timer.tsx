@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useState } from 'react'
+import { formatTimeNumberToString } from '../utils/formatTimeNumberToString'
 
 interface IStopTimerResponse {
   startedAt: number
@@ -28,16 +29,11 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
   }, [])
 
   const getTimerFormated = useCallback((): string => {
-    const updatedTimerNow = timer - (timerStartedAt ?? 0)
-
-    const seconds = Math.floor((updatedTimerNow / 1000) % 60)
-    const minutes = Math.floor((updatedTimerNow / (1000 * 60)) % 60)
-    const hours = Math.floor((updatedTimerNow / (1000 * 60 * 60)) % 24)
-
-    return hours > 0
-      ? `${formatPad(hours)}:${formatPad(minutes)}:${formatPad(seconds)}`
-      : `${formatPad(minutes)}:${formatPad(seconds)}`
-  }, [formatPad, timer, timerStartedAt])
+    return formatTimeNumberToString({
+      timeStartedAt: timerStartedAt,
+      currentTime: timer
+    })
+  }, [timer, timerStartedAt])
 
   const getStartTimerFormated = useCallback(() => {
     const startetTimerDate = new Date(timerStartedAt)

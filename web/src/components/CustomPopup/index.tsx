@@ -11,24 +11,8 @@ import { Input } from '../Input'
 import { Select } from '../Select'
 import { CreateProjectOrCustomerForm, CustomPopupContainer } from './styles'
 
-interface IProjectProps {
-  id: string
-  code: string
-  name: string
-  customer: {
-    id: string
-    name: string
-  }
-}
-
 interface ICreateProjectResponse {
   createProject: IProjectProps
-}
-
-interface ICustomerProps {
-  id: string
-  code: string
-  name: string
 }
 
 interface ICreateCustomerResponse {

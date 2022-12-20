@@ -1,34 +1,24 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useApolloClient } from '@apollo/client'
 import { FiCheck, FiClock, FiDollarSign, FiMoreVertical, FiUpload, FiX } from 'react-icons/fi'
 
+import { MARKINGS_BY_USER_ID } from '../../graphql/markingsByUserId'
+import { useToast } from '../../hooks/toast'
 import { Input } from '../../components/Input'
+import { Button } from '../../components/Button'
 import { TopBar } from '../../components/TopBar'
 import { TimeTracker } from '../../components/TimeTracker'
 import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
-import { MainContent, MarkingItemContainer, PageContainer, PopupContentFormContainer } from './styles'
 import { CustomPopup } from '../../components/CustomPopup'
-import { Button } from '../../components/Button'
+import { MainContent, MarkingItemContainer, PageContainer, PopupContentFormContainer } from './styles'
+import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
+import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
+import { formatTimeNumberToString } from '../../utils/formatTimeNumberToString'
+import { calculateTotalHoursOfMarking } from '../../utils/calculateTotalHoursOfMarking'
 
-type OnTimesheetStatus = 'SENT' | 'NOT_SENT' | 'ERROR'
-
-type WorkClass = 'PRODUCTION' | 'ABSENCE'
-
-interface IMarkingData {
-  id: string
-  on_timesheet_status: OnTimesheetStatus
-  description: string
-  date: string
-  start_time: string
-  finish_time: string
-  start_interval_time: string
-  finish_interval_time: string
-  work_class: WorkClass
-  user_id: string
-  project_id: string
-  project: {
-    name: string
-  }
+interface IGetUserMarkingsResponse {
+  markingsByUserId: IMarkingData[]
 }
 
 interface IMarkingPopupProps {
@@ -42,73 +32,58 @@ interface IMarkingItemProps {
 }
 
 export const Markings: React.FC = () => {
+  const client = useApolloClient()
+  const toast = useToast()
+
   const [editMarkingIsOpen, setEditMarkingIsOpen] = useState(false)
   const [markingToEdit, setMarkingToEdit] = useState<IMarkingData>({} as unknown as IMarkingData)
 
-  const [markigns, setMarkings] = useState<IMarkingData[]>([
-    {
-      id: '1',
-      on_timesheet_status: 'SENT',
-      description: 'Example 1',
-      date: '22/01/2023',
-      start_time: '10:00',
-      finish_time: '15:00',
-      start_interval_time: '12:00',
-      finish_interval_time: '13:00',
-      work_class: 'PRODUCTION',
-      user_id: '1',
-      project_id: '1',
-      project: {
-        name: 'Uauness'
-      }
-    },
-    {
-      id: '2',
-      on_timesheet_status: 'NOT_SENT',
-      description: 'Example 2',
-      date: '23/01/2023',
-      start_time: '09:00',
-      finish_time: '14:00',
-      start_interval_time: '12:30',
-      finish_interval_time: '13:30',
-      work_class: 'ABSENCE',
-      user_id: '1',
-      project_id: '1',
-      project: {
-        name: 'Uauness'
-      }
-    },
-    {
-      id: '3',
-      on_timesheet_status: 'ERROR',
-      description: 'Example 3',
-      date: '23/01/2023',
-      start_time: '12:00',
-      finish_time: '16:00',
-      start_interval_time: '00:00',
-      finish_interval_time: '00:00',
-      work_class: 'PRODUCTION',
-      user_id: '1',
-      project_id: '2',
-      project: {
-        name: 'Mercafé'
-      }
-    }
-  ])
+  const [loadingMarkings, setLoadingMarkings] = useState(false)
+
+  const [markings, setMarkings] = useState<IMarkingData[]>([])
 
   const toggleEditMarkingIsOpen = useCallback(() => {
     setEditMarkingIsOpen(!editMarkingIsOpen)
   }, [editMarkingIsOpen])
 
   const handleSetEditMarking = useCallback((id: string) => {
-    const markingToEdit = markigns.find(marking => marking.id === id)
+    const markingToEdit = markings.find(marking => marking.id === id)
 
     if (markingToEdit) {
       setMarkingToEdit(markingToEdit)
 
       toggleEditMarkingIsOpen()
     }
-  }, [markigns, toggleEditMarkingIsOpen])
+  }, [markings, toggleEditMarkingIsOpen])
+
+  const handleGetUserMarkings = useCallback(async () => {
+    setLoadingMarkings(true)
+
+    const { data: markingsResponse, errors } = await client.query<IGetUserMarkingsResponse>({
+      query: MARKINGS_BY_USER_ID,
+      variables: {
+        data: {}
+      },
+      fetchPolicy: 'no-cache'
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    } else {
+      setMarkings(markingsResponse.markingsByUserId)
+    }
+
+    setLoadingMarkings(true)
+  }, [client, toast])
+
+  useEffect(() => {
+    handleGetUserMarkings()
+  }, [handleGetUserMarkings])
 
   return (
     <PageContainer>
@@ -123,27 +98,39 @@ export const Markings: React.FC = () => {
           <div id="marking-list-container">
             <strong id="marking-list-title">Marcações</strong>
 
-            <div className="markings-day-group">
-              <div className="markings-day-group-header">
-                <span className="markings-day-group-date">26/11/2022</span>
+            {
+              groupMarkingsByDate(markings).map((markingGroup) => (
+                <div className="markings-day-group" key={markingGroup.date}>
+                  <div className="markings-day-group-header">
+                    <span className="markings-day-group-date">
+                      {markingGroup.date}
+                    </span>
 
-                <strong className="markings-day-group-total">8:00</strong>
-              </div>
+                    <strong className="markings-day-group-total">
+                      {formatTimeNumberToString({
+                        timeStartedAt: 0,
+                        currentTime: markingGroup.totalHours,
+                        hideSecondsWhenHoursExist: true
+                      })}
+                    </strong>
+                  </div>
 
-              <div className="marking-day-group-list">
-                {
-                  markigns.map(marking => (
-                    <MarkingItem
-                      key={marking.id}
-                      marking={marking}
-                      onEdit={() => {
-                        handleSetEditMarking(marking.id)
-                      }}
-                    />
-                  ))
-                }
-              </div>
-            </div>
+                  <div className="marking-day-group-list">
+                    {
+                      orderMarkingsByTime(markingGroup.markings).map(marking => (
+                        <MarkingItem
+                          key={marking.id}
+                          marking={marking}
+                          onEdit={() => {
+                            handleSetEditMarking(marking.id)
+                          }}
+                        />
+                      ))
+                    }
+                  </div>
+                </div>
+              ))
+            }
           </div>
         </MainContent>
       </div>
@@ -163,11 +150,18 @@ export const Markings: React.FC = () => {
 const MarkingItem: React.FC<IMarkingItemProps> = ({
   marking: {
     id,
-    project
+    project,
+    description,
+    date,
+    start_time,
+    finish_time,
+    start_interval_time,
+    finish_interval_time,
+    work_class
   },
   onEdit
 }) => {
-  const [isBillable, setIsBillable] = useState(false)
+  const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
   const [onTimesheetStatus, setOnTimesheetStatus] = useState<OnTimesheetStatus>('SENT')
@@ -196,7 +190,11 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
           }
         </button>
 
-        <Input placeholder="Descrição..." inputStyle="high" />
+        <Input
+          placeholder="Descrição..."
+          inputStyle="high"
+          defaultValue={description}
+        />
 
         <button
           className="marking-project-button"
@@ -232,19 +230,34 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
               placeholder="10:00"
               inputStyle="high"
               style={{ textAlign: 'center', width: '4.375rem' }}
+              defaultValue={start_time}
             />
             :
             <Input
               placeholder="11:00"
               inputStyle="high"
               style={{ textAlign: 'center', width: '4.375rem' }}
+              defaultValue={finish_time}
             />
           </div>
         </div>
 
         <span className="marking-row-second-column">
           <div className="marking-time-total">
-            <FiClock color="#C6D2D9" size={14} /> 3:00
+            <FiClock color="#C6D2D9" size={14} />{' '}
+            {
+              formatTimeNumberToString({
+                timeStartedAt: 0,
+                currentTime: calculateTotalHoursOfMarking({
+                  date,
+                  startTime: start_time,
+                  finishTime: finish_time,
+                  startIntervalTime: start_interval_time,
+                  finishIntervalTime: finish_interval_time
+                }),
+                hideSecondsWhenHoursExist: true
+              })
+            }
           </div>
 
           <div className="marking-more-options">
@@ -426,7 +439,20 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
           </div>
 
           <div className="marking-time-total">
-            <FiClock color="#C6D2D9" size={14} /> 3:00
+            <FiClock color="#C6D2D9" size={14} />{' '}
+            {
+              formatTimeNumberToString({
+                timeStartedAt: 0,
+                currentTime: calculateTotalHoursOfMarking({
+                  date,
+                  startTime: start_time,
+                  finishTime: finish_time,
+                  startIntervalTime: start_interval_time,
+                  finishIntervalTime: finish_interval_time
+                }),
+                hideSecondsWhenHoursExist: true
+              })
+            }
           </div>
         </div>
 

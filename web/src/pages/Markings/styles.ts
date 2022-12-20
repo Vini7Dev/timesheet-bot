@@ -45,6 +45,7 @@ export const MainContent = styled.main`
 
     .markings-day-group {
       background-color: #1D272C;
+      margin-bottom: 1rem;
 
       .markings-day-group-header {
         display: flex;
@@ -178,6 +179,11 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
 
     .marking-row {
       border: none;
+
+      .marking-project-button {
+        width: fit-content;
+        min-width: fit-content;
+      }
 
       .marking-row-second-column {
         margin-left: 1.25rem;

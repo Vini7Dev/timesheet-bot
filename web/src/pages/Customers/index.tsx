@@ -15,12 +15,6 @@ import { ListAlert } from '../../components/ListAlert'
 import { DELETE_CUSTOMER } from '../../graphql/deleteCustomer'
 import { UPDATE_CUSTOMER } from '../../graphql/updateCustomer'
 
-interface ICustomerProps {
-  id: string
-  code: string
-  name: string
-}
-
 interface IGetCustomersResponse {
   customers: ICustomerProps[]
 }

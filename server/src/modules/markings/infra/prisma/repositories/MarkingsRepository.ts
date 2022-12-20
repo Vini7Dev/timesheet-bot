@@ -44,7 +44,8 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
       take: perPage,
       where: {
         user_id,
-      }
+      },
+      include: { project: true }
     })
 
     return filteredMarkings
