@@ -8,19 +8,24 @@ interface IApiFiltersInput {
   data: {
     page?: number
     perPage?: number
+    search?: string
   }
 }
 
 export const projects = async (
   _: any,
-  { data: { page, perPage } }: IApiFiltersInput,
+  { data: { page, perPage, search } }: IApiFiltersInput,
   ctx: IAppContext,
 ) => {
   ensureAuthenticated(ctx)
 
   const listProjectsService = container.resolve(ListProjectsService)
 
-  const projectsList = await listProjectsService.execute({ page, perPage })
+  const projectsList = await listProjectsService.execute({
+    page,
+    perPage,
+    search,
+  })
 
   return projectsList
 }

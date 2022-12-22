@@ -1,4 +1,5 @@
 import { ICreateProjectDTO } from '@modules/projects/dtos/ICreateProjectDTO'
+import { IListProjectsDTO } from '@modules/projects/dtos/IListProjectsDTO'
 import { IUpdateProjectDTO } from '@modules/projects/dtos/IUpdateProjectDTO'
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
@@ -26,11 +27,15 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number }): Promise<Project[]> {
+    search,
+  }: IListProjectsDTO): Promise<Project[]> {
     const projectsList = await this.client.projects.findMany({
       skip: page,
       take: perPage,
       include: { customer: true },
+      where: {
+        name: { contains: search, mode: 'insensitive' },
+      },
     })
 
     return projectsList

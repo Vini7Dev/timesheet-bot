@@ -1,4 +1,5 @@
 import { ICreateProjectDTO } from '@modules/projects/dtos/ICreateProjectDTO'
+import { IListProjectsDTO } from '@modules/projects/dtos/IListProjectsDTO'
 import { IUpdateProjectDTO } from '@modules/projects/dtos/IUpdateProjectDTO'
 import { Project } from '@modules/projects/infra/prisma/entities/Project'
 import { AppError } from '@shared/errors/AppError'
@@ -26,8 +27,17 @@ export class FakeProjectsRepository implements IProjectsRepository {
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number }): Promise<Project[]> {
+    search,
+  }: IListProjectsDTO): Promise<Project[]> {
     const filteredProjects = this.projects.slice(page, perPage + page)
+
+    if (search) {
+      return filteredProjects.filter(
+        project => project.name
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase())
+      )
+    }
 
     return filteredProjects
   }

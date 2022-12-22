@@ -6,6 +6,7 @@ import { IProjectsRepository } from '../repositories/IProjectsRepository'
 interface IServiceProps {
   page?: number
   perPage?: number
+  search?: string
 }
 
 @injectable()
@@ -15,8 +16,12 @@ export class ListProjectsService {
     private projectsRepository: IProjectsRepository
   ) {}
 
-  public async execute({ page, perPage }: IServiceProps): Promise<Project[]> {
-    const projectsList = await this.projectsRepository.list({ page, perPage })
+  public async execute({ page, perPage, search }: IServiceProps): Promise<Project[]> {
+    const projectsList = await this.projectsRepository.list({
+      page,
+      perPage,
+      search,
+    })
 
     return projectsList
   }
