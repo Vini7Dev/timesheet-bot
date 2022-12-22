@@ -24,6 +24,7 @@ describe('UpdateMarkingService', () => {
     updateMarkingService = new UpdateMarkingService(
       markingsRepository,
       usersRepository,
+      projectsRepository,
     )
   })
 
@@ -35,7 +36,7 @@ describe('UpdateMarkingService', () => {
       password: 'jhon123',
     })
 
-    const projectReference = await projectsRepository.create({
+    const otherProjectReference = await projectsRepository.create({
       code: 'ABCDE',
       name: 'Project Example',
       customer_id: 'any-customer-id',
@@ -49,7 +50,7 @@ describe('UpdateMarkingService', () => {
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
       work_class: WorkClass.PRODUCTION,
-      project_id: projectReference.id,
+      project_id: 'any-project-id',
       user_id: authenticatedUser.id,
     })
 
@@ -62,11 +63,13 @@ describe('UpdateMarkingService', () => {
       start_interval_time: '11:00',
       finish_interval_time: '12:00',
       work_class: WorkClass.ABSENCE,
+      project_id: otherProjectReference.id,
       authenticatedUserId: authenticatedUser.id,
     })
 
     expect(updatedMarking).toHaveProperty('id')
     expect(updatedMarking.id).toEqual(createdMarking.id)
+    expect(updatedMarking.project_id).toEqual(otherProjectReference.id)
     expect(updatedMarking.description).toEqual('Updated Description Example')
     expect(updatedMarking.date).toEqual('02/01/2022')
     expect(updatedMarking.start_time).toEqual('10:00')
@@ -110,13 +113,14 @@ describe('UpdateMarkingService', () => {
 
     expect(updatedMarking).toHaveProperty('id')
     expect(updatedMarking.id).toEqual(createdMarking.id)
+    expect(updatedMarking.work_class).toEqual(createdMarking.work_class)
     expect(updatedMarking.description).toEqual(createdMarking.description)
     expect(updatedMarking.date).toEqual(createdMarking.date)
     expect(updatedMarking.start_time).toEqual(createdMarking.start_time)
     expect(updatedMarking.finish_time).toEqual(createdMarking.finish_time)
     expect(updatedMarking.start_interval_time).toEqual(createdMarking.start_interval_time)
     expect(updatedMarking.finish_interval_time).toEqual(createdMarking.finish_interval_time)
-    expect(updatedMarking.work_class).toEqual(createdMarking.work_class)
+    expect(updatedMarking.project_id).toEqual(createdMarking.project_id)
     expect(updatedMarking.updated_at).not.toEqual(updatedMarking.created_at)
   })
 
@@ -126,12 +130,6 @@ describe('UpdateMarkingService', () => {
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
       password: 'jhon123',
-    })
-
-    const projectReference = await projectsRepository.create({
-      code: 'ABCDE',
-      name: 'Project Example',
-      customer_id: 'any-customer-id',
     })
 
     await expect(
@@ -188,6 +186,40 @@ describe('UpdateMarkingService', () => {
         authenticatedUserId: 'invalid-user-id',
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
+  })
+
+  it('should not be able to update marking with a non-existent project', async () => {
+    const userReference = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const createdMarking = await markingsRepository.create({
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: userReference.id,
+    })
+
+    await expect(
+      updateMarkingService.execute({
+        marking_id: createdMarking.id,
+        project_id: 'invalid-project-id',
+        description: 'Updated Description Example',
+        date: '02/01/2022',
+        start_time: '10:00',
+        finish_time: '13:00',
+        work_class: WorkClass.ABSENCE,
+        authenticatedUserId: userReference.id,
+      })
+    ).rejects.toEqual(new AppError('Project not found!', 404))
   })
 
   it('should not be able to update markings with parallel date time', async () => {

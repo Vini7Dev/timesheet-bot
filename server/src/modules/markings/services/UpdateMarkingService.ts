@@ -6,9 +6,11 @@ import { AppError } from '@shared/errors/AppError'
 import { filterNumberBetweenInterval } from '@utils/filterNumberBetweenInterval'
 import { Marking } from '../infra/prisma/entities/Marking'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
+import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 
 interface IServiceProps {
   marking_id: string
+  project_id?: string
   description?: string
   date?: string
   start_time?: string
@@ -27,10 +29,14 @@ export class UpdateMarkingService {
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('ProjectsRepository')
+    private projectsRepository: IProjectsRepository,
   ) {}
 
   public async execute({
     marking_id,
+    project_id,
     description,
     date,
     start_time,
@@ -78,6 +84,13 @@ export class UpdateMarkingService {
     const userToRefer = await this.usersRepository.findById(authenticatedUserId)
     if (!userToRefer) {
       throw new AppError('User not found!', 404)
+    }
+
+    if (project_id) {
+      const projectToRefer = await this.projectsRepository.findById(project_id)
+      if (!projectToRefer) {
+        throw new AppError('Project not found!', 404)
+      }
     }
 
     let page = 0
@@ -130,6 +143,7 @@ export class UpdateMarkingService {
       start_interval_time: start_interval_time ?? markingToUpdate.start_interval_time as any,
       finish_interval_time: finish_interval_time ?? markingToUpdate.finish_interval_time as any,
       work_class: work_class ?? markingToUpdate.work_class,
+      project_id: project_id ?? markingToUpdate.project_id as any,
       user_id: userToRefer.id,
     })
 

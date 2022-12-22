@@ -43,6 +43,7 @@ export const markingsTypeDefs = gql`
 
   input UpdateMarkingInput {
     marking_id: String!
+    project_id: String
     description: String
     date: String
     start_time: String

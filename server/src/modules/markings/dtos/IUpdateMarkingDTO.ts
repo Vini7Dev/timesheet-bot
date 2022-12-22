@@ -2,6 +2,7 @@ import { WorkClass } from '@prisma/client'
 
 export interface IUpdateMarkingDTO {
   id: string
+  project_id?: string
   description?: string
   date?: string
   start_time?: string

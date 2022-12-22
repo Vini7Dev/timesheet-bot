@@ -90,6 +90,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     start_interval_time,
     finish_interval_time,
     work_class,
+    project_id,
     user_id,
   }: IUpdateMarkingDTO): Promise<Marking> {
     const updatedMarking = await this.client.markings.update({
@@ -103,6 +104,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
         start_interval_time,
         finish_interval_time,
         work_class,
+        project_id,
         user_id,
         updated_at: new Date(),
       },
