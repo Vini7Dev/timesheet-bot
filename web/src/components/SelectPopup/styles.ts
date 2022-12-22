@@ -44,6 +44,10 @@ export const SelectPopupContainer = styled.div`
           color: #FFF;
         }
       }
+
+      .project-popup-projects {
+        margin-bottom: 0.5rem;
+      }
     }
   }
 

@@ -317,8 +317,13 @@ export const PopupContentFormContainer = styled.form<IPopupContentFormContainerP
     }
   }
 
-  #popup-button-margin-top {
-    margin-top: 1.5rem;
+  .popup-button-margin-top {
+    margin-top: 1rem;
+  }
+
+  .popup-button-small {
+    max-width: 100px;
+    margin-left: auto;
   }
 
   @media screen and (max-width: 469px) {

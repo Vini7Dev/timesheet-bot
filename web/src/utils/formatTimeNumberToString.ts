@@ -13,6 +13,10 @@ export const formatTimeNumberToString = ({
   currentTime,
   hideSecondsWhenHoursExist = false
 }: IFormatTimeNumberToStringProps): string => {
+  if (isNaN(currentTime)) {
+    return ''
+  }
+
   const updatedTimerNow = currentTime - (timeStartedAt ?? 0)
 
   const seconds = Math.floor((updatedTimerNow / 1000) % 60)

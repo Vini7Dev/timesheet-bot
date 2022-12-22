@@ -3,6 +3,11 @@ import { useApolloClient } from '@apollo/client'
 import { FiCheck, FiClock, FiDollarSign, FiMoreVertical, FiUpload, FiX } from 'react-icons/fi'
 
 import { MARKINGS_BY_USER_ID } from '../../graphql/markingsByUserId'
+import { UPDATE_MARKING } from '../../graphql/updateMarking'
+import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
+import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
+import { formatTimeNumberToString } from '../../utils/formatTimeNumberToString'
+import { calculateTotalHoursOfMarking } from '../../utils/calculateTotalHoursOfMarking'
 import { useToast } from '../../hooks/toast'
 import { Input } from '../../components/Input'
 import { Button } from '../../components/Button'
@@ -11,12 +16,8 @@ import { TimeTracker } from '../../components/TimeTracker'
 import { SelectPopup } from '../../components/SelectPopup'
 import { Navigation } from '../../components/Navigation'
 import { CustomPopup } from '../../components/CustomPopup'
-import { MainContent, MarkingItemContainer, PageContainer, PopupContentFormContainer } from './styles'
-import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
-import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
-import { formatTimeNumberToString } from '../../utils/formatTimeNumberToString'
-import { calculateTotalHoursOfMarking } from '../../utils/calculateTotalHoursOfMarking'
 import { ListAlert } from '../../components/ListAlert'
+import { MainContent, MarkingItemContainer, PageContainer, PopupContentFormContainer } from './styles'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
@@ -25,6 +26,8 @@ interface IGetUserMarkingsResponse {
 interface IMarkingPopupProps {
   marking: IMarkingData
   onClose: () => void
+  beforeUpdate: () => void
+  beforeDelete: () => void
 }
 
 interface IMarkingItemProps {
@@ -147,6 +150,14 @@ export const Markings: React.FC = () => {
           <MarkingPopup
             marking={markingToEdit}
             onClose={toggleEditMarkingIsOpen}
+            beforeUpdate={() => {
+              toggleEditMarkingIsOpen()
+              handleGetUserMarkings()
+            }}
+            beforeDelete={() => {
+              toggleEditMarkingIsOpen()
+              handleGetUserMarkings()
+            }}
           />
         )
       }
@@ -291,10 +302,23 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
     work_class,
     project
   },
-  onClose
+  onClose,
+  beforeUpdate,
+  beforeDelete
 }) => {
+  const client = useApolloClient()
+  const toast = useToast()
+
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
+
   const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
+  const [descriptionUpdated, setDescriptionUpdated] = useState(description)
+  const [dateUpdated, setDateUpdated] = useState(date)
+  const [startTimeUpdated, setStartTimeUpdated] = useState(start_time)
+  const [finishTimeUpdated, setFinishTimeUpdated] = useState(finish_time)
+  const [startIntervalTimeUpdated, setStartIntervalTimeUpdated] = useState(start_interval_time)
+  const [finishIntervalTimeUpdated, setFinishIntervalTimeUpdated] = useState(finish_interval_time)
+  const [projectUpdated, setProjectUpdated] = useState(project)
 
   const toggleProjectPopupIsOpen = useCallback(() => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
@@ -303,6 +327,42 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
   }, [isBillable])
+
+  const handleUpdateMarking = useCallback(async () => {
+    const {
+      errors
+    } = await client.mutate({
+      mutation: UPDATE_MARKING,
+      variables: {
+        data: {
+          marking_id: id,
+          project_id: projectUpdated.id,
+          date: dateUpdated,
+          description: descriptionUpdated,
+          work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+          start_time: startTimeUpdated,
+          finish_time: finishTimeUpdated,
+          start_interval_time: startIntervalTimeUpdated,
+          finish_interval_time: finishIntervalTimeUpdated
+        }
+      }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    }
+
+    beforeUpdate()
+  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast])
+
+  const handleDeleteMarking = useCallback(async () => {
+    beforeDelete()
+  }, [beforeDelete])
 
   return (
     <CustomPopup onClickToClose={onClose}>
@@ -349,13 +409,15 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
           <Input
             placeholder="Descrição..."
             inputStyle="high"
-            defaultValue={description}
+            value={descriptionUpdated}
+            onChange={(e) => setDescriptionUpdated(e.target.value)}
           />
 
           <Input
             placeholder="Data"
             inputStyle="high"
-            defaultValue={date}
+            defaultValue={dateUpdated}
+            onChange={(e) => setDateUpdated(e.target.value)}
             containerStyle={{ width: 'fit-content' }}
           />
 
@@ -364,14 +426,15 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
             onClick={toggleProjectPopupIsOpen}
             type="button"
           >
-            {project.name}
+            {projectUpdated.name}
           </button>
 
           { projectPopupIsOpen && (
             <SelectPopup
               popupType="projects"
-              onSelect={() => {
-                //
+              onSelect={(project) => {
+                setProjectUpdated(project)
+                toggleProjectPopupIsOpen()
               }}
             />
           ) }
@@ -401,7 +464,8 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
                   padding: 0,
                   width: '50px'
                 }}
-                defaultValue={start_time}
+                value={startTimeUpdated}
+                onChange={(e) => setStartTimeUpdated(e.target.value)}
               />
               <span className="marking-time-inputs-divisor">:</span>
               <Input
@@ -412,7 +476,8 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
                   padding: 0,
                   width: '50px'
                 }}
-                defaultValue={finish_time}
+                value={finishTimeUpdated}
+                onChange={(e) => setFinishTimeUpdated(e.target.value)}
               />
             </div>
           </div>
@@ -429,7 +494,8 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
                   padding: 0,
                   width: '50px'
                 }}
-                defaultValue={start_interval_time}
+                value={startIntervalTimeUpdated}
+                onChange={(e) => setStartIntervalTimeUpdated(e.target.value)}
               />
               <span className="marking-time-inputs-divisor">:</span>
               <Input
@@ -440,7 +506,8 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
                   padding: 0,
                   width: '50px'
                 }}
-                defaultValue={finish_interval_time}
+                value={finishIntervalTimeUpdated}
+                onChange={(e) => setFinishIntervalTimeUpdated(e.target.value)}
               />
             </div>
           </div>
@@ -452,10 +519,10 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
                 timeStartedAt: 0,
                 currentTime: calculateTotalHoursOfMarking({
                   date,
-                  startTime: start_time,
-                  finishTime: finish_time,
-                  startIntervalTime: start_interval_time,
-                  finishIntervalTime: finish_interval_time
+                  startTime: startTimeUpdated,
+                  finishTime: finishTimeUpdated,
+                  startIntervalTime: startIntervalTimeUpdated,
+                  finishIntervalTime: finishIntervalTimeUpdated
                 }),
                 hideSecondsWhenHoursExist: true
               })
@@ -467,9 +534,16 @@ export const MarkingPopup: React.FC<IMarkingPopupProps> = ({
           <Button
             text="Atualizar"
             isLoading={false}
-            onClick={() => {
-              //
-            }}
+            onClick={handleUpdateMarking}
+          />
+        </div>
+
+        <div className="popup-button-margin-top popup-button-small">
+          <Button
+            text="Apagar"
+            buttonStyle="danger"
+            isLoading={false}
+            onClick={handleDeleteMarking}
           />
         </div>
       </PopupContentFormContainer>

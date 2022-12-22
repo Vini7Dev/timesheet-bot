@@ -6,18 +6,24 @@ import { Input } from '../Input'
 import { Button } from '../Button'
 import { useToast } from '../../hooks/toast'
 import { CUSTOMERS } from '../../graphql/getCustomers'
+import { PROJECTS } from '../../graphql/getProjects'
 import { CustomPopup, CreateProjectPopup, CreateCustomerPopup } from '../CustomPopup'
 import { SelectPopupContainer } from './styles'
+import { groupProjectsByCustomer } from '../../utils/groupProjectsByCustomer'
 
 type PopupContentToShow = 'projects' | 'customers'
 
 interface ISelectPopupProps {
   popupType: PopupContentToShow
-  onSelect: (selectedId: string) => void
+  onSelect: (data: IProjectProps | ICustomerProps) => void
 }
 
 interface IGetCustomersResponse {
   customers: ICustomerProps[]
+}
+
+interface IGetProjectsResponse {
+  projects: IProjectProps[]
 }
 
 export const SelectPopup: React.FC<ISelectPopupProps> = ({
@@ -49,6 +55,31 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     setShowCreatePopupForm(true)
   }, [])
 
+  const handleGetProjects = useCallback(async (search?: string) => {
+    setSearchLoading(true)
+
+    const { data: projectsResponse, errors } = await client.query<IGetProjectsResponse>({
+      query: PROJECTS,
+      variables: {
+        data: { search }
+      },
+      fetchPolicy: 'no-cache'
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    } else {
+      setProjects(projectsResponse.projects)
+    }
+
+    setSearchLoading(false)
+  }, [client, toast])
+
   const handleGetCustomers = useCallback(async (search?: string) => {
     setSearchLoading(true)
 
@@ -74,17 +105,23 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     setSearchLoading(false)
   }, [client, toast])
 
-  const handleReloadCustomers = useCallback(async () => {
-    handleGetCustomers(searchText)
+  const handleReloadList = useCallback(async () => {
+    if (popupType === 'customers') {
+      handleGetCustomers(searchText)
+    } else {
+      handleGetProjects(searchText)
+    }
 
     toggleShowCreatePopupForm()
-  }, [handleGetCustomers, searchText, toggleShowCreatePopupForm])
+  }, [handleGetCustomers, handleGetProjects, popupType, searchText, toggleShowCreatePopupForm])
 
   useEffect(() => {
     if (popupType === 'customers') {
       handleGetCustomers(searchText)
+    } else {
+      handleGetProjects(searchText)
     }
-  }, [handleGetCustomers, popupType, searchText])
+  }, [handleGetCustomers, handleGetProjects, popupType, searchText])
 
   return (
     <SelectPopupContainer id="popup-container">
@@ -111,15 +148,37 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                 <div className="popup-item">
                   {
                     popupContentToShow === 'projects'
-                      ? (
+                      ? groupProjectsByCustomer(projects).map(({
+                        customer,
+                        projects: customerProjects
+                      }) => (
                         <>
-                          <strong className="project-popup-customer">ambev</strong>
+                          <strong className="project-popup-customer">{customer.name}</strong>
 
-                          <ul className="project-popup-projects">
-                            <li className="project-popup-project">uauness</li>
+                          <ul
+                            key={customer.id}
+                            className="project-popup-projects"
+                          >
+                            {
+                              searchLoading
+                                ? (
+                                  <li className="project-popup-project">
+                                    <PulseLoader color="#FFF" size={8} />
+                                  </li>
+                                  )
+                                : customerProjects.map((project) => (
+                                  <li
+                                    key={project.id}
+                                    className="project-popup-project"
+                                    onClick={() => onSelect(project)}
+                                  >
+                                    {project.name}
+                                  </li>
+                                ))
+                            }
                           </ul>
                         </>
-                        )
+                      ))
                       : (
                         <>
                           <ul className="customers-popup-list">
@@ -130,13 +189,13 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                                     <PulseLoader color="#FFF" size={8} />
                                   </li>
                                   )
-                                : customers.map(({ id, name }) => (
+                                : customers.map((customer) => (
                                   <li
-                                    key={id}
+                                    key={customer.id}
                                     className="customer-popup-name"
-                                    onClick={() => onSelect(id)}
+                                    onClick={() => onSelect(customer)}
                                   >
-                                    {name}
+                                    {customer.name}
                                   </li>
                                 ))
                             }
@@ -165,7 +224,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
                     onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
                   />
                   )
-                : <CreateCustomerPopup afterSubmit={handleReloadCustomers} />
+                : <CreateCustomerPopup afterSubmit={handleReloadList} />
             }
           </CustomPopup>
         )
