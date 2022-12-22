@@ -7,9 +7,11 @@ import { Button } from '../Button'
 import { useToast } from '../../hooks/toast'
 import { CUSTOMERS } from '../../graphql/getCustomers'
 import { PROJECTS } from '../../graphql/getProjects'
-import { CustomPopup, CreateProjectPopup, CreateCustomerPopup } from '../CustomPopup'
+import { CustomPopup } from '../CustomPopup'
+import { CreateCustomerPopup } from '../CustomPopup/CreateCustomerPopup'
 import { SelectPopupContainer } from './styles'
 import { groupProjectsByCustomer } from '../../utils/groupProjectsByCustomer'
+import { CreateProjectPopup } from '../CustomPopup/CreateProjectPopup'
 
 type PopupContentToShow = 'projects' | 'customers'
 

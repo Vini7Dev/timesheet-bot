@@ -12,9 +12,11 @@ import { Navigation } from '../../components/Navigation'
 import { Button } from '../../components/Button'
 import { TimeTracker } from '../../components/TimeTracker'
 import { ListAlert } from '../../components/ListAlert'
-import { CreateCustomerPopup, CreateProjectPopup, CustomPopup } from '../../components/CustomPopup'
+import { CustomPopup } from '../../components/CustomPopup'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 import { UPDATE_PROJECT } from '../../graphql/updateProject'
+import { CreateProjectPopup } from '../../components/CustomPopup/CreateProjectPopup'
+import { CreateCustomerPopup } from '../../components/CustomPopup/CreateCustomerPopup'
 
 type PopupContentToShow = 'projects' | 'customers'
 

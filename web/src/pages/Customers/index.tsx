@@ -8,12 +8,13 @@ import { TopBar } from '../../components/TopBar'
 import { Navigation } from '../../components/Navigation'
 import { Button } from '../../components/Button'
 import { TimeTracker } from '../../components/TimeTracker'
-import { CreateCustomerPopup, CustomPopup } from '../../components/CustomPopup'
+import { CustomPopup } from '../../components/CustomPopup'
 import { MainContent, CustomerItemContainer, PageContainer } from './styles'
 import { useToast } from '../../hooks/toast'
 import { ListAlert } from '../../components/ListAlert'
 import { DELETE_CUSTOMER } from '../../graphql/deleteCustomer'
 import { UPDATE_CUSTOMER } from '../../graphql/updateCustomer'
+import { CreateCustomerPopup } from '../../components/CustomPopup/CreateCustomerPopup'
 
 interface IGetCustomersResponse {
   customers: ICustomerProps[]
