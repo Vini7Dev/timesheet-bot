@@ -3,6 +3,7 @@ import { useApolloClient } from '@apollo/client'
 import { FiCheck, FiClock, FiDollarSign, FiMoreVertical, FiUpload, FiX } from 'react-icons/fi'
 
 import { MARKINGS_BY_USER_ID } from '../../graphql/markingsByUserId'
+import { formatDateString } from '../../utils/formatDateString'
 import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
 import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
 import { formatTimeNumberToString } from '../../utils/formatTimeNumberToString'
@@ -102,7 +103,7 @@ export const Markings: React.FC = () => {
                     <div className="markings-day-group" key={markingGroup.date}>
                       <div className="markings-day-group-header">
                         <span className="markings-day-group-date">
-                          {markingGroup.date}
+                          {formatDateString(markingGroup.date)}
                         </span>
 
                         <strong className="markings-day-group-total">

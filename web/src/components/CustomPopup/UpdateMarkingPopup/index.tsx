@@ -37,6 +37,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   const toast = useToast()
 
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
+  const [updateMarkingIsLoading, setUpdateMarkingIsLoading] = useState(false)
 
   const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [descriptionUpdated, setDescriptionUpdated] = useState(description)
@@ -56,6 +57,8 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   }, [isBillable])
 
   const handleUpdateMarking = useCallback(async () => {
+    setUpdateMarkingIsLoading(true)
+
     const {
       errors
     } = await client.mutate({
@@ -84,6 +87,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       }
     }
 
+    setUpdateMarkingIsLoading(false)
     beforeUpdate()
   }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast])
 
@@ -142,7 +146,8 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
         <Input
           placeholder="Data"
           inputStyle="high"
-          defaultValue={dateUpdated}
+          type="date"
+          value={dateUpdated}
           onChange={(e) => setDateUpdated(e.target.value)}
           containerStyle={{ width: 'fit-content' }}
         />
@@ -259,7 +264,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       <div className="popup-button-margin-top">
         <Button
           text="Atualizar"
-          isLoading={false}
+          isLoading={updateMarkingIsLoading}
           onClick={handleUpdateMarking}
         />
       </div>

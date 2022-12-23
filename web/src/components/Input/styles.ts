@@ -34,5 +34,6 @@ export const InputContainer = styled.div<IInputContainerProps>`
     font-weight: normal;
     line-height: 1.5rem;
     color: #C6D2D9;
+    color-scheme: dark;
   }
 `
