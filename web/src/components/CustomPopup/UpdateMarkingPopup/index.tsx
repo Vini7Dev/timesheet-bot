@@ -10,6 +10,7 @@ import { Button } from '../../Button'
 import { Input } from '../../Input'
 import { SelectPopup } from '../../SelectPopup'
 import { UpdateMarkingPopupForm } from './styles'
+import { DELETE_MARKING } from '../../../graphql/deleteMarking'
 
 interface IUpdateMarkingPopupProps {
   marking: IMarkingData
@@ -92,8 +93,27 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast])
 
   const handleDeleteMarking = useCallback(async () => {
+    const response = confirm('Deseja apagar a marcação? Essa ação não pode ser desfeita!')
+
+    if (!response) {
+      return
+    }
+
+    const { errors } = await client.mutate<{ deleteMarking: string }>({
+      mutation: DELETE_MARKING, variables: { deleteMarkingId: id }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    }
+
     beforeDelete()
-  }, [beforeDelete])
+  }, [beforeDelete, client, id, toast])
 
   return (
     <UpdateMarkingPopupForm onTimesheetStatus={on_timesheet_status}>
