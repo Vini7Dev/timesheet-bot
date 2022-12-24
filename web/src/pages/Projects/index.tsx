@@ -127,7 +127,7 @@ export const Projects: React.FC = () => {
   }: IUpdateProjectProps) => {
     const schema = Yup.object().shape({
       project_id: Yup.string().uuid('UUID invalido do projeto').required('Não foi possível recuperar o ID do projeto!'),
-      customer_id: Yup.string().uuid('UUID invalido do cliente').required('Não foi possível recuperar o ID do cliente!'),
+      customer_id: Yup.string().uuid('UUID invalido do cliente').required('O cliente é obrigatório!'),
       code: Yup.string().min(1, 'O código não pode estar vazio!'),
       name: Yup.string().min(1, 'O nome não pode estar vazio!')
     })

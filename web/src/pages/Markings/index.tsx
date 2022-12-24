@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiCheck, FiClock, FiDollarSign, FiMoreVertical, FiUpload, FiX } from 'react-icons/fi'
+import * as Yup from 'yup'
 
 import { MARKINGS_BY_USER_ID } from '../../graphql/markingsByUserId'
+import { UPDATE_MARKING } from '../../graphql/updateMarking'
+import { yupFormValidator } from '../../utils/yupFormValidator'
 import { formatDateString } from '../../utils/formatDateString'
 import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
 import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
@@ -18,7 +21,6 @@ import { CustomPopup } from '../../components/CustomPopup'
 import { ListAlert } from '../../components/ListAlert'
 import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
 import { MainContent, MarkingItemContainer, PageContainer } from './styles'
-import { UPDATE_MARKING } from '../../graphql/updateMarking'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
@@ -105,19 +107,50 @@ export const Markings: React.FC = () => {
     finish_time,
     work_class
   }: IUpdateMarkingProps) => {
+    const markingData = {
+      marking_id,
+      project_id,
+      date,
+      description,
+      start_time,
+      finish_time,
+      work_class
+    }
+
+    const schema = Yup.object().shape({
+      marking_id: Yup.string().uuid('UUID invalido da marcação').required('Não foi possível recuperar o ID da marcação!'),
+      project_id: Yup.string().uuid('UUID invalido do projeto'),
+      description: Yup.string().min(1, 'A descrição não pode estar vazia!'),
+      date: Yup.string().matches(
+        /^\d{4}-\d{2}-\d{2}$/,
+        'O formato da data deve ser DD/MM/YYYY'
+      ),
+      work_class: Yup.string(),
+      start_time: Yup.string().matches(
+        /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+        'O formato do tempo inicial deve ser HH:MM'
+      ),
+      finish_time: Yup.string().matches(
+        /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+        'O formato do tempo final deve ser HH:MM'
+      )
+    })
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: markingData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     try {
       await client.mutate({
         mutation: UPDATE_MARKING,
         variables: {
-          data: {
-            marking_id,
-            project_id,
-            date,
-            description,
-            start_time,
-            finish_time,
-            work_class
-          }
+          data: markingData
         }
       })
       handleGetUserMarkings()

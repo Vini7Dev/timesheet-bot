@@ -1,16 +1,18 @@
 import React, { useCallback, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiCheck, FiClock, FiDollarSign, FiUpload, FiX } from 'react-icons/fi'
+import * as Yup from 'yup'
 
 import { UPDATE_MARKING } from '../../../graphql/updateMarking'
+import { DELETE_MARKING } from '../../../graphql/deleteMarking'
 import { calculateTotalHoursOfMarking } from '../../../utils/calculateTotalHoursOfMarking'
 import { formatTimeNumberToString } from '../../../utils/formatTimeNumberToString'
+import { yupFormValidator } from '../../../utils/yupFormValidator'
 import { useToast } from '../../../hooks/toast'
 import { Button } from '../../Button'
 import { Input } from '../../Input'
 import { SelectPopup } from '../../SelectPopup'
 import { UpdateMarkingPopupForm } from './styles'
-import { DELETE_MARKING } from '../../../graphql/deleteMarking'
 
 interface IUpdateMarkingPopupProps {
   marking: IMarkingData
@@ -58,23 +60,76 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   }, [isBillable])
 
   const handleUpdateMarking = useCallback(async () => {
+    const markingData = {
+      marking_id: id,
+      project_id: projectUpdated.id,
+      description: descriptionUpdated,
+      date: dateUpdated,
+      work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+      start_time: startTimeUpdated,
+      finish_time: finishTimeUpdated,
+      start_interval_time: startIntervalTimeUpdated,
+      finish_interval_time: finishIntervalTimeUpdated
+    }
+
+    const schema = Yup.object().shape({
+      marking_id: Yup.string().uuid('UUID invalido da marcação')
+        .required('Não foi possível recuperar o ID da marcação!'),
+      project_id: Yup.string()
+        .uuid('UUID invalido do projeto')
+        .required('O projeto é obrigatório!'),
+      description: Yup.string()
+        .required('A descrição é obrigatória!'),
+      date: Yup.string()
+        .matches(
+          /^\d{4}-\d{2}-\d{2}$/,
+          'O formato da data deve ser DD/MM/YYYY'
+        ).required('A data é obrigatória!'),
+      work_class: Yup.string()
+        .required('Deve informar se é billable ou não!'),
+      start_time: Yup.string()
+        .matches(
+          /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+          'O formato do tempo inicial deve ser HH:MM'
+        ).required('O horário de inicio é obrigatório!'),
+      finish_time: Yup.string()
+        .matches(
+          /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+          'O formato do tempo final deve ser HH:MM'
+        ).required('O horário de finalização é obrigatório!'),
+      start_interval_time: Yup.string()
+        .matches(
+          /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+          'O formato do tempo de intervalo inicial deve ser HH:MM'
+        ),
+      finish_interval_time: Yup.string()
+        .matches(
+          /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+          'O formato do tempo de intervalo final deve ser HH:MM'
+        )
+    })
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: {
+        ...markingData,
+        start_interval_time: startIntervalTimeUpdated || '00:00',
+        finish_interval_time: finishIntervalTimeUpdated || '00:00'
+      },
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     setUpdateMarkingIsLoading(true)
 
     try {
       await client.mutate({
         mutation: UPDATE_MARKING,
         variables: {
-          data: {
-            marking_id: id,
-            project_id: projectUpdated.id,
-            date: dateUpdated,
-            description: descriptionUpdated,
-            work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
-            start_time: startTimeUpdated,
-            finish_time: finishTimeUpdated,
-            start_interval_time: startIntervalTimeUpdated,
-            finish_interval_time: finishIntervalTimeUpdated
-          }
+          data: markingData
         }
       })
 
@@ -87,7 +142,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
     }
 
     setUpdateMarkingIsLoading(false)
-  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated])
+  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast.addToast])
 
   const handleDeleteMarking = useCallback(async () => {
     try {

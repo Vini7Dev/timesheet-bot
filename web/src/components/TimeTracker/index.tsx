@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiDollarSign } from 'react-icons/fi'
+import * as Yup from 'yup'
 
 import { CREATE_MARKING } from '../../graphql/createMarking'
+import { yupFormValidator } from '../../utils/yupFormValidator'
 import { useToast } from '../../hooks/toast'
 import { useTimer } from '../../hooks/timer'
 import { Input } from '../Input'
@@ -39,28 +41,54 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   const [project, setProject] = useState<IProjectProps | undefined>()
 
   const handleCreateMarking = useCallback(async () => {
+    const startTime = getFormattedStartTime()
+    const finishTime = getFormattedNowTime()
+    const date = new Date()
+
+    const markingData = {
+      project_id: project?.id,
+      description,
+      date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+      start_time: startTime,
+      finish_time: finishTime
+    }
+
+    const schema = Yup.object().shape({
+      project_id: Yup.string()
+        .uuid('UUID invalido do projeto')
+        .required('O projeto é obrigatório!'),
+      description: Yup.string()
+        .min(1, 'A descrição é obrigatória!'),
+      date: Yup.string()
+        .required('A data é obrigatória!'),
+      work_class: Yup.string()
+        .required('Deve informar se é billable ou não!'),
+      start_time: Yup.string()
+        .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'O formato do tempo inicial deve ser HH:MM')
+        .required('O horário de inicio é obrigatório!'),
+      finish_time: Yup.string()
+        .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'O formato do tempo final deve ser HH:MM')
+        .required('O horário de finalização é obrigatório!')
+    })
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: markingData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     try {
-      const startTime = getFormattedStartTime()
-      const finishTime = getFormattedNowTime()
-      const date = new Date()
-
-      if (!project) {
-        return false
-      }
-
       setCreateMarkingIsLoading(true)
 
       await client.mutate({
         mutation: CREATE_MARKING,
         variables: {
-          data: {
-            project_id: project?.id,
-            description,
-            date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-            work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
-            start_time: startTime,
-            finish_time: finishTime
-          }
+          data: markingData
         }
       })
 
@@ -77,7 +105,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
       setCreateMarkingIsLoading(false)
       return false
     }
-  }, [beforeCreateMarking, client, description, getFormattedNowTime, getFormattedStartTime, isBillable, project])
+  }, [beforeCreateMarking, client, description, getFormattedNowTime, getFormattedStartTime, isBillable, project, toast.addToast])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
