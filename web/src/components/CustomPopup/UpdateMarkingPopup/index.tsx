@@ -60,60 +60,55 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   const handleUpdateMarking = useCallback(async () => {
     setUpdateMarkingIsLoading(true)
 
-    const {
-      errors
-    } = await client.mutate({
-      mutation: UPDATE_MARKING,
-      variables: {
-        data: {
-          marking_id: id,
-          project_id: projectUpdated.id,
-          date: dateUpdated,
-          description: descriptionUpdated,
-          work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
-          start_time: startTimeUpdated,
-          finish_time: finishTimeUpdated,
-          start_interval_time: startIntervalTimeUpdated,
-          finish_interval_time: finishIntervalTimeUpdated
+    try {
+      await client.mutate({
+        mutation: UPDATE_MARKING,
+        variables: {
+          data: {
+            marking_id: id,
+            project_id: projectUpdated.id,
+            date: dateUpdated,
+            description: descriptionUpdated,
+            work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+            start_time: startTimeUpdated,
+            finish_time: finishTimeUpdated,
+            start_interval_time: startIntervalTimeUpdated,
+            finish_interval_time: finishIntervalTimeUpdated
+          }
         }
-      }
-    })
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
+      beforeUpdate()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setUpdateMarkingIsLoading(false)
-    beforeUpdate()
-  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast])
+  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated])
 
   const handleDeleteMarking = useCallback(async () => {
-    const response = confirm('Deseja apagar a marcação? Essa ação não pode ser desfeita!')
+    try {
+      const response = confirm('Deseja apagar a marcação? Essa ação não pode ser desfeita!')
 
-    if (!response) {
-      return
-    }
-
-    const { errors } = await client.mutate<{ deleteMarking: string }>({
-      mutation: DELETE_MARKING, variables: { deleteMarkingId: id }
-    })
-
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
+      if (!response) {
+        return
       }
-    }
 
-    beforeDelete()
-  }, [beforeDelete, client, id, toast])
+      await client.mutate<{ deleteMarking: string }>({
+        mutation: DELETE_MARKING, variables: { deleteMarkingId: id }
+      })
+
+      beforeDelete()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
+    }
+  }, [beforeDelete, client, id])
 
   return (
     <UpdateMarkingPopupForm onTimesheetStatus={on_timesheet_status}>

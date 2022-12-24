@@ -29,32 +29,27 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
   const handleCreateCustomer = useCallback(async () => {
     setCreateIsLoading(true)
 
-    const {
-      data: createCustomerResponse,
-      errors
-    } = await client.mutate<ICreateCustomerResponse>({
-      mutation: CREATE_CUSTOMER,
-      variables: {
-        data: {
-          code,
-          name
+    try {
+      const { data: createCustomerResponse } = await client.mutate<ICreateCustomerResponse>({
+        mutation: CREATE_CUSTOMER,
+        variables: {
+          data: {
+            code,
+            name
+          }
         }
-      }
-    })
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       afterSubmit(createCustomerResponse?.createCustomer as ICustomerProps)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setCreateIsLoading(false)
-  }, [afterSubmit, client, code, name, toast])
+  }, [afterSubmit, client, code, name])
 
   return (
     <CreateCustomerForm>

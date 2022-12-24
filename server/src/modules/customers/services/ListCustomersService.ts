@@ -1,6 +1,5 @@
 import { inject, injectable } from 'tsyringe'
 
-import { AppError } from '@shared/errors/AppError'
 import { Customer } from '../infra/prisma/entities/Customer'
 import { ICustomersRepository } from '../repositories/ICustomersRepository'
 

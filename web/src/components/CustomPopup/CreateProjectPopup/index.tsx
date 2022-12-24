@@ -41,52 +41,47 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
   const handleCreateProject = useCallback(async () => {
     setCreateIsLoading(true)
 
-    const {
-      data: createProjectResponse,
-      errors
-    } = await client.mutate<ICreateProjectResponse>({
-      mutation: CREATE_PROJECT,
-      variables: {
-        data: {
-          code,
-          name,
-          customer_id: customerId
+    try {
+      const { data: createProjectResponse } = await client.mutate<ICreateProjectResponse>({
+        mutation: CREATE_PROJECT,
+        variables: {
+          data: {
+            code,
+            name,
+            customer_id: customerId
+          }
         }
-      }
-    })
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       afterSubmit(createProjectResponse?.createProject as IProjectProps)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setCreateIsLoading(false)
-  }, [afterSubmit, client, code, customerId, name, toast])
+  }, [afterSubmit, client, code, customerId, name])
 
   const handleGetCustomers = useCallback(async () => {
-    const { data: customersResponse, error } = await client.query<IGetCustomersResponse>({
-      query: CUSTOMERS,
-      variables: {
-        data: {}
-      },
-      fetchPolicy: 'no-cache'
-    })
+    try {
+      const { data: customersResponse } = await client.query<IGetCustomersResponse>({
+        query: CUSTOMERS,
+        variables: {
+          data: {}
+        },
+        fetchPolicy: 'no-cache'
+      })
 
-    if (error) {
+      setCustomers(customersResponse.customers)
+    } catch (err: any) {
       toast.addToast({
         type: 'error',
-        message: error.message
+        message: err.message
       })
-    } else {
-      setCustomers(customersResponse.customers)
     }
-  }, [client, toast])
+  }, [client])
 
   useEffect(() => {
     handleGetCustomers()

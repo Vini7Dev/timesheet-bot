@@ -76,27 +76,25 @@ export const Markings: React.FC = () => {
   const handleGetUserMarkings = useCallback(async () => {
     setLoadingMarkings(true)
 
-    const { data: markingsResponse, errors } = await client.query<IGetUserMarkingsResponse>({
-      query: MARKINGS_BY_USER_ID,
-      variables: {
-        data: {}
-      },
-      fetchPolicy: 'no-cache'
-    })
+    try {
+      const { data: markingsResponse } = await client.query<IGetUserMarkingsResponse>({
+        query: MARKINGS_BY_USER_ID,
+        variables: {
+          data: {}
+        },
+        fetchPolicy: 'no-cache'
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       setMarkings(markingsResponse.markingsByUserId)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setLoadingMarkings(false)
-  }, [client, toast])
+  }, [client])
 
   const handleUpdateMarking = useCallback(async ({
     date,
@@ -107,34 +105,29 @@ export const Markings: React.FC = () => {
     finish_time,
     work_class
   }: IUpdateMarkingProps) => {
-    const {
-      errors
-    } = await client.mutate({
-      mutation: UPDATE_MARKING,
-      variables: {
-        data: {
-          marking_id,
-          project_id,
-          date,
-          description,
-          start_time,
-          finish_time,
-          work_class
+    try {
+      await client.mutate({
+        mutation: UPDATE_MARKING,
+        variables: {
+          data: {
+            marking_id,
+            project_id,
+            date,
+            description,
+            start_time,
+            finish_time,
+            work_class
+          }
         }
-      }
-    })
-
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
+      })
+      handleGetUserMarkings()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
-
-    handleGetUserMarkings()
-  }, [client, handleGetUserMarkings, toast])
+  }, [client, handleGetUserMarkings])
 
   useEffect(() => {
     handleGetUserMarkings()

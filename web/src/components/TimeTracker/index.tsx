@@ -39,49 +39,45 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   const [project, setProject] = useState<IProjectProps | undefined>()
 
   const handleCreateMarking = useCallback(async () => {
-    const startTime = getFormattedStartTime()
-    const finishTime = getFormattedNowTime()
-    const date = new Date()
+    try {
+      const startTime = getFormattedStartTime()
+      const finishTime = getFormattedNowTime()
+      const date = new Date()
 
-    if (!project) {
-      return false
-    }
+      if (!project) {
+        return false
+      }
 
-    setCreateMarkingIsLoading(true)
+      setCreateMarkingIsLoading(true)
 
-    const {
-      errors
-    } = await client.mutate({
-      mutation: CREATE_MARKING,
-      variables: {
-        data: {
-          project_id: project?.id,
-          description,
-          date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-          work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
-          start_time: startTime,
-          finish_time: finishTime
+      await client.mutate({
+        mutation: CREATE_MARKING,
+        variables: {
+          data: {
+            project_id: project?.id,
+            description,
+            date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+            work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+            start_time: startTime,
+            finish_time: finishTime
+          }
         }
-      }
-    })
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
+      setCreateMarkingIsLoading(false)
+      beforeCreateMarking()
+
+      return true
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
 
       setCreateMarkingIsLoading(false)
       return false
     }
-
-    setCreateMarkingIsLoading(false)
-    beforeCreateMarking()
-
-    return true
-  }, [beforeCreateMarking, client, description, getFormattedNowTime, getFormattedStartTime, isBillable, project, toast])
+  }, [beforeCreateMarking, client, description, getFormattedNowTime, getFormattedStartTime, isBillable, project])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)

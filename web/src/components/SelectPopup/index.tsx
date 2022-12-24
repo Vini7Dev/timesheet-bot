@@ -60,52 +60,48 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
   const handleGetProjects = useCallback(async (search?: string) => {
     setSearchLoading(true)
 
-    const { data: projectsResponse, errors } = await client.query<IGetProjectsResponse>({
-      query: PROJECTS,
-      variables: {
-        data: { search }
-      },
-      fetchPolicy: 'no-cache'
-    })
+    try {
+      const { data: projectsResponse } = await client.query<IGetProjectsResponse>({
+        query: PROJECTS,
+        variables: {
+          data: { search }
+        },
+        fetchPolicy: 'no-cache'
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       setProjects(projectsResponse.projects)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setSearchLoading(false)
-  }, [client, toast])
+  }, [client])
 
   const handleGetCustomers = useCallback(async (search?: string) => {
     setSearchLoading(true)
 
-    const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
-      query: CUSTOMERS,
-      variables: {
-        data: { search }
-      },
-      fetchPolicy: 'no-cache'
-    })
+    try {
+      const { data: customersResponse } = await client.query<IGetCustomersResponse>({
+        query: CUSTOMERS,
+        variables: {
+          data: { search }
+        },
+        fetchPolicy: 'no-cache'
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       setCustomers(customersResponse.customers)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setSearchLoading(false)
-  }, [client, toast])
+  }, [client])
 
   const handleReloadList = useCallback(async () => {
     if (popupType === 'customers') {

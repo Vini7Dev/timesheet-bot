@@ -1,6 +1,5 @@
 import { container } from 'tsyringe'
 
-import { ListUsersService } from '@modules/users/services/ListUsersService'
 import { IAppContext } from '@shared/infra/apollo/context'
 import { ListCustomersService } from '@modules/customers/services/ListCustomersService'
 import { ensureAuthenticated } from '@utils/ensureAuthenticated'

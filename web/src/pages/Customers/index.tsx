@@ -51,27 +51,25 @@ export const Customers: React.FC = () => {
   const handleGetCustomers = useCallback(async () => {
     setLoadingCustomers(true)
 
-    const { data: customersResponse, errors } = await client.query<IGetCustomersResponse>({
-      query: CUSTOMERS,
-      variables: {
-        data: {}
-      },
-      fetchPolicy: 'no-cache'
-    })
+    try {
+      const { data: customersResponse } = await client.query<IGetCustomersResponse>({
+        query: CUSTOMERS,
+        variables: {
+          data: {}
+        },
+        fetchPolicy: 'no-cache'
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       setCustomers(customersResponse.customers)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setLoadingCustomers(false)
-  }, [client, toast])
+  }, [client])
 
   const handleReloadCustomers = useCallback(async () => {
     handleGetCustomers()
@@ -86,51 +84,45 @@ export const Customers: React.FC = () => {
       return
     }
 
-    const { errors } = await client.mutate<{ deleteCustomer: string }>({
-      mutation: DELETE_CUSTOMER, variables: { deleteCustomerId: id }
-    })
+    try {
+      await client.mutate<{ deleteCustomer: string }>({
+        mutation: DELETE_CUSTOMER, variables: { deleteCustomerId: id }
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       await handleGetCustomers()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
-  }, [client, handleGetCustomers, toast])
+  }, [client, handleGetCustomers])
 
   const handleUpdateCustomer = useCallback(async ({
     customer_id,
     code,
     name
   }: IUpdateCustomerProps) => {
-    const {
-      errors
-    } = await client.mutate({
-      mutation: UPDATE_CUSTOMER,
-      variables: {
-        data: {
-          customer_id,
-          code,
-          name
+    try {
+      await client.mutate({
+        mutation: UPDATE_CUSTOMER,
+        variables: {
+          data: {
+            customer_id,
+            code,
+            name
+          }
         }
-      }
-    })
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
+      handleGetCustomers()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
-
-    handleGetCustomers()
-  }, [client, handleGetCustomers, toast])
+  }, [client, handleGetCustomers])
 
   useEffect(() => {
     handleGetCustomers()

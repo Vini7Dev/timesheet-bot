@@ -70,50 +70,46 @@ export const Projects: React.FC = () => {
   const handleGetProjects = useCallback(async () => {
     setLoadingProjects(true)
 
-    const { data: projectsResponse, errors } = await client.query<IGetProjectsGroupByCustomersResponse>({
-      query: PROJECTS_GROUP_BY_CUSTOMERS,
-      variables: {
-        data: {}
-      },
-      fetchPolicy: 'no-cache'
-    })
+    try {
+      const { data: projectsResponse } = await client.query<IGetProjectsGroupByCustomersResponse>({
+        query: PROJECTS_GROUP_BY_CUSTOMERS,
+        variables: {
+          data: {}
+        },
+        fetchPolicy: 'no-cache'
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
-    } else {
       setProjectsByCustomers(projectsResponse.customers)
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
 
     setLoadingProjects(false)
-  }, [client, toast])
+  }, [client])
 
   const handleDeleteProject = useCallback(async (id: string) => {
-    const response = confirm('Deseja apagar o projeto? Essa ação não pode ser desfeita!')
+    try {
+      const response = confirm('Deseja apagar o projeto? Essa ação não pode ser desfeita!')
 
-    if (!response) {
-      return
-    }
-
-    const { errors } = await client.mutate<{ deleteProject: string }>({
-      mutation: DELETE_PROJECT, variables: { deleteProjectId: id }
-    })
-
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
+      if (!response) {
+        return
       }
-    } else {
+
+      const { errors } = await client.mutate<{ deleteProject: string }>({
+        mutation: DELETE_PROJECT, variables: { deleteProjectId: id }
+      })
+
       await handleGetProjects()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
-  }, [client, handleGetProjects, toast])
+  }, [client, handleGetProjects])
 
   const handleReloadProjects = useCallback(async () => {
     handleGetProjects()
@@ -127,31 +123,27 @@ export const Projects: React.FC = () => {
     name,
     customer_id
   }: IUpdateProjectProps) => {
-    const {
-      errors
-    } = await client.mutate({
-      mutation: UPDATE_PROJECT,
-      variables: {
-        data: {
-          project_id,
-          code,
-          name,
-          customer_id
+    try {
+      await client.mutate({
+        mutation: UPDATE_PROJECT,
+        variables: {
+          data: {
+            project_id,
+            code,
+            name,
+            customer_id
+          }
         }
-      }
-    })
+      })
 
-    if (errors && errors.length > 0) {
-      for (const error of errors) {
-        toast.addToast({
-          type: 'error',
-          message: error.message
-        })
-      }
+      handleGetProjects()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
     }
-
-    handleGetProjects()
-  }, [client, handleGetProjects, toast])
+  }, [client, handleGetProjects])
 
   useEffect(() => {
     handleGetProjects()
