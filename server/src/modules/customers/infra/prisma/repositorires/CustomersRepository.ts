@@ -36,6 +36,7 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
       where: {
         name: { contains: search, mode: 'insensitive' },
       },
+      orderBy: { name: 'asc' }
     })
 
     return customerList

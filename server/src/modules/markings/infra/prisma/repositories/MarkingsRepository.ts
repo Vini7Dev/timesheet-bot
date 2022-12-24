@@ -28,7 +28,8 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
         AND: buildRepositoryFiltersObject({
           date,
         })
-      }
+      },
+      orderBy: { date: 'desc' }
     })
 
     return filteredMarkings as Marking[]
@@ -49,6 +50,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
           user_id,
         })
       },
+      orderBy: { date: 'desc' },
       include: { project: true }
     })
 

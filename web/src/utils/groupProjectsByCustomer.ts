@@ -1,3 +1,5 @@
+import { getOrdenationValue } from './orderMarkingsByTime'
+
 interface IGroupProjectsByCustomerResult {
   customer: Omit<ICustomerProps, 'code'>
   projects: IProjectProps[]
@@ -23,5 +25,12 @@ export const groupProjectsByCustomer = (
     }
   }
 
-  return groups
+  const orderGroups = groups.sort((groupA, groupB) => {
+    return getOrdenationValue({
+      compareA: groupA.customer.name,
+      compareB: groupB.customer.name
+    })
+  })
+
+  return orderGroups
 }

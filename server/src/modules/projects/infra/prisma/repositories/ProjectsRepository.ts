@@ -36,6 +36,7 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
       where: {
         name: { contains: search, mode: 'insensitive' },
       },
+      orderBy: { name: 'asc' }
     })
 
     return projectsList
