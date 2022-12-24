@@ -73,6 +73,7 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
   border: 1px solid ${({ onTimesheetStatus }) => {
     switch (onTimesheetStatus) {
       case 'SENT': return '#12191D'
+      case 'SENDING': return '#008BEA'
       case 'NOT_SENT': return '#FFC107'
       case 'ERROR': return '#F44336'
       default: return '#F44336'

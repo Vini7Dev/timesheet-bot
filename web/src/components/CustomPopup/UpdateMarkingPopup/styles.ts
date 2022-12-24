@@ -32,6 +32,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       border: 1px solid ${({ onTimesheetStatus }) => {
         switch (onTimesheetStatus) {
           case 'SENT': return '#4CAF50'
+          case 'SENDING': return '#008BEA'
           case 'NOT_SENT': return '#FFC107'
           case 'ERROR': return '#F44336'
           default: return '#F44336'
@@ -40,6 +41,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       color: ${({ onTimesheetStatus }) => {
         switch (onTimesheetStatus) {
           case 'SENT': return '#4CAF50'
+          case 'SENDING': return '#008BEA'
           case 'NOT_SENT': return '#FFC107'
           case 'ERROR': return '#F44336'
           default: return '#F44336'
@@ -48,6 +50,14 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
 
       svg {
         margin-right: 8px;
+      }
+
+      .sending-icon {
+        -webkit-animation: rotating 1.5s linear infinite;
+        -moz-animation: rotating 1.5s linear infinite;
+        -ms-animation: rotating 1.5s linear infinite;
+        -o-animation: rotating 1.5s linear infinite;
+        animation: rotating 1.5s linear infinite;
       }
     }
   }

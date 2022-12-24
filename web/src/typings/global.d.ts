@@ -1,4 +1,4 @@
-type OnTimesheetStatus = 'SENT' | 'NOT_SENT' | 'ERROR'
+type OnTimesheetStatus = 'SENT' | 'SENDING' | 'NOT_SENT' | 'ERROR'
 
 type WorkClass = 'PRODUCTION' | 'ABSENCE'
 

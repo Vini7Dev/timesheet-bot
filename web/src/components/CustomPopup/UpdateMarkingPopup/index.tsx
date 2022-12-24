@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
-import { FiCheck, FiClock, FiDollarSign, FiUpload, FiX } from 'react-icons/fi'
+import { FiCheck, FiClock, FiDollarSign, FiLoader, FiUpload, FiX } from 'react-icons/fi'
 import * as Yup from 'yup'
 
 import { UPDATE_MARKING } from '../../../graphql/updateMarking'
@@ -178,6 +178,13 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
                   <>
                     <FiCheck color="#4CAF50" size={20} />
                     Enviado ao Multidados
+                  </>
+                )
+
+                case 'SENDING': return (
+                  <>
+                    <FiLoader color="#008BEA" size={20} className="sending-icon" />
+                    Enviando para o Multidados...
                   </>
                 )
 

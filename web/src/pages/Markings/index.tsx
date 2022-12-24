@@ -300,6 +300,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
             (() => {
               switch (onTimesheetStatus) {
                 case 'SENT': return <FiCheck color="#4CAF50" size={20} />
+                case 'SENDING': return <FiCheck color="#008BEA" size={20} />
                 case 'NOT_SENT': return <FiUpload color="#FFC107" size={20} />
                 case 'ERROR': return <FiX color="#F44336" size={20} />
                 default: return <FiX color="#F44336" size={20} />
