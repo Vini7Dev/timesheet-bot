@@ -8,7 +8,6 @@ import { projectsTypeDefs } from '@modules/projects/infra/apollo/schemas/project
 import { projectsResolvers } from '@modules/projects/infra/apollo/schemas/projectsResolvers'
 import { markingsTypeDefs } from '@modules/markings/infra/apollo/schemas/markingsTypeDefs'
 import { markingsResolvers } from '@modules/markings/infra/apollo/schemas/markingsResolvers'
-import { IWSAppContext } from '../context'
 
 const rootTypeDefs = gql`
   type Query {
@@ -20,7 +19,7 @@ const rootTypeDefs = gql`
   }
 
   type Subscription {
-    onCreateMarking: [TimesheetMarkingResponse!]!
+    _empty: Boolean
   }
 
   type TimesheetMarkingResponse {
@@ -43,16 +42,6 @@ const rootTypeDefs = gql`
   }
 `
 
-const onCreateMarking = {
-  subscribe: (
-    _: any,
-    __: any,
-    { pubsub }: IWSAppContext,
-  ) => {
-    return pubsub.asyncIterator('CREATED_MARKING')
-  },
-}
-
 const rootResolvers = {
   Query: {
     _empty: () => true,
@@ -61,7 +50,7 @@ const rootResolvers = {
     _empty: () => true,
   },
   Subscription: {
-    onCreateMarking,
+    _empty: () => true,
   }
 }
 

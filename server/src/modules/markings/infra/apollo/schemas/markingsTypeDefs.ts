@@ -13,6 +13,10 @@ export const markingsTypeDefs = gql`
     deleteMarking(id: ID!): ID!
   }
 
+  extend type Subscription {
+    onSendMarkingsToTimesheet: [TimesheetMarkingResponse!]!
+  }
+
   type Marking {
     id: ID!
     description: String!
