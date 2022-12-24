@@ -1,1 +1,1 @@
-export { default as SaveMarkingOnTimesheet } from './SaveMarkingOnTimesheet'
+export { default as MarkingsOnTimesheet } from './MarkingsOnTimesheet'

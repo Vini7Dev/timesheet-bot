@@ -1,1 +1,5 @@
+// Jobs
+export const JOB_MARKINGS_ON_TIMESHEET = 'MARKINGS_ON_TIMESHEET'
+
+// Subscriptions Triggers
 export const TRIGGER_MARKINGS_TO_TIMESHEET = 'MARKINGS_TO_TIMESHEET'

@@ -1,4 +1,4 @@
-import { GraphQLError } from "graphql"
+import { GraphQLError } from 'graphql'
 
 export class AppError extends GraphQLError {
   readonly status: number

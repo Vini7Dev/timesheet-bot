@@ -11,6 +11,7 @@ export const markingsTypeDefs = gql`
     createMarking(data: CreateMarkingInput!): Marking!
     updateMarking(data: UpdateMarkingInput!): Marking!
     deleteMarking(id: ID!): ID!
+    sendMarkingsToTimesheet(data: SendMarkingsToTimesheetInput): Boolean!
   }
 
   extend type Subscription {
@@ -55,6 +56,10 @@ export const markingsTypeDefs = gql`
     start_interval_time: String
     finish_interval_time: String
     work_class: WorkClass
+  }
+
+  input SendMarkingsToTimesheetInput {
+    markingIds: [String!]!
   }
 
   enum WorkClass {

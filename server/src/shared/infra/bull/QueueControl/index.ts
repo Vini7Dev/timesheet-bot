@@ -8,7 +8,7 @@ import * as jobs from '../jobs'
 interface IQueue {
   bull: BullQueue.Queue
   name: string
-  handle(): Promise<void>
+  handle(props: any): Promise<void>
 }
 
 interface IQueueControlAdd {

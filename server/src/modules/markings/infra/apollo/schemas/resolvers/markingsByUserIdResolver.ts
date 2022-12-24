@@ -1,8 +1,8 @@
-import { container } from "tsyringe"
+import { container } from 'tsyringe'
 
-import { IAppContext } from "@shared/infra/apollo/context"
-import { ensureAuthenticated } from "@utils/ensureAuthenticated"
-import { ListMarkingsByUserService } from "@modules/markings/services/ListMarkingsByUserService"
+import { IAppContext } from '@shared/infra/apollo/context'
+import { ensureAuthenticated } from '@utils/ensureAuthenticated'
+import { ListMarkingsByUserService } from '@modules/markings/services/ListMarkingsByUserService'
 
 interface IApiFiltersInput {
   data: {

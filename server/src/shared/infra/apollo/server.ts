@@ -8,6 +8,9 @@ import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { execute, subscribe } from 'graphql'
+import { ExpressAdapter, createBullBoard, BullAdapter } from '@bull-board/express'
+
+import { QueueControl } from '../bull/QueueControl'
 
 import { context, IWSAppContext } from './context'
 import { resolvers, typeDefs } from './schemas'
@@ -16,6 +19,20 @@ import '@shared/containers'
 
 (async function startApolloServer(typeDefs, resolvers) {
   const app = express()
+
+  const serverAdapter = new ExpressAdapter()
+  serverAdapter.setBasePath('/bull-board')
+
+  const bullBoard = createBullBoard({ queues: [], serverAdapter, })
+
+  const QueueAdapters = QueueControl.getQueues().map(queue => (
+    new BullAdapter(queue.bull)
+  ))
+
+  bullBoard.setQueues(QueueAdapters)
+
+  app.use('/bull-board', serverAdapter.getRouter())
+
   const httpServer = createServer(app)
   const schema = makeExecutableSchema({ typeDefs, resolvers })
 
