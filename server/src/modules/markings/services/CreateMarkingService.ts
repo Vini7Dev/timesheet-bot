@@ -5,6 +5,7 @@ import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRep
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository';
 import { AppError } from '@shared/errors/AppError';
 import { filterNumberBetweenInterval } from '@utils/filterNumberBetweenInterval';
+import { checkIfTimeRangeIsInAnotherTimeRange } from '@utils/checkIfTimeRangeIsInAnotherTimeRange';
 import { Marking } from '../infra/prisma/entities/Marking';
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 
@@ -114,11 +115,12 @@ export class CreateMarkingService {
       const compareStartNumber = parseInt(compareStartTime.replace(':', ''))
       const compareFinishNumber = parseInt(compareFinishTime.replace(':', ''))
 
-      const isParallel = filterNumberBetweenInterval({
-        startNumberInterval: compareStartNumber,
-        finishNumberInterval: compareFinishNumber,
-        numbersToVerify: [startNumber, finishNumber],
-      }).length !== 0
+      const isParallel = checkIfTimeRangeIsInAnotherTimeRange({
+        startNumber,
+        finishNumber,
+        compareStartNumber: compareStartNumber,
+        compareFinishNumber: compareFinishNumber,
+      })
 
       return isParallel
     })

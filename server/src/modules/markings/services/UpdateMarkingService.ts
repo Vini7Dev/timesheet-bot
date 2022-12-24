@@ -4,6 +4,7 @@ import { inject, injectable } from 'tsyringe'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { AppError } from '@shared/errors/AppError'
 import { filterNumberBetweenInterval } from '@utils/filterNumberBetweenInterval'
+import { checkIfTimeRangeIsInAnotherTimeRange } from '@utils/checkIfTimeRangeIsInAnotherTimeRange'
 import { Marking } from '../infra/prisma/entities/Marking'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
@@ -46,8 +47,18 @@ export class UpdateMarkingService {
     work_class,
     authenticatedUserId,
   }: IServiceProps): Promise<Marking> {
-    const startNumber = parseInt(start_time?.replace(':', '') ?? '')
-    const finishNumber = parseInt(finish_time?.replace(':', '') ?? '')
+    const markingToUpdate = await this.markingsRepository.findById(marking_id)
+    if (!markingToUpdate) {
+      throw new AppError('Marking not found!', 404)
+    }
+
+    const startNumber = parseInt(
+      (start_time ?? markingToUpdate.start_time).replace(':', '')
+    )
+
+    const finishNumber = parseInt(
+      (finish_time ?? markingToUpdate.finish_time).replace(':', '')
+    )
 
     if (startNumber >= finishNumber) {
       throw new AppError('Start time cannot be equal or greater than finish time!')
@@ -74,11 +85,6 @@ export class UpdateMarkingService {
       if(!intervalTimeIsOnStartAndFinishRange) {
         throw new AppError('Interval times are outside of the start and finish times!')
       }
-    }
-
-    const markingToUpdate = await this.markingsRepository.findById(marking_id)
-    if (!markingToUpdate) {
-      throw new AppError('Marking not found!', 404)
     }
 
     const userToRefer = await this.usersRepository.findById(authenticatedUserId)
@@ -126,11 +132,12 @@ export class UpdateMarkingService {
       const compareStartNumber = parseInt(compareStartTime.replace(':', ''))
       const compareFinishNumber = parseInt(compareFinishTime.replace(':', ''))
 
-      const isParallel = filterNumberBetweenInterval({
-        startNumberInterval: compareStartNumber,
-        finishNumberInterval: compareFinishNumber,
-        numbersToVerify: [startNumber, finishNumber],
-      }).length !== 0
+      const isParallel = checkIfTimeRangeIsInAnotherTimeRange({
+        startNumber,
+        finishNumber,
+        compareStartNumber: compareStartNumber,
+        compareFinishNumber: compareFinishNumber,
+      })
 
       return isParallel
     })
