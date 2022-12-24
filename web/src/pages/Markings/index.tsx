@@ -255,7 +255,8 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class
+    work_class,
+    on_timesheet_status
   },
   onEdit,
   onUpdate
@@ -263,7 +264,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
   const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
-  const [onTimesheetStatus] = useState<OnTimesheetStatus>('SENT')
+  const [onTimesheetStatus] = useState<OnTimesheetStatus>(on_timesheet_status)
 
   const toggleProjectPopupIsOpen = useCallback(() => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
