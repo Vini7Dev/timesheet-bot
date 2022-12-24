@@ -37,8 +37,10 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     user_id,
     page = 0,
     perPage = 10,
+    date,
   }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
+      .filter(marking => date ? marking.date === date : true)
       .filter(marking => marking.user_id === user_id)
       .slice(page, perPage + page)
 

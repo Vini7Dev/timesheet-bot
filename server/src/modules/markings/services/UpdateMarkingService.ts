@@ -98,7 +98,8 @@ export class UpdateMarkingService {
     const markingsOfDate: Marking[] = []
 
     while (true) {
-      const markingsList = await this.markingsRepository.list({
+      const markingsList = await this.markingsRepository.listByUserId({
+        user_id: userToRefer.id,
         page,
         perPage,
         date,

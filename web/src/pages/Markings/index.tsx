@@ -18,14 +18,33 @@ import { CustomPopup } from '../../components/CustomPopup'
 import { ListAlert } from '../../components/ListAlert'
 import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
 import { MainContent, MarkingItemContainer, PageContainer } from './styles'
+import { UPDATE_MARKING } from '../../graphql/updateMarking'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
 }
 
+interface IUpdateMarkingProps {
+  marking_id: string
+  project_id?: string
+  description?: string
+  start_time?: string
+  finish_time?: string
+  work_class?: WorkClass
+}
+
+interface IHandleUpdateMarkingProps {
+  newProjectId?: string
+  newDescription?: string
+  newStartTime?: string
+  newFinishTime?: string
+  newWorkClass?: WorkClass
+}
+
 interface IMarkingItemProps {
   marking: IMarkingData
   onEdit: (id: string) => void
+  onUpdate: (data: IUpdateMarkingProps) => Promise<void>
 }
 
 export const Markings: React.FC = () => {
@@ -78,6 +97,42 @@ export const Markings: React.FC = () => {
     setLoadingMarkings(false)
   }, [client, toast])
 
+  const handleUpdateMarking = useCallback(async ({
+    marking_id,
+    project_id,
+    description,
+    start_time,
+    finish_time,
+    work_class
+  }: IUpdateMarkingProps) => {
+    const {
+      errors
+    } = await client.mutate({
+      mutation: UPDATE_MARKING,
+      variables: {
+        data: {
+          marking_id,
+          project_id,
+          description,
+          start_time,
+          finish_time,
+          work_class
+        }
+      }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+    }
+
+    handleGetUserMarkings()
+  }, [client, handleGetUserMarkings, toast])
+
   useEffect(() => {
     handleGetUserMarkings()
   }, [handleGetUserMarkings])
@@ -122,6 +177,7 @@ export const Markings: React.FC = () => {
                               <MarkingItem
                                 key={marking.id}
                                 marking={marking}
+                                onUpdate={handleUpdateMarking}
                                 onEdit={() => {
                                   handleSetEditMarking(marking.id)
                                 }}
@@ -171,20 +227,39 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
     finish_interval_time,
     work_class
   },
-  onEdit
+  onEdit,
+  onUpdate
 }) => {
   const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
   const [onTimesheetStatus] = useState<OnTimesheetStatus>('SENT')
 
-  const toggleIsBillable = useCallback(() => {
-    setIsBillable(!isBillable)
-  }, [isBillable])
-
   const toggleProjectPopupIsOpen = useCallback(() => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
   }, [projectPopupIsOpen])
+
+  const handleUpdateMarking = useCallback(({
+    newProjectId,
+    newDescription,
+    newStartTime,
+    newFinishTime,
+    newWorkClass
+  }: IHandleUpdateMarkingProps) => {
+    onUpdate({
+      marking_id: id,
+      project_id: newProjectId,
+      description: newDescription,
+      start_time: newStartTime,
+      finish_time: newFinishTime,
+      work_class: newWorkClass
+    })
+  }, [id, onUpdate])
+
+  const toggleIsBillable = useCallback(() => {
+    setIsBillable(!isBillable)
+    handleUpdateMarking({ newWorkClass: isBillable ? 'ABSENCE' : 'PRODUCTION' })
+  }, [handleUpdateMarking, isBillable])
 
   return (
     <MarkingItemContainer onTimesheetStatus={onTimesheetStatus}>
@@ -206,6 +281,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
           placeholder="Descrição..."
           inputStyle="high"
           defaultValue={description}
+          onBlur={(e) => handleUpdateMarking({ newDescription: e.target.value })}
         />
 
         <button
@@ -218,9 +294,9 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
         { projectPopupIsOpen && (
           <SelectPopup
             popupType="projects"
-            onSelect={() => {
-              //
-            }}
+            onSelect={(selectedProject) => handleUpdateMarking({
+              newProjectId: selectedProject.id
+            })}
           />
         ) }
       </div>
@@ -243,6 +319,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
               inputStyle="high"
               style={{ textAlign: 'center', width: '4.375rem' }}
               defaultValue={start_time}
+              onBlur={(e) => handleUpdateMarking({ newStartTime: e.target.value })}
             />
             :
             <Input
@@ -250,6 +327,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
               inputStyle="high"
               style={{ textAlign: 'center', width: '4.375rem' }}
               defaultValue={finish_time}
+              onBlur={(e) => handleUpdateMarking({ newFinishTime: e.target.value })}
             />
           </div>
         </div>

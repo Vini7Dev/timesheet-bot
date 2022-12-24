@@ -38,12 +38,16 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     user_id,
     page,
     perPage,
+    date
   }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = await this.client.markings.findMany({
       skip: page,
       take: perPage,
       where: {
-        user_id,
+        AND: buildRepositoryFiltersObject({
+          date,
+          user_id,
+        })
       },
       include: { project: true }
     })

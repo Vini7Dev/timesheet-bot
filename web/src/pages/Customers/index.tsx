@@ -26,6 +26,11 @@ interface IUpdateCustomerProps {
   name?: string
 }
 
+interface IHandleUpdateCustomerProps {
+  newName?: string
+  newCode?: string
+}
+
 interface ICustomerItemProps extends ICustomerProps {
   onDelete: (id: string) => Promise<void>
   onUpdate: (data: IUpdateCustomerProps) => Promise<void>
@@ -204,12 +209,9 @@ const CustomerItem: React.FC<ICustomerItemProps> = ({
   onDelete,
   onUpdate
 }) => {
-  const updateCustomer = useCallback(({
+  const handleUpdateCustomer = useCallback(({
     newName, newCode
-  }: {
-    newName?: string
-    newCode?: string
-  }) => {
+  }: IHandleUpdateCustomerProps) => {
     if (code === newCode || name === newName) {
       return
     }
@@ -228,14 +230,14 @@ const CustomerItem: React.FC<ICustomerItemProps> = ({
           placeholder={name}
           inputStyle="high"
           defaultValue={name}
-          onBlur={(e) => updateCustomer({ newName: e.target.value })}
+          onBlur={(e) => handleUpdateCustomer({ newName: e.target.value })}
           />
 
         <Input
           placeholder={code}
           inputStyle="high"
           defaultValue={code}
-          onBlur={(e) => updateCustomer({ newCode: e.target.value })}
+          onBlur={(e) => handleUpdateCustomer({ newCode: e.target.value })}
           />
       </div>
 
