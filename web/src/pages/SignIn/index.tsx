@@ -1,14 +1,18 @@
 import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
 
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { useAuth } from '../../hooks/auth'
+import { useToast } from '../../hooks/toast'
+import { yupFormValidator } from '../../utils/yupFormValidator'
 import { MainContent, PageContainer, SignInForm } from './styles'
 
 export const SignIn: React.FC = () => {
   const navigate = useNavigate()
+  const toast = useToast()
   const auth = useAuth()
 
   const [authIsLoading, setAuthIsLoading] = useState(false)
@@ -20,15 +24,32 @@ export const SignIn: React.FC = () => {
   }, [navigate])
 
   const handleSignIn = useCallback(async () => {
-    setAuthIsLoading(true)
-
-    await auth.signIn({
-      emailOrUsername,
-      password
+    const schema = Yup.object().shape({
+      emailOrUsername: Yup.string().required('O email ou username é obrigatório!'),
+      password: Yup.string().required('A senha é obrigatória!')
     })
 
+    const loginData = {
+      emailOrUsername,
+      password
+    }
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: loginData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
+    setAuthIsLoading(true)
+
+    await auth.signIn(loginData)
+
     setAuthIsLoading(false)
-  }, [auth, emailOrUsername, password])
+  }, [auth, emailOrUsername, password, toast.addToast])
 
   return (
     <PageContainer>
