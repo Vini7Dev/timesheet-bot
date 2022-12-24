@@ -1,28 +1,87 @@
 import React, { useCallback, useState } from 'react'
+import { useApolloClient } from '@apollo/client'
 import { FiDollarSign } from 'react-icons/fi'
 
+import { CREATE_MARKING } from '../../graphql/createMarking'
+import { useToast } from '../../hooks/toast'
+import { useTimer } from '../../hooks/timer'
 import { Input } from '../Input'
 import { Button } from '../Button'
-import { TimerTrackerContainer } from './styles'
 import { SelectPopup } from '../SelectPopup'
-import { useTimer } from '../../hooks/timer'
+import { TimerTrackerContainer } from './styles'
 
-export const TimeTracker: React.FC = () => {
+interface ITimeTrackerProps {
+  beforeCreateMarking?: () => void
+}
+
+export const TimeTracker: React.FC<ITimeTrackerProps> = ({
+  beforeCreateMarking = () => null
+}) => {
+  const client = useApolloClient()
+  const toast = useToast()
   const {
     timerRunning,
-    getTimerFormated,
-    getStartTimerFormated,
+    getFormattedTimer,
+    getFormattedStartTime,
+    getFormattedNowTime,
     startTimer,
     stopTimer,
     changeStartTime
   } = useTimer()
 
-  const [showChangeStartinput, setShowChangeStartinput] = useState(false)
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
+  const [showChangeStartinput, setShowChangeStartinput] = useState(false)
+  const [changeStartInputValue, setChangeStartInputValue] = useState('')
+  const [createMarkingIsLoading, setCreateMarkingIsLoading] = useState(false)
 
   const [isBillable, setIsBillable] = useState(true)
   const [description, setDescription] = useState('')
-  const [changeStartInputValue, setChangeStartInputValue] = useState('')
+  const [project, setProject] = useState<IProjectProps | undefined>()
+
+  const handleCreateMarking = useCallback(async () => {
+    const startTime = getFormattedStartTime()
+    const finishTime = getFormattedNowTime()
+    const date = new Date()
+
+    if (!project) {
+      return false
+    }
+
+    setCreateMarkingIsLoading(true)
+
+    const {
+      errors
+    } = await client.mutate({
+      mutation: CREATE_MARKING,
+      variables: {
+        data: {
+          project_id: project?.id,
+          description,
+          date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+          work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+          start_time: startTime,
+          finish_time: finishTime
+        }
+      }
+    })
+
+    if (errors && errors.length > 0) {
+      for (const error of errors) {
+        toast.addToast({
+          type: 'error',
+          message: error.message
+        })
+      }
+
+      setCreateMarkingIsLoading(false)
+      return false
+    }
+
+    setCreateMarkingIsLoading(false)
+    beforeCreateMarking()
+
+    return true
+  }, [beforeCreateMarking, client, description, getFormattedNowTime, getFormattedStartTime, isBillable, project, toast])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
@@ -44,10 +103,14 @@ export const TimeTracker: React.FC = () => {
     startTimer()
   }, [startTimer])
 
-  const handleStopTimer = useCallback(() => {
-    setShowChangeStartinput(false)
-    stopTimer()
-  }, [stopTimer])
+  const handleStopTimer = useCallback(async () => {
+    const markingHasCreated = await handleCreateMarking()
+
+    if (markingHasCreated) {
+      setShowChangeStartinput(false)
+      stopTimer()
+    }
+  }, [handleCreateMarking, stopTimer])
 
   const handleChangeStartTime = useCallback(() => {
     if (!timerRunning || !changeStartInputValue) {
@@ -90,15 +153,17 @@ export const TimeTracker: React.FC = () => {
           id="timer-project-button"
           onClick={toggleProjectPopupIsOpen}
         >
-          + Projeto
+          {
+            project
+              ? project.name
+              : '+ Projeto'
+          }
         </button>
 
         { projectPopupIsOpen && (
           <SelectPopup
             popupType="projects"
-            onSelect={() => {
-              //
-            }}
+            onSelect={(selectedProject) => setProject(selectedProject as IProjectProps)}
           />
         ) }
       </div>
@@ -116,7 +181,7 @@ export const TimeTracker: React.FC = () => {
             disabled
             placeholder="00:00"
             inputStyle="high"
-            value={timerRunning ? getTimerFormated() : '00:00'}
+            value={timerRunning ? getFormattedTimer() : '00:00'}
             style={{ textAlign: 'center' }}
             onClickInContainer={toggleShowChangeStartinput}
           />
@@ -128,7 +193,7 @@ export const TimeTracker: React.FC = () => {
 
                 <div>
                   <Input
-                    placeholder={getStartTimerFormated()}
+                    placeholder={getFormattedStartTime()}
                     inputStyle="high"
                     value={changeStartInputValue}
                     onChange={(e) => setChangeStartInputValue(e.target.value)}
@@ -143,6 +208,7 @@ export const TimeTracker: React.FC = () => {
 
         <div id="timer-start-stop-button">
           <Button
+            isLoading={createMarkingIsLoading}
             buttonStyle={timerRunning ? 'danger' : 'primary'}
             text={timerRunning ? 'Parar' : 'Iniciar'}
             onClick={() => timerRunning ? handleStopTimer() : handleStartTimer()}

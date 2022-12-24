@@ -114,6 +114,10 @@ export class UpdateMarkingService {
     }
 
     const parallelMarking = markingsOfDate.find(markingToCompare => {
+      if (markingToCompare.id === markingToUpdate.id) {
+        return false
+      }
+
       const {
         start_time: compareStartTime,
         finish_time: compareFinishTime

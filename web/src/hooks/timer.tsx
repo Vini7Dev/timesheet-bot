@@ -8,8 +8,9 @@ interface IStopTimerResponse {
 
 interface ITimerContext {
   timerRunning: boolean
-  getTimerFormated: () => string
-  getStartTimerFormated: () => string
+  getFormattedTimer: () => string
+  getFormattedStartTime: () => string
+  getFormattedNowTime: () => string
   startTimer: () => void
   stopTimer: () => IStopTimerResponse
   changeStartTime: (newStartTime: number) => void
@@ -28,21 +29,27 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
     return value.toString().padStart(2, '0')
   }, [])
 
-  const getTimerFormated = useCallback((): string => {
+  const formatDateTime = useCallback((date: Date): string => {
+    const hours = date.getHours()
+    const minutes = date.getMinutes()
+
+    return `${formatPad(hours)}:${formatPad(minutes)}`
+  }, [])
+
+  const getFormattedTimer = useCallback((): string => {
     return formatTimeNumberToString({
       timeStartedAt: timerStartedAt,
       currentTime: timer
     })
   }, [timer, timerStartedAt])
 
-  const getStartTimerFormated = useCallback(() => {
-    const startetTimerDate = new Date(timerStartedAt)
+  const getFormattedStartTime = useCallback(() => {
+    return formatDateTime(new Date(timerStartedAt))
+  }, [formatDateTime, timerStartedAt])
 
-    const hours = startetTimerDate.getHours()
-    const minutes = startetTimerDate.getMinutes()
-
-    return `${formatPad(hours)}:${formatPad(minutes)}`
-  }, [formatPad, timerStartedAt])
+  const getFormattedNowTime = useCallback(() => {
+    return formatDateTime(new Date())
+  }, [formatDateTime])
 
   const startTimer = useCallback(() => {
     setTimerStartedAt(Date.now())
@@ -71,8 +78,9 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
   return (
     <TimerContext.Provider value={{
       timerRunning,
-      getTimerFormated,
-      getStartTimerFormated,
+      getFormattedTimer,
+      getFormattedStartTime,
+      getFormattedNowTime,
       startTimer,
       stopTimer,
       changeStartTime

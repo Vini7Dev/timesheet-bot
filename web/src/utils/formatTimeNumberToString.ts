@@ -2,6 +2,7 @@ interface IFormatTimeNumberToStringProps {
   timeStartedAt: number
   currentTime: number
   hideSecondsWhenHoursExist?: boolean
+  forceToShowHours?: boolean
 }
 
 const formatPad = (value: number): string => {
@@ -11,7 +12,8 @@ const formatPad = (value: number): string => {
 export const formatTimeNumberToString = ({
   timeStartedAt,
   currentTime,
-  hideSecondsWhenHoursExist = false
+  hideSecondsWhenHoursExist = false,
+  forceToShowHours = false
 }: IFormatTimeNumberToStringProps): string => {
   if (isNaN(currentTime)) {
     return ''
@@ -23,7 +25,7 @@ export const formatTimeNumberToString = ({
   const minutes = Math.floor((updatedTimerNow / (1000 * 60)) % 60)
   const hours = Math.floor((updatedTimerNow / (1000 * 60 * 60)) % 24)
 
-  if (hours > 0) {
+  if (hours > 0 || forceToShowHours) {
     if (hideSecondsWhenHoursExist) {
       return `${formatPad(hours)}:${formatPad(minutes)}`
     }

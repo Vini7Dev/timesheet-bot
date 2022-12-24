@@ -275,7 +275,8 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
                 startIntervalTime: startIntervalTimeUpdated,
                 finishIntervalTime: finishIntervalTimeUpdated
               }),
-              hideSecondsWhenHoursExist: true
+              hideSecondsWhenHoursExist: true,
+              forceToShowHours: true
             })
           }
         </div>

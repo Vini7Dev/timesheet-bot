@@ -25,6 +25,7 @@ interface IGetUserMarkingsResponse {
 }
 
 interface IUpdateMarkingProps {
+  date: string
   marking_id: string
   project_id?: string
   description?: string
@@ -98,6 +99,7 @@ export const Markings: React.FC = () => {
   }, [client, toast])
 
   const handleUpdateMarking = useCallback(async ({
+    date,
     marking_id,
     project_id,
     description,
@@ -113,6 +115,7 @@ export const Markings: React.FC = () => {
         data: {
           marking_id,
           project_id,
+          date,
           description,
           start_time,
           finish_time,
@@ -145,7 +148,7 @@ export const Markings: React.FC = () => {
         <Navigation />
 
         <MainContent>
-          <TimeTracker />
+          <TimeTracker beforeCreateMarking={handleGetUserMarkings} />
 
           <div id="marking-list-container">
             <strong id="marking-list-title">Marcações</strong>
@@ -165,7 +168,8 @@ export const Markings: React.FC = () => {
                           {formatTimeNumberToString({
                             timeStartedAt: 0,
                             currentTime: markingGroup.totalHours,
-                            hideSecondsWhenHoursExist: true
+                            hideSecondsWhenHoursExist: true,
+                            forceToShowHours: true
                           })}
                         </strong>
                       </div>
@@ -247,6 +251,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
     newWorkClass
   }: IHandleUpdateMarkingProps) => {
     onUpdate({
+      date,
       marking_id: id,
       project_id: newProjectId,
       description: newDescription,
@@ -254,7 +259,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
       finish_time: newFinishTime,
       work_class: newWorkClass
     })
-  }, [id, onUpdate])
+  }, [date, id, onUpdate])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
@@ -345,7 +350,8 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
                   startIntervalTime: start_interval_time,
                   finishIntervalTime: finish_interval_time
                 }),
-                hideSecondsWhenHoursExist: true
+                hideSecondsWhenHoursExist: true,
+                forceToShowHours: true
               })
             }
           </div>
