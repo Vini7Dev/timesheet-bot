@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
+import * as Yup from 'yup'
 
+import { yupFormValidator } from '../../../utils/yupFormValidator'
 import { useToast } from '../../../hooks/toast'
 import { CREATE_CUSTOMER } from '../../../graphql/createCustomer'
 import { Button } from '../../Button'
@@ -27,16 +29,33 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
   const [createIsLoading, setCreateIsLoading] = useState(false)
 
   const handleCreateCustomer = useCallback(async () => {
+    const customerData = {
+      code,
+      name
+    }
+
+    const schema = Yup.object().shape({
+      code: Yup.string().required('O código é obrigatório!'),
+      name: Yup.string().required('O nome é obrigatório!')
+    })
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: customerData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     setCreateIsLoading(true)
 
     try {
       const { data: createCustomerResponse } = await client.mutate<ICreateCustomerResponse>({
         mutation: CREATE_CUSTOMER,
         variables: {
-          data: {
-            code,
-            name
-          }
+          data: customerData
         }
       })
 

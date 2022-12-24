@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FiTrash } from 'react-icons/fi'
 import { useApolloClient } from '@apollo/client'
+import * as Yup from 'yup'
 
 import { CUSTOMERS } from '../../graphql/getCustomers'
+import { yupFormValidator } from '../../utils/yupFormValidator'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { Navigation } from '../../components/Navigation'
@@ -103,15 +105,33 @@ export const Customers: React.FC = () => {
     code,
     name
   }: IUpdateCustomerProps) => {
+    const customerData = {
+      customer_id,
+      code,
+      name
+    }
+
+    const schema = Yup.object().shape({
+      customer_id: Yup.string().uuid('UUID invalido').required('Não foi possível recuperar o ID do cliente!'),
+      code: Yup.string().min(1, 'O código não pode estar vazio!'),
+      name: Yup.string().min(1, 'O nome não pode estar vazio!')
+    })
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: customerData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     try {
       await client.mutate({
         mutation: UPDATE_CUSTOMER,
         variables: {
-          data: {
-            customer_id,
-            code,
-            name
-          }
+          data: customerData
         }
       })
 

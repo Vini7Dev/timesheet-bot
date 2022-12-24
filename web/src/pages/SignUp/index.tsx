@@ -3,12 +3,12 @@ import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 
+import { yupFormValidator } from '../../utils/yupFormValidator'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { CREATE_USER } from '../../graphql/createUser'
 import { useToast } from '../../hooks/toast'
-import { yupFormValidator } from '../../utils/yupFormValidator'
 import { MainContent, PageContainer, SignUpForm } from './styles'
 
 interface ICreateUserResponse {
@@ -47,19 +47,19 @@ export const SignUp: React.FC = () => {
   }, [navigate])
 
   const handleCreateUser = useCallback(async () => {
-    const schema = Yup.object().shape({
-      name: Yup.string().required('O nome é obrigatório!'),
-      email: Yup.string().required('O email é obrigatório!'),
-      username: Yup.string().required('O username é obrigatório!'),
-      password: Yup.string().required('A senha é obrigatória!')
-    })
-
     const userData = {
       name,
       email,
       username,
       password
     }
+
+    const schema = Yup.object().shape({
+      name: Yup.string().required('O nome é obrigatório!'),
+      email: Yup.string().required('O email é obrigatório!'),
+      username: Yup.string().required('O username é obrigatório!'),
+      password: Yup.string().required('A senha é obrigatória!')
+    })
 
     const isValid = await yupFormValidator({
       schema,

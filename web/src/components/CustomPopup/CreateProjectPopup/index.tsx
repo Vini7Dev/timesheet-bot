@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
+import * as Yup from 'yup'
 
-import { useToast } from '../../../hooks/toast'
 import { CUSTOMERS } from '../../../graphql/getCustomers'
 import { CREATE_PROJECT } from '../../../graphql/createProject'
+import { yupFormValidator } from '../../../utils/yupFormValidator'
+import { useToast } from '../../../hooks/toast'
 import { Select } from '../../Select'
 import { Input } from '../../Input'
 import { Button } from '../../Button'
@@ -39,17 +41,35 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
   const [customers, setCustomers] = useState<ICustomerProps[]>(customersList ?? [])
 
   const handleCreateProject = useCallback(async () => {
+    const projectData = {
+      customer_id: customerId,
+      code,
+      name
+    }
+
+    const schema = Yup.object().shape({
+      customer_id: Yup.string().uuid('UUID inválido do cliente!').required('O cliente é obrigatório!'),
+      code: Yup.string().required('O código é obrigatório!'),
+      name: Yup.string().required('O nome é obrigatório!')
+    })
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: projectData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     setCreateIsLoading(true)
 
     try {
       const { data: createProjectResponse } = await client.mutate<ICreateProjectResponse>({
         mutation: CREATE_PROJECT,
         variables: {
-          data: {
-            code,
-            name,
-            customer_id: customerId
-          }
+          data: projectData
         }
       })
 

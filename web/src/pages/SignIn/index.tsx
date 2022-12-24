@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 
+import { yupFormValidator } from '../../utils/yupFormValidator'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { useAuth } from '../../hooks/auth'
 import { useToast } from '../../hooks/toast'
-import { yupFormValidator } from '../../utils/yupFormValidator'
 import { MainContent, PageContainer, SignInForm } from './styles'
 
 export const SignIn: React.FC = () => {
@@ -24,15 +24,15 @@ export const SignIn: React.FC = () => {
   }, [navigate])
 
   const handleSignIn = useCallback(async () => {
-    const schema = Yup.object().shape({
-      emailOrUsername: Yup.string().required('O email ou username é obrigatório!'),
-      password: Yup.string().required('A senha é obrigatória!')
-    })
-
     const loginData = {
       emailOrUsername,
       password
     }
+
+    const schema = Yup.object().shape({
+      emailOrUsername: Yup.string().required('O email ou username é obrigatório!'),
+      password: Yup.string().required('A senha é obrigatória!')
+    })
 
     const isValid = await yupFormValidator({
       schema,

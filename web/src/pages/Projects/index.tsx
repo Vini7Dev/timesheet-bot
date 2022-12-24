@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiTrash } from 'react-icons/fi'
+import * as Yup from 'yup'
 
-import { useToast } from '../../hooks/toast'
 import { PROJECTS_GROUP_BY_CUSTOMERS } from '../../graphql/getProjectsGroupByCustomers'
+import { UPDATE_PROJECT } from '../../graphql/updateProject'
 import { DELETE_PROJECT } from '../../graphql/deleteProject'
+import { yupFormValidator } from '../../utils/yupFormValidator'
+import { useToast } from '../../hooks/toast'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
 import { SelectPopup } from '../../components/SelectPopup'
@@ -13,10 +16,9 @@ import { Button } from '../../components/Button'
 import { TimeTracker } from '../../components/TimeTracker'
 import { ListAlert } from '../../components/ListAlert'
 import { CustomPopup } from '../../components/CustomPopup'
-import { MainContent, ProjectItemContainer, PageContainer } from './styles'
-import { UPDATE_PROJECT } from '../../graphql/updateProject'
 import { CreateProjectPopup } from '../../components/CustomPopup/CreateProjectPopup'
 import { CreateCustomerPopup } from '../../components/CustomPopup/CreateCustomerPopup'
+import { MainContent, ProjectItemContainer, PageContainer } from './styles'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -119,20 +121,39 @@ export const Projects: React.FC = () => {
 
   const handleUpdateProject = useCallback(async ({
     project_id,
+    customer_id,
     code,
-    name,
-    customer_id
+    name
   }: IUpdateProjectProps) => {
+    const schema = Yup.object().shape({
+      project_id: Yup.string().uuid('UUID invalido do projeto').required('Não foi possível recuperar o ID do projeto!'),
+      customer_id: Yup.string().uuid('UUID invalido do cliente').required('Não foi possível recuperar o ID do cliente!'),
+      code: Yup.string().min(1, 'O código não pode estar vazio!'),
+      name: Yup.string().min(1, 'O nome não pode estar vazio!')
+    })
+
+    const projectData = {
+      project_id,
+      code,
+      name,
+      customer_id
+    }
+
+    const isValid = await yupFormValidator({
+      schema,
+      data: projectData,
+      addToast: toast.addToast
+    })
+
+    if (!isValid) {
+      return
+    }
+
     try {
       await client.mutate({
         mutation: UPDATE_PROJECT,
         variables: {
-          data: {
-            project_id,
-            code,
-            name,
-            customer_id
-          }
+          data: projectData
         }
       })
 
