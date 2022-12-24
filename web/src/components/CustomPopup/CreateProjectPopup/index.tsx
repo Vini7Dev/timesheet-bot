@@ -82,7 +82,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
     }
 
     setCreateIsLoading(false)
-  }, [afterSubmit, client, code, customerId, name])
+  }, [afterSubmit, client, code, customerId, name, toast.addToast])
 
   const handleGetCustomers = useCallback(async () => {
     try {

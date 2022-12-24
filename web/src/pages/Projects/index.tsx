@@ -164,7 +164,7 @@ export const Projects: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetProjects])
+  }, [client, handleGetProjects, toast.addToast])
 
   useEffect(() => {
     handleGetProjects()

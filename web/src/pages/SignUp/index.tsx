@@ -80,7 +80,7 @@ export const SignUp: React.FC = () => {
     if (!errors && data) {
       navigate('/')
     }
-  }, [createUser, email, name, navigate, password, username])
+  }, [createUser, email, name, navigate, password, username, toast.addToast])
 
   return (
     <PageContainer>

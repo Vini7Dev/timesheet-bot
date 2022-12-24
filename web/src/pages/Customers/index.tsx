@@ -142,7 +142,7 @@ export const Customers: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetCustomers])
+  }, [client, handleGetCustomers, toast.addToast])
 
   useEffect(() => {
     handleGetCustomers()
