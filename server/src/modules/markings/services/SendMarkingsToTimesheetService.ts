@@ -74,6 +74,7 @@ export class SendMarkingsToTimesheetService {
       data: {
         markings: markingsToProccess,
         userCredentials: {
+          user_id: userOwner.id,
           username: userOwner.username,
           password: this.encryptProvider.decrypt(userOwner.password),
         }

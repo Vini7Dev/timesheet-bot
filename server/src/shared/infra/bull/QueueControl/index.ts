@@ -13,7 +13,7 @@ import * as Jobs from '../../../../jobs'
 interface IQueue {
   bull: BullQueue.Queue
   name: string
-  handle: (props: any) => Promise<void>
+  handle: (props: any) => Promise<any>
 }
 
 interface IQueueControlAdd {

@@ -8,6 +8,7 @@ interface IJobMarkingsOnTimesheetProps {
   data: {
     markings: Marking[]
     userCredentials: {
+      user_id: string,
       username: string
       password: string
     }
@@ -23,7 +24,7 @@ interface IActionGroups {
 export default {
   key: JOB_MARKINGS_ON_TIMESHEET,
   handle: async ({ data: {
-    userCredentials: { username, password },
+    userCredentials: { user_id, username, password },
     markings,
   } }: IJobMarkingsOnTimesheetProps) => {
     const actionGroups: IActionGroups = {
@@ -75,6 +76,7 @@ export default {
 
       // Build response
       const crawlerResponses = {
+        user_id,
         markingsResponse: [
           ...createdMarkings.markingsResponse,
           ...updatedMarkings.markingsResponse,

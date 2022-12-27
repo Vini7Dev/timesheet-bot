@@ -66,6 +66,7 @@ describe('SendMarkingsToTimesheetService', () => {
       data: {
         markings: [createdMarking],
         userCredentials: {
+          user_id: authenticatedUser.id,
           username: authenticatedUser.username,
           password: authenticatedUser.password,
         }
@@ -116,6 +117,7 @@ describe('SendMarkingsToTimesheetService', () => {
       data: {
         markings: [existentMarking],
         userCredentials: {
+          user_id: authenticatedUser.id,
           username: authenticatedUser.username,
           password: authenticatedUser.password,
         }
@@ -195,6 +197,7 @@ describe('SendMarkingsToTimesheetService', () => {
       data: {
         markings: [userMarking],
         userCredentials: {
+          user_id: authenticatedUser.id,
           username: authenticatedUser.username,
           password: authenticatedUser.password,
         }
