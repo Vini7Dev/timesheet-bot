@@ -1,14 +1,19 @@
+import 'reflect-metadata'
+
+import '@shared/containers'
+
 import BullQueue from 'bull'
+import { container } from 'tsyringe'
 
 import { redisConfig } from '@configs/redis'
 import { AppError } from '@shared/errors/AppError'
 
-import * as jobs from '../jobs'
+import * as Jobs from '../../../../jobs'
 
 interface IQueue {
   bull: BullQueue.Queue
   name: string
-  handle(props: any): Promise<void>
+  handle: (props: any) => Promise<void>
 }
 
 interface IQueueControlAdd {
@@ -17,7 +22,7 @@ interface IQueueControlAdd {
 }
 
 export class QueueControl {
-  private static queues: IQueue[] = Object.values(jobs).map(job => ({
+  private static queues: IQueue[] = Object.values(Jobs).map(job => ({
     bull: new BullQueue(job.key, { redis: redisConfig }),
     name: job.key,
     handle: job.handle,

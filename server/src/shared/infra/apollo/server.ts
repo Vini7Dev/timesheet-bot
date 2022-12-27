@@ -10,12 +10,12 @@ import { makeExecutableSchema } from '@graphql-tools/schema'
 import { execute, subscribe } from 'graphql'
 import { ExpressAdapter, createBullBoard, BullAdapter } from '@bull-board/express'
 
-import { QueueControl } from '../bull/QueueControl'
+import '@shared/containers'
 
 import { context, IWSAppContext } from './context'
 import { resolvers, typeDefs } from './schemas'
+import { QueueControl } from '../bull/QueueControl'
 
-import '@shared/containers'
 
 (async function startApolloServer(typeDefs, resolvers) {
   const app = express()
@@ -23,14 +23,12 @@ import '@shared/containers'
   const serverAdapter = new ExpressAdapter()
   serverAdapter.setBasePath('/bull-board')
 
-  const bullBoard = createBullBoard({ queues: [], serverAdapter, })
+  createBullBoard({
+    queues: QueueControl.getQueues().map(queue => new BullAdapter(queue.bull)),
+    serverAdapter
+  })
 
-  const QueueAdapters = QueueControl.getQueues().map(queue => (
-    new BullAdapter(queue.bull)
-  ))
-
-  bullBoard.setQueues(QueueAdapters)
-
+  // TODO: Add auth validation here
   app.use('/bull-board', serverAdapter.getRouter())
 
   const httpServer = createServer(app)
