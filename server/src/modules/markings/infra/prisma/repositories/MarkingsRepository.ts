@@ -10,7 +10,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
   public async findById(id: string): Promise<Marking | null> {
     const findedMarking = await this.client.markings.findFirst({
       where: { id },
-      include: { project: true, user: true }
+      include: { project: { include: { customer: true } }, user: true },
     })
 
     return findedMarking

@@ -1,4 +1,5 @@
-import { WorkClass, Projects, Users, OnTimesheetStatus } from '@prisma/client'
+import { Project } from '@modules/projects/infra/prisma/entities/Project'
+import { WorkClass, Users, OnTimesheetStatus } from '@prisma/client'
 
 export class Marking {
   id: string
@@ -29,7 +30,7 @@ export class Marking {
 
   project_id: string | null
 
-  project?: Projects | null
+  project?: Project | null
 
   created_at: Date
 

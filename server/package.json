@@ -7,7 +7,7 @@
     "dev": "npm-run-all -p dev:*",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
     "dev:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
-    "test": "jest",
+    "test": "jest --forceExit",
     "myTests": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/tests.ts"
   },
   "prisma": {
@@ -41,7 +41,7 @@
     "apollo-server-core": "^3.10.3",
     "apollo-server-express": "^3.10.3",
     "bull": "^4.10.1",
-    "chromedriver": "^106.0.1",
+    "chromedriver": "^108.0.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
