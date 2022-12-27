@@ -89,9 +89,13 @@ export class SeleniumProvider implements ICrawler {
   }
 
   public async stopCrawler(): Promise<void> {
-    await this.driver.close()
-
-    this.driverStatus = 'OFF'
+    try {
+      await this.driver.close()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      this.driverStatus = 'OFF'
+    }
   }
 
   private async fillFormInputElements(
@@ -137,8 +141,7 @@ export class SeleniumProvider implements ICrawler {
     for(const marking of markings) {
       try {
         // Open add marking page on marking date (to get marking id on timesheet)
-        const markingGroupFullDate = marking.date.split('/').reverse().join('-')
-        await this.driver.get(urls.addMarking({ DATA: markingGroupFullDate, SHOW: 'list' }))
+        await this.driver.get(urls.addMarking({ DATA: marking.date, SHOW: 'list' }))
 
         await this.waitByElements([{ by: 'css', selector: 'td > table.list-table' }])
 
@@ -159,7 +162,11 @@ export class SeleniumProvider implements ICrawler {
 
         // Set marking date
         await this.fillFormInputElements([
-          { by: 'id', selector: 'f_data_b', value: marking.date },
+          {
+            by: 'id',
+            selector: 'f_data_b',
+            value: marking.date.split('-').reverse().join('/')
+          },
         ])
 
         // Set marking work class
@@ -254,7 +261,7 @@ export class SeleniumProvider implements ICrawler {
     markings,
   }: IUpdateMarkingsDTO): Promise<ICrawlerResponseDTO> {
     await this.checkDriverStatus()
-    
+
     // Open markings list page
     await this.driver.get(urls.addMarking({ SHOW: 'list' }))
 
@@ -271,7 +278,11 @@ export class SeleniumProvider implements ICrawler {
 
         // Set marking date
         await this.fillFormInputElements([
-          { by: 'id', selector: 'f_data_b', value: marking.date },
+          {
+            by: 'id',
+            selector: 'f_data_b',
+            value: marking.date.split('/').reverse().join('/')
+          },
         ])
 
         // Set marking work class
@@ -349,10 +360,10 @@ export class SeleniumProvider implements ICrawler {
     markings,
   }: IDeleteMarkingsDTO): Promise<ICrawlerResponseDTO> {
     await this.checkDriverStatus()
-    
+
     // Open markings list page
     await this.driver.get(urls.addMarking({ SHOW: 'list' }))
-    
+
     const markingsResponse: IMarkingResponse[] = []
     for (const marking of markings) {
       try {
@@ -364,13 +375,13 @@ export class SeleniumProvider implements ICrawler {
 
         // Click on delete button
         await this.waitByElements([{ by: 'css', selector: 'button:nth-child(1)' }])
-      
+
         await this.driver.findElement(By.css('button:nth-child(1)')).click()
-        
+
         await this.driver.switchTo().alert().accept()
 
         await delay(3000)
-        
+
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
