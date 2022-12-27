@@ -11,7 +11,8 @@ export const markingsTypeDefs = gql`
     createMarking(data: CreateMarkingInput!): Marking!
     updateMarking(data: UpdateMarkingInput!): Marking!
     deleteMarking(id: ID!): ID!
-    sendMarkingsToTimesheet(data: SendMarkingsToTimesheetInput): Boolean!
+    sendMarkingsToTimesheet(data: SendMarkingsToTimesheetInput)
+      : SendMarkingsToTimesheetResponse!
   }
 
   extend type Subscription {
@@ -33,6 +34,16 @@ export const markingsTypeDefs = gql`
     project: Project!
     created_at: String!
     updated_at: String!
+  }
+
+  type SendMarkingsToTimesheetResponse {
+    markings: [TimesheetMarkingResult!]!
+  }
+
+  type TimesheetMarkingResult {
+    id: String!
+    data: Marking
+    error: AppError
   }
 
   input CreateMarkingInput {

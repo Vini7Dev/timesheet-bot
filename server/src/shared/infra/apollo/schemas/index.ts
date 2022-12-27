@@ -28,6 +28,11 @@ const rootTypeDefs = gql`
     timesheet_error: String
   }
 
+  type AppError {
+    message: String!
+    code: Int!
+  }
+
   input ApiFiltersInput {
     page: Int
     perPage: Int
