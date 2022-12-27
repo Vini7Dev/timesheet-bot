@@ -1,6 +1,8 @@
 import { JOB_MARKINGS_ON_TIMESHEET } from '@utils/constants'
 import { Marking } from '@modules/markings/infra/prisma/entities/Marking'
 import { SeleniumProvider } from '@shared/containers/providers/Crawler/implementations/SeleniumProvider'
+import { IUpdateMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IUpdateMarkingsDTO'
+import { IDeleteMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IDeleteMarkingsDTO'
 
 interface IJobMarkingsOnTimesheetProps {
   data: {
@@ -33,6 +35,8 @@ export default {
     for (const marking of markings) {
       if (!marking.on_timesheet_id) {
         actionGroups.save.push(marking)
+      } else if (marking.deleted_at) {
+        actionGroups.delete.push(marking)
       } else {
         actionGroups.update.push(marking)
       }
@@ -48,7 +52,7 @@ export default {
       })
 
       // Saving markins
-      await crawler.saveTimesheetTasks({
+      const createdMarkings = await crawler.saveTimesheetTasks({
         markings: actionGroups.save.map(marking => ({
           ...marking,
           project_code: marking.project?.code ?? '',
@@ -56,8 +60,34 @@ export default {
         })),
       })
 
+      // Update markins
+      const updatedMarkings = await crawler.updateTimesheetTasks({
+        markings: actionGroups.update,
+      } as IUpdateMarkingsDTO)
+
+      // Delete markins
+      const deletedMarkings = await crawler.deleteTimesheetTasks({
+        markings: actionGroups.delete,
+      } as IDeleteMarkingsDTO)
+
       // Close crawler
       await crawler.stopCrawler()
+
+      // Build response
+      const crawlerResponses = {
+        markingsResponse: [
+          ...createdMarkings.markingsResponse,
+          ...updatedMarkings.markingsResponse,
+          ...deletedMarkings.markingsResponse,
+        ],
+        otherErrors: [
+          createdMarkings.otherError,
+          updatedMarkings.otherError,
+          deletedMarkings.otherError,
+        ]
+      }
+
+      return crawlerResponses
     } catch (err) {
       console.error(`${new Date()} - ${err}`)
     } finally {
