@@ -7,8 +7,8 @@ import { IListCustomersDTO } from '@modules/customers/dtos/IListCustomersDTO';
 
 export class CustomersRepository extends AppRepository implements ICustomersRepository {
   public async findById(id: string): Promise<Customer | null> {
-    const findedCustomer = await this.client.customers.findUnique({
-      where: { id },
+    const findedCustomer = await this.client.customers.findFirst({
+      where: { id, deleted_at: null },
       include: { projects: true, }
     })
 
@@ -17,7 +17,7 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
 
   public async findByCode(code: string): Promise<Customer | null> {
     const findedCustomer = await this.client.customers.findFirst({
-      where: { code },
+      where: { code, deleted_at: null },
       include: { projects: true }
     })
 
@@ -35,6 +35,7 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
       include: { projects: true },
       where: {
         name: { contains: search, mode: 'insensitive' },
+        deleted_at: null
       },
       orderBy: { name: 'asc' }
     })
@@ -64,7 +65,8 @@ export class CustomersRepository extends AppRepository implements ICustomersRepo
   }
 
   public async delete(id: string): Promise<string> {
-    await this.client.customers.delete({
+    await this.client.customers.update({
+      data: { deleted_at: new Date() },
       where: { id }
     })
 

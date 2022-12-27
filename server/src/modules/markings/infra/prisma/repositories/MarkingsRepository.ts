@@ -9,7 +9,7 @@ import { Marking } from '../entities/Marking'
 export class MarkingsRepository extends AppRepository implements IMarkingsRepository {
   public async findById(id: string): Promise<Marking | null> {
     const findedMarking = await this.client.markings.findFirst({
-      where: { id },
+      where: { id, deleted_at: null },
       include: { project: { include: { customer: true } }, user: true },
     })
 
@@ -25,9 +25,12 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
       skip: page,
       take: perPage,
       where: {
-        AND: buildRepositoryFiltersObject({
-          date,
-        })
+        AND: {
+          ...buildRepositoryFiltersObject({
+            date,
+          }),
+          deleted_at: null
+        }
       },
       orderBy: { date: 'desc' }
     })
@@ -45,10 +48,13 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
       skip: page,
       take: perPage,
       where: {
-        AND: buildRepositoryFiltersObject({
-          date,
-          user_id,
-        })
+        AND: {
+          ...buildRepositoryFiltersObject({
+            date,
+            user_id,
+          }),
+          deleted_at: null
+        }
       },
       orderBy: { date: 'desc' },
       include: { project: true }
@@ -121,8 +127,9 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
   }
 
   public async delete(id: string): Promise<string> {
-    await this.client.markings.delete({
-      where: { id },
+    await this.client.markings.update({
+      data: { deleted_at: new Date() },
+      where: { id }
     })
 
     return id

@@ -8,7 +8,7 @@ import { Project } from '../entities/Project'
 export class ProjectsRepository extends AppRepository implements IProjectsRepository {
   public async findById(id: string): Promise<Project | null> {
     const findedProject = await this.client.projects.findFirst({
-      where: { id },
+      where: { id, deleted_at: null },
       include: { customer: true }
     })
 
@@ -17,7 +17,7 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
 
   public async findByCode(code: string): Promise<Project | null> {
     const findedProject = await this.client.projects.findFirst({
-      where: { code },
+      where: { code, deleted_at: null },
       include: { customer: true },
     })
 
@@ -35,6 +35,7 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
       include: { customer: true },
       where: {
         name: { contains: search, mode: 'insensitive' },
+        deleted_at: null
       },
       orderBy: { name: 'asc' }
     })
@@ -81,8 +82,9 @@ export class ProjectsRepository extends AppRepository implements IProjectsReposi
   }
 
   public async delete(id: string): Promise<string> {
-    await this.client.projects.delete({
-      where: { id },
+    await this.client.projects.update({
+      data: { deleted_at: new Date() },
+      where: { id }
     })
 
     return id

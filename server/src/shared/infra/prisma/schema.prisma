@@ -4,64 +4,68 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Users {
-  id          String    @id @default(uuid())
-  name        String
-  email       String    @unique
-  username    String    @unique
-  password    String
-  markings    Markings[]
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now())
+  id         String     @id @default(uuid())
+  name       String
+  password   String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
+  username   String
+  email      String
+  deleted_at DateTime?
+  markings   Markings[]
 
   @@map("users")
 }
 
 model Customers {
-  id                String    @id @default(uuid())
-  code              String
-  name              String
-  projects          Projects[]
-  created_at        DateTime  @default(now())
-  updated_at        DateTime  @default(now())
+  id         String     @id @default(uuid())
+  code       String
+  name       String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
+  deleted_at DateTime?
+  projects   Projects[]
 
   @@map("customers")
 }
 
 model Projects {
-  id                String    @id @default(uuid())
-  code              String
-  name              String
-  customer_id       String?
-  customer          Customers? @relation(fields: [customer_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  markings          Markings[]
-  created_at        DateTime  @default(now())
-  updated_at        DateTime  @default(now())
+  id          String     @id @default(uuid())
+  code        String
+  name        String
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @default(now())
+  customer_id String?
+  deleted_at  DateTime?
+  customer    Customers? @relation(fields: [customer_id], references: [id])
+  markings    Markings[]
 
   @@map("projects")
 }
 
 model Markings {
-  id                    String            @id @default(uuid())
-  on_timesheet_id       String?
-  on_timesheet_status   OnTimesheetStatus @default(NOT_SENT)
-  timesheet_error       String?
-  description           String
-  date                  String
-  start_time            String
-  finish_time           String
-  start_interval_time   String?
-  finish_interval_time  String?
-  work_class            WorkClass         @default(PRODUCTION)
-  user_id               String?
-  user                  Users?            @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  project_id            String?
-  project               Projects?         @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  created_at            DateTime          @default(now())
-  updated_at            DateTime          @default(now())
+  id                   String            @id @default(uuid())
+  description          String
+  date                 String
+  start_time           String
+  finish_time          String
+  start_interval_time  String?
+  finish_interval_time String?
+  work_class           WorkClass         @default(PRODUCTION)
+  user_id              String?
+  project_id           String?
+  created_at           DateTime          @default(now())
+  updated_at           DateTime          @default(now())
+  on_timesheet_status  OnTimesheetStatus @default(NOT_SENT)
+  timesheet_error      String?
+  on_timesheet_id      String?
+  deleted_at           DateTime?
+  project              Projects?         @relation(fields: [project_id], references: [id])
+  user                 Users?            @relation(fields: [user_id], references: [id])
 
   @@map("markings")
 }

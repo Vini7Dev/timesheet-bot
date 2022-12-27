@@ -6,9 +6,10 @@ import { User } from '../entities/User'
 
 export class UsersRepository extends AppRepository implements IUsersRepository {
   public async findById(id: string): Promise<User | null> {
-    const findedUser = await this.client.users.findUnique({
+    const findedUser = await this.client.users.findFirst({
       where: {
         id,
+        deleted_at: null
       }
     })
 
@@ -24,6 +25,9 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
           { email },
           { username },
         ],
+        AND: {
+          deleted_at: null
+        }
       },
     })
 
@@ -37,6 +41,9 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
     const userList = await this.client.users.findMany({
       skip: page,
       take: perPage,
+      where: {
+        deleted_at: null
+      }
     })
 
     return userList
@@ -77,7 +84,8 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
   }
 
   public async delete(id: string): Promise<string> {
-    await this.client.users.delete({
+    await this.client.users.update({
+      data: { deleted_at: new Date() },
       where: { id }
     })
 

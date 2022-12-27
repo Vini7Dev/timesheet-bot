@@ -19,6 +19,7 @@ export const customersTypeDefs = gql`
     projects: [Project!]
     created_at: String!
     updated_at: String!
+    deleted_at: String
   }
 
   input CreateCustomerInput {
