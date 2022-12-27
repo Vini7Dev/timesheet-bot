@@ -14,7 +14,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
   }
 
   public async findById(id: string): Promise<Marking | null> {
-    const findedMarking = this.markings.find(marking => marking.id === id)
+    const findedMarking = this.markings.find(marking => marking.id === id && !marking.deleted_at)
 
     return findedMarking ?? null
   }
@@ -25,9 +25,8 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     date,
   }: IListMarkingsDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
-      .filter(marking => {
-        return (date ? marking.date === date : true)
-      })
+      .filter(marking => date ? marking.date === date : true)
+      .filter(marking => !marking.deleted_at)
       .slice(page, perPage + page)
 
     return filteredMarkings
@@ -41,7 +40,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
   }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
       .filter(marking => date ? marking.date === date : true)
-      .filter(marking => marking.user_id === user_id)
+      .filter(marking => marking.user_id === user_id && !marking.deleted_at)
       .slice(page, perPage + page)
 
     return filteredMarkings
@@ -120,7 +119,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     const markingToDeleteIndex = this.markings.findIndex(marking => marking.id === id)
 
     if(markingToDeleteIndex !== -1) {
-      this.markings.splice(markingToDeleteIndex, 1)
+      this.markings[markingToDeleteIndex].deleted_at = new Date()
     }
 
     return id

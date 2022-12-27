@@ -13,7 +13,9 @@ export class FakeCustomersRepository implements ICustomersRepository {
   }
 
   public async findById(id: string): Promise<Customer | null> {
-    const findedCustomer = this.customers.find(customer => customer.id === id)
+    const findedCustomer = this.customers.find(
+      customer => customer.id === id && !customer.deleted_at
+    )
 
     return findedCustomer ?? null
   }
@@ -23,7 +25,9 @@ export class FakeCustomersRepository implements ICustomersRepository {
     perPage = 10,
     search,
   }: IListCustomersDTO): Promise<Customer[]> {
-    const filteredCustomers = this.customers.slice(page, perPage + page)
+    const filteredCustomers = this.customers
+      .filter(customer => !customer.deleted_at)
+      .slice(page, perPage + page)
 
     if (search) {
       return filteredCustomers.filter(
@@ -37,7 +41,8 @@ export class FakeCustomersRepository implements ICustomersRepository {
   }
 
   public async findByCode(code: string): Promise<Customer | null> {
-    const findedCustomer = this.customers.find(customer => customer.code === code)
+    const findedCustomer = this.customers
+      .find(customer => customer.code === code && !customer.deleted_at)
 
     return findedCustomer ?? null
   }
@@ -79,7 +84,7 @@ export class FakeCustomersRepository implements ICustomersRepository {
     const customerToDeleteIndex = this.customers.findIndex(customer => customer.id === id)
 
     if(customerToDeleteIndex !== -1) {
-      this.customers.splice(customerToDeleteIndex, 1)
+      this.customers[customerToDeleteIndex].deleted_at = new Date()
     }
 
     return id

@@ -1,5 +1,7 @@
+import { WorkClass, OnTimesheetStatus } from '@prisma/client'
+
 import { Project } from '@modules/projects/infra/prisma/entities/Project'
-import { WorkClass, Users, OnTimesheetStatus } from '@prisma/client'
+import { User } from '@modules/users/infra/prisma/entities/User'
 
 export class Marking {
   id: string
@@ -26,7 +28,7 @@ export class Marking {
 
   user_id: string | null
 
-  user?: Users | null
+  user?: User | null
 
   project_id: string | null
 
@@ -35,4 +37,6 @@ export class Marking {
   created_at: Date
 
   updated_at: Date
+
+  deleted_at?: Date | null
 }

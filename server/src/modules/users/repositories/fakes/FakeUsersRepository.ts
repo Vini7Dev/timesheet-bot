@@ -13,7 +13,7 @@ export class FakeUsersRepository implements IUsersRepository {
   }
 
   public async findById(id: string): Promise<User | null> {
-    const findedUser = this.users.find(user => user.id === id)
+    const findedUser = this.users.find(user => user.id === id && !user.deleted_at)
 
     return findedUser ?? null
   }
@@ -22,17 +22,19 @@ export class FakeUsersRepository implements IUsersRepository {
     email, username
   }: { email?: string, username?: string }): Promise<User | null> {
     const findedUser = this.users.find(
-      user => user.email === email || user.username === username
+      user => (user.email === email || user.username === username) && !user.deleted_at
     )
 
-    return findedUser ?? null
+    return findedUser ? findedUser : null
   }
 
   public async list({
     page = 0,
     perPage = 10,
   }: { page?: number, perPage?: number }): Promise<User[]> {
-    const filteredUsers = this.users.slice(page, perPage + page)
+    const filteredUsers = this.users
+      .filter(user => !user.deleted_at)
+      .slice(page, perPage + page)
 
     return filteredUsers
   }
@@ -89,7 +91,7 @@ export class FakeUsersRepository implements IUsersRepository {
     const userToDeleteIndex = this.users.findIndex(user => user.id === id)
 
     if(userToDeleteIndex !== -1) {
-      this.users.splice(userToDeleteIndex, 1)
+      this.users[userToDeleteIndex].deleted_at = new Date()
     }
 
     return id

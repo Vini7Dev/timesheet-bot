@@ -13,13 +13,17 @@ export class FakeProjectsRepository implements IProjectsRepository {
   }
 
   public async findById(id: string): Promise<Project | null> {
-    const findedProject = this.projects.find(project => project.id === id)
+    const findedProject = this.projects.find(
+      project => project.id === id && !project.deleted_at
+    )
 
     return findedProject ?? null
   }
 
   public async findByCode(code: string): Promise<Project | null> {
-    const findedProject = this.projects.find(project => project.code === code)
+    const findedProject = this.projects.find(
+      project => project.code === code && !project.deleted_at
+    )
 
     return findedProject ?? null
   }
@@ -29,7 +33,9 @@ export class FakeProjectsRepository implements IProjectsRepository {
     perPage = 10,
     search,
   }: IListProjectsDTO): Promise<Project[]> {
-    const filteredProjects = this.projects.slice(page, perPage + page)
+    const filteredProjects = this.projects
+      .filter(project => !project.deleted_at)
+      .slice(page, perPage + page)
 
     if (search) {
       return filteredProjects.filter(
@@ -90,7 +96,7 @@ export class FakeProjectsRepository implements IProjectsRepository {
     const projectToDeleteIndex = this.projects.findIndex(project => project.id === id)
 
     if(projectToDeleteIndex !== -1) {
-      this.projects.splice(projectToDeleteIndex, 1)
+      this.projects[projectToDeleteIndex].deleted_at = new Date()
     }
 
     return id
