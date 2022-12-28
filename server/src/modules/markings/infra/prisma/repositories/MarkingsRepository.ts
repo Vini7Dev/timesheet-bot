@@ -1,9 +1,9 @@
+import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
+import { buildRepositoryFiltersObject } from '@utils/buildRepositoryFiltersObject'
 import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO'
 import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO'
 import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO'
 import { IMarkingsRepository } from '@modules/markings/repositories/IMarkingsRepository'
-import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
-import { buildRepositoryFiltersObject } from '@utils/buildRepositoryFiltersObject'
 import { Marking } from '../entities/Marking'
 
 export class MarkingsRepository extends AppRepository implements IMarkingsRepository {
@@ -36,6 +36,14 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     })
 
     return filteredMarkings as Marking[]
+  }
+
+  public async listByIds(ids: string[]): Promise<Marking[]> {
+    const filteredMarkings = await this.client.markings.findMany({
+      where: { id: { in: ids }, deleted_at: null }
+    })
+
+    return filteredMarkings
   }
 
   public async listByUserId({

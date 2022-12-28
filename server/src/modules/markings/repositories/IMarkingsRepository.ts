@@ -7,6 +7,7 @@ import { Marking } from '../infra/prisma/entities/Marking'
 export interface IMarkingsRepository {
   findById(id: string): Promise<Marking | null>
   list(filters: IListMarkingsDTO): Promise<Marking[]>
+  listByIds(ids: string[]): Promise<Marking[]>
   listByUserId(filters: IListMarkingsByUserIdDTO): Promise<Marking[]>
   create(data: ICreateMarkingDTO): Promise<Marking>
   update(data: IUpdateMarkingDTO): Promise<Marking>

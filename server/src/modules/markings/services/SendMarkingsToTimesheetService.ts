@@ -45,24 +45,29 @@ export class SendMarkingsToTimesheetService {
       throw new AppError('User not found!', 404)
     }
 
+    const markingsFinded = await this.markingsRepository.listByIds(markingIds)
+
     const markingResults: IMarkingResult[] = []
 
     for (const markingId of markingIds) {
-      const markingData = await this.markingsRepository.findById(markingId)
-
-      const markingResult: IMarkingResult = {
-        id: markingId
-      }
+      const markingData = markingsFinded.find(marking => marking.id === markingId)
 
       if (!markingData) {
-        markingResult.error = new AppError('Marking not found!', 404)
+        markingResults.push({
+          id: markingId,
+          error: new AppError('Marking not found!', 404)
+        })
       } else if (markingData.user_id !== userOwner.id) {
-        markingResult.error = new AppError('You do not have permission to send this marking!', 403)
+        markingResults.push({
+          id: markingId,
+          error: new AppError('You do not have permission to send this marking!', 403)
+        })
       } else {
-        markingResult.data = markingData
+        markingResults.push({
+          id: markingId,
+          data: markingData
+        })
       }
-
-      markingResults.push(markingResult)
     }
 
     const markingsToProccess = markingResults

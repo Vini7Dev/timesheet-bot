@@ -32,6 +32,13 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     return filteredMarkings
   }
 
+  public async listByIds(ids: string[]): Promise<Marking[]> {
+    const filteredMarkings = this.markings
+      .filter(marking => ids.includes(marking.id) && !marking.deleted_at)
+
+    return filteredMarkings
+  }
+
   public async listByUserId({
     user_id,
     page = 0,
