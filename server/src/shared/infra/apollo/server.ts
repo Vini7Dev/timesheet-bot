@@ -14,7 +14,8 @@ import '@shared/containers'
 
 import { context, IWSAppContext } from './context'
 import { resolvers, typeDefs } from './schemas'
-import { QueueControl } from '../bull/QueueControl'
+import { BullProvider } from '../../containers/providers/Queue/implementations/BullProvider'
+import { redisConfig } from '@configs/redis'
 
 
 (async function startApolloServer(typeDefs, resolvers) {
@@ -24,7 +25,9 @@ import { QueueControl } from '../bull/QueueControl'
   serverAdapter.setBasePath('/bull-board')
 
   createBullBoard({
-    queues: QueueControl.getQueues().map(queue => new BullAdapter(queue.bull)),
+    queues: new BullProvider({ redis: redisConfig })
+      .getQueues()
+      .map(queue => new BullAdapter(queue.bull)),
     serverAdapter
   })
 

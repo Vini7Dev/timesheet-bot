@@ -1,10 +1,16 @@
 import { JOB_MARKINGS_ON_TIMESHEET } from '@utils/constants'
-import { Marking } from '@modules/markings/infra/prisma/entities/Marking'
-import { SeleniumProvider } from '@shared/containers/providers/Crawler/implementations/SeleniumProvider'
+import { ICrawler } from '@shared/containers/providers/Crawler/models/ICrawler'
+import { IHandleProps } from '@shared/containers/providers/Queue/implementations/BullProvider'
 import { IUpdateMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IUpdateMarkingsDTO'
 import { IDeleteMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IDeleteMarkingsDTO'
+import { IMarkingsRepository } from '@modules/markings/repositories/IMarkingsRepository'
+import { Marking } from '@modules/markings/infra/prisma/entities/Marking'
 
-interface IJobMarkingsOnTimesheetProps {
+interface IJobMarkingsOnTimesheetProps extends IHandleProps {
+  providers: {
+    markingsRepository: IMarkingsRepository
+    crawlerProvider: ICrawler
+  }
   data: {
     markings: Marking[]
     userCredentials: {
@@ -23,10 +29,15 @@ interface IActionGroups {
 
 export default {
   key: JOB_MARKINGS_ON_TIMESHEET,
-  handle: async ({ data: {
-    userCredentials: { user_id, username, password },
-    markings,
-  } }: IJobMarkingsOnTimesheetProps) => {
+  handle: async ({
+    providers: {
+      crawlerProvider,
+    },
+    data: {
+      userCredentials: { user_id, username, password },
+      markings,
+    },
+  }: IJobMarkingsOnTimesheetProps) => {
     const actionGroups: IActionGroups = {
       save: [],
       update: [],
@@ -43,17 +54,15 @@ export default {
       }
     }
 
-    const crawler = new SeleniumProvider()
-
     try {
       // Authenticate on Timesheet
-      await crawler.authenticateTimesheet({
+      await crawlerProvider.authenticateTimesheet({
         username,
         password,
       })
 
       // Saving markins
-      const createdMarkings = await crawler.saveTimesheetTasks({
+      const createdMarkings = await crawlerProvider.saveTimesheetTasks({
         markings: actionGroups.save.map(marking => ({
           ...marking,
           project_code: marking.project?.code ?? '',
@@ -62,17 +71,17 @@ export default {
       })
 
       // Update markins
-      const updatedMarkings = await crawler.updateTimesheetTasks({
+      const updatedMarkings = await crawlerProvider.updateTimesheetTasks({
         markings: actionGroups.update,
       } as IUpdateMarkingsDTO)
 
       // Delete markins
-      const deletedMarkings = await crawler.deleteTimesheetTasks({
+      const deletedMarkings = await crawlerProvider.deleteTimesheetTasks({
         markings: actionGroups.delete,
       } as IDeleteMarkingsDTO)
 
       // Close crawler
-      await crawler.stopCrawler()
+      await crawlerProvider.stopCrawler()
 
       // Build response
       const crawlerResponses = {
@@ -94,7 +103,7 @@ export default {
       console.error(`${new Date()} - ${err}`)
     } finally {
       // Close crawler
-      await crawler.stopCrawler()
+      await crawlerProvider.stopCrawler()
     }
   }
 }

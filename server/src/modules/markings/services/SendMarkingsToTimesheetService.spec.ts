@@ -2,11 +2,11 @@ import 'reflect-metadata'
 
 import { WorkClass } from '@prisma/client'
 
-import { JOB_MARKINGS_ON_TIMESHEET } from '@utils/constants'
-import { QueueControl } from '@shared/infra/bull/QueueControl'
 import { AppError } from '@shared/errors/AppError'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
+import { IQueue } from '@shared/containers/providers/Queue/models/IQueue'
 import { FakeEncryptProvider } from '@shared/containers/providers/Encrypt/fakes/FakeEncryptProvider'
+import { FakeQueueProvider } from '@shared/containers/providers/Queue/fakes/FakeQueueProvider'
 import { FakeUsersRepository } from '@modules/users/repositories/fakes/FakeUsersRepository'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
@@ -16,6 +16,7 @@ import { SendMarkingsToTimesheetService } from './SendMarkingsToTimesheetService
 let markingsRepository: IMarkingsRepository
 let usersRepository: IUsersRepository
 let encryptProvider: IEncrypt
+let queueProvider: IQueue
 let sendMarkingsToTimesheetService: SendMarkingsToTimesheetService
 
 describe('SendMarkingsToTimesheetService', () => {
@@ -23,18 +24,16 @@ describe('SendMarkingsToTimesheetService', () => {
     markingsRepository = new FakeMarkingsRepository()
     usersRepository = new FakeUsersRepository()
     encryptProvider = new FakeEncryptProvider()
+    queueProvider = new FakeQueueProvider()
     sendMarkingsToTimesheetService = new SendMarkingsToTimesheetService(
       markingsRepository,
       usersRepository,
       encryptProvider,
+      queueProvider,
     )
   })
 
   it('should be able to send markings to timesheet', async () => {
-    const queueAddSpy = jest.spyOn(QueueControl, 'add').mockImplementationOnce(
-      jest.fn()
-    )
-
     const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
@@ -60,25 +59,9 @@ describe('SendMarkingsToTimesheetService', () => {
     expect(serviceResponse.markings).toHaveLength(1)
     expect(serviceResponse.markings[0].id).toEqual(createdMarking.id)
     expect(serviceResponse.markings[0].error).toBeUndefined()
-    expect(queueAddSpy).toHaveBeenCalledTimes(1)
-    expect(queueAddSpy).toHaveBeenCalledWith({
-      name: JOB_MARKINGS_ON_TIMESHEET,
-      data: {
-        markings: [createdMarking],
-        userCredentials: {
-          user_id: authenticatedUser.id,
-          username: authenticatedUser.username,
-          password: authenticatedUser.password,
-        }
-      },
-    })
   })
 
   it('should be able to send only existing markings to timesheet', async () => {
-    const queueAddSpy = jest.spyOn(QueueControl, 'add').mockImplementationOnce(
-      async ({ data }) => data
-    )
-
     const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
@@ -110,19 +93,6 @@ describe('SendMarkingsToTimesheetService', () => {
     expect(serviceResponse.markings[1].error).toEqual(
       new AppError('Marking not found!', 404)
     )
-
-    expect(queueAddSpy).toHaveBeenCalledTimes(1)
-    expect(queueAddSpy).toHaveBeenCalledWith({
-      name: JOB_MARKINGS_ON_TIMESHEET,
-      data: {
-        markings: [existentMarking],
-        userCredentials: {
-          user_id: authenticatedUser.id,
-          username: authenticatedUser.username,
-          password: authenticatedUser.password,
-        }
-      },
-    })
   })
 
   it('should not be able to send markings with a non-existent user', async () => {
@@ -145,10 +115,6 @@ describe('SendMarkingsToTimesheetService', () => {
   })
 
   it("should not be able to send another user's markings", async () => {
-    const queueAddSpy = jest.spyOn(QueueControl, 'add').mockImplementationOnce(
-      async ({ data }) => data
-    )
-
     const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
@@ -190,18 +156,5 @@ describe('SendMarkingsToTimesheetService', () => {
     expect(serviceResponse.markings[1].error).toEqual(
       new AppError('You do not have permission to send this marking!', 403)
     )
-
-    expect(queueAddSpy).toHaveBeenCalledTimes(1)
-    expect(queueAddSpy).toHaveBeenCalledWith({
-      name: JOB_MARKINGS_ON_TIMESHEET,
-      data: {
-        markings: [userMarking],
-        userCredentials: {
-          user_id: authenticatedUser.id,
-          username: authenticatedUser.username,
-          password: authenticatedUser.password,
-        }
-      },
-    })
   })
 })

@@ -1,7 +1,7 @@
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { inject, injectable } from 'tsyringe'
 
-import { QueueControl } from '@shared/infra/bull/QueueControl'
+import { IQueue } from '@shared/containers/providers/Queue/models/IQueue'
 import { AppError } from '@shared/errors/AppError'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { JOB_MARKINGS_ON_TIMESHEET } from '@utils/constants'
@@ -34,6 +34,9 @@ export class SendMarkingsToTimesheetService {
 
     @inject('EncryptProvider')
     private encryptProvider: IEncrypt,
+
+    @inject('QueueProvider')
+    private queueProvider: IQueue,
   ) {}
 
   public async execute({
@@ -74,7 +77,7 @@ export class SendMarkingsToTimesheetService {
       .filter(markingResult => !markingResult.error)
       .map(markingResult => markingResult.data)
 
-    await QueueControl.add({
+    await this.queueProvider.add({
       name: JOB_MARKINGS_ON_TIMESHEET,
       data: {
         markings: markingsToProccess,
