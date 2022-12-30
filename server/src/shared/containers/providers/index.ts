@@ -10,9 +10,4 @@ import { BullProvider } from './Queue/implementations/BullProvider'
 
 container.registerInstance<IEncrypt>('EncryptProvider', new CryptoProvider())
 container.registerInstance<ICrawler>('CrawlerProvider', new SeleniumProvider())
-container.registerInstance<IQueue>(
-  'QueueProvider',
-  new BullProvider({
-    redis: redisConfig,
-  }),
-);
+container.register<IQueue>('QueueProvider', BullProvider)

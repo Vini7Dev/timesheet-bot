@@ -24,6 +24,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   marking: {
     id,
     on_timesheet_status,
+    timesheet_error,
     description,
     date,
     start_time,
@@ -197,7 +198,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
                 case 'ERROR': return (
                   <>
                     <FiX color="#F44336" size={20} />
-                    Erro no Multidados! Tente novamente
+                    { `Erro no Multidados! ${timesheet_error ?? 'Tente novamente'}` }
                   </>
                 )
                 default: return (

@@ -95,6 +95,7 @@ export class SeleniumProvider implements ICrawler {
       console.error(err)
     } finally {
       this.driverStatus = 'OFF'
+      this.driver = null as unknown as WebDriver
     }
   }
 
@@ -206,7 +207,7 @@ export class SeleniumProvider implements ICrawler {
           // The method "getAlertErrors" throw an error if alert does not exists
           markingsResponse.push({
             id: marking.id,
-            on_timesheet_status: 'NOT_SENT',
+            on_timesheet_status: 'ERROR',
             timesheet_error: await this.getAlertErrors()
           })
 
@@ -245,7 +246,7 @@ export class SeleniumProvider implements ICrawler {
         // An error occurred before save marking
         markingsResponse.push({
           id: marking.id,
-          on_timesheet_status: 'NOT_SENT',
+          on_timesheet_status: 'ERROR',
           timesheet_error: [err.message]
         })
 
@@ -323,7 +324,7 @@ export class SeleniumProvider implements ICrawler {
           markingsResponse.push({
             id: marking.id,
             on_timesheet_id: marking.on_timesheet_id,
-            on_timesheet_status: 'SENT',
+            on_timesheet_status: 'ERROR',
             timesheet_error: await this.getAlertErrors()
           })
 
@@ -344,7 +345,7 @@ export class SeleniumProvider implements ICrawler {
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
-          on_timesheet_status: 'SENT',
+          on_timesheet_status: 'ERROR',
           timesheet_error: [err.message]
         })
 
@@ -392,7 +393,7 @@ export class SeleniumProvider implements ICrawler {
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
-          on_timesheet_status: 'SENT',
+          on_timesheet_status: 'ERROR',
           timesheet_error: [err.message]
         })
 

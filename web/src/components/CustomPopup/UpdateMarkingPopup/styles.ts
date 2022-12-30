@@ -25,6 +25,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       align-items: center;
       padding: 6px 8px;
       font-family: 'Roboto', sans-serif;
+      text-align: left;
       background: none;
       font-size: 1rem;
       font-weight: 500;

@@ -3,6 +3,7 @@ import Bull, { Queue, QueueOptions } from 'bull'
 import * as Jobs from '@jobs/index'
 import { AppError } from '@shared/errors/AppError'
 import { IQueue, IAddQueueProps, IProcessProps } from '../models/IQueue'
+import { redisConfig } from '@configs/redis'
 
 export interface IHandleProps {
   providers: object
@@ -18,9 +19,11 @@ interface IQueueControlAdd {
 export class BullProvider implements IQueue {
   private queues: IQueueControlAdd[]
 
-  constructor(queueConfig: QueueOptions) {
+  constructor() {
     this.queues = Object.values(Jobs).map(job => ({
-      bull: new Bull(job.key, queueConfig),
+      bull: new Bull(job.key, {
+        redis: redisConfig,
+      }),
       name: job.key,
       handle: job.handle,
     }))

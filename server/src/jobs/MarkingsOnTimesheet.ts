@@ -111,11 +111,9 @@ export default {
       })
 
       console.log('====> updatedMarkingsStatus', updatedMarkingsStatus)
-
-      return crawlerResponses
     } catch (err) {
       console.error(`${new Date()} - ${err}`)
-    } finally {
+
       // Close crawler
       await crawlerProvider.stopCrawler()
     }
