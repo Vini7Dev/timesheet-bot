@@ -15,6 +15,11 @@ export const CustomPopup: React.FC<ICustomPopupProps & any> = ({
 }) => {
   return (
     <CustomPopupContainer>
+      <div
+        className="custom-popup-outside-area"
+        onClick={onClickToClose}
+      />
+
       <div className="custom-popup-content-area">
         { children }
 

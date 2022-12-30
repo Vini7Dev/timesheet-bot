@@ -346,7 +346,7 @@ const ProjectItem: React.FC<IProjectItemProps> = ({
             popupType="customers"
             onSelect={(customer: ICustomerProps) => {
               updateProject({ newCustomerId: customer.id })
-              setCustomerPopupIsOpen(false)
+              toggleCustomerPopupIsOpen()
             }}
           />
         ) }

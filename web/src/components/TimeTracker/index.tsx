@@ -187,7 +187,10 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
         { projectPopupIsOpen && (
           <SelectPopup
             popupType="projects"
-            onSelect={(selectedProject) => setProject(selectedProject as IProjectProps)}
+            onSelect={(selectedProject) => {
+              setProject(selectedProject as IProjectProps)
+              toggleProjectPopupIsOpen()
+            }}
           />
         ) }
       </div>

@@ -11,6 +11,15 @@ export const CustomPopupContainer = styled.div`
   height: 100vh;
   background-color: #0000004F;
 
+  .custom-popup-outside-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #00000070;
+  }
+
   .custom-popup-content-area {
     position: relative;
     display: flex;

@@ -327,9 +327,10 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
         { projectPopupIsOpen && (
           <SelectPopup
             popupType="projects"
-            onSelect={(selectedProject) => handleUpdateMarking({
-              newProjectId: selectedProject.id
-            })}
+            onSelect={(selectedProject) => {
+              handleUpdateMarking({ newProjectId: selectedProject.id })
+              toggleProjectPopupIsOpen()
+            }}
           />
         ) }
       </div>
