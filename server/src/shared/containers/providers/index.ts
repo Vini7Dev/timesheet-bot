@@ -1,6 +1,5 @@
 import { container } from 'tsyringe'
 
-import { redisConfig } from '@configs/redis'
 import { CryptoProvider } from './Encrypt/implementations/CryptoProvider'
 import { IEncrypt } from './Encrypt/models/IEncrypt'
 import { SeleniumProvider } from './Crawler/implementations/SeleniumProvider'
