@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiCheck, FiClock, FiDollarSign, FiMoreVertical, FiUpload, FiX } from 'react-icons/fi'
 import * as Yup from 'yup'
@@ -21,6 +21,7 @@ import { CustomPopup } from '../../components/CustomPopup'
 import { ListAlert } from '../../components/ListAlert'
 import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
 import { MainContent, MarkingItemContainer, PageContainer } from './styles'
+import { useOutsideAlerter } from '../../hooks/outsideAlerter'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
@@ -261,10 +262,26 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
   onEdit,
   onUpdate
 }) => {
-  const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
+  const [editingMarkingTime, setEditingMarkingTime] = useState(false)
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
+  const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [onTimesheetStatus] = useState<OnTimesheetStatus>(on_timesheet_status)
+  const [startTime, setStarTime] = useState(start_time)
+  const [finishTime, setFinishTime] = useState(finish_time)
+
+  const wrapperRef = useRef(null)
+  useOutsideAlerter({
+    ref: editingMarkingTime ? wrapperRef : {},
+    callback: () => {
+      setEditingMarkingTime(false)
+
+      handleUpdateMarking({
+        newStartTime: startTime,
+        newFinishTime: finishTime
+      })
+    }
+  })
 
   const toggleProjectPopupIsOpen = useCallback(() => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
@@ -294,7 +311,7 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
   }, [handleUpdateMarking, isBillable])
 
   return (
-    <MarkingItemContainer onTimesheetStatus={onTimesheetStatus}>
+    <MarkingItemContainer onTimesheetStatus={onTimesheetStatus} ref={wrapperRef}>
       <div className="marking-row marking-row-first">
         <button className="marking-timesheet-status">
           {
@@ -352,16 +369,18 @@ const MarkingItem: React.FC<IMarkingItemProps> = ({
               placeholder="10:00"
               inputStyle="high"
               style={{ textAlign: 'center', width: '4.375rem' }}
-              defaultValue={start_time}
-              onBlur={(e) => handleUpdateMarking({ newStartTime: e.target.value })}
+              value={startTime}
+              onChange={(e) => setStarTime(e.target.value)}
+              onFocus={() => setEditingMarkingTime(true)}
             />
             :
             <Input
               placeholder="11:00"
               inputStyle="high"
               style={{ textAlign: 'center', width: '4.375rem' }}
-              defaultValue={finish_time}
-              onBlur={(e) => handleUpdateMarking({ newFinishTime: e.target.value })}
+              value={finishTime}
+              onChange={(e) => setFinishTime(e.target.value)}
+              onFocus={() => setEditingMarkingTime(true)}
             />
           </div>
         </div>
