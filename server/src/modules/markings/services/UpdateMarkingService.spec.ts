@@ -70,6 +70,8 @@ describe('UpdateMarkingService', () => {
     expect(updatedMarking).toHaveProperty('id')
     expect(updatedMarking.id).toEqual(createdMarking.id)
     expect(updatedMarking.project_id).toEqual(otherProjectReference.id)
+    expect(updatedMarking.on_timesheet_status).toEqual('NOT_SENT')
+    expect(updatedMarking.timesheet_error).toEqual(undefined)
     expect(updatedMarking.description).toEqual('Updated Description Example')
     expect(updatedMarking.date).toEqual('02/01/2022')
     expect(updatedMarking.start_time).toEqual('10:00')
@@ -113,6 +115,8 @@ describe('UpdateMarkingService', () => {
 
     expect(updatedMarking).toHaveProperty('id')
     expect(updatedMarking.id).toEqual(createdMarking.id)
+    expect(updatedMarking.on_timesheet_status).toEqual('NOT_SENT')
+    expect(updatedMarking.timesheet_error).toEqual(undefined)
     expect(updatedMarking.work_class).toEqual(createdMarking.work_class)
     expect(updatedMarking.description).toEqual(createdMarking.description)
     expect(updatedMarking.date).toEqual(createdMarking.date)
@@ -414,8 +418,6 @@ describe('UpdateMarkingService', () => {
       })
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
   })
-
-
 
   it('should not be able to create markings with start times equal or greater than finish times', async () => {
     const authenticatedUser = await usersRepository.create({

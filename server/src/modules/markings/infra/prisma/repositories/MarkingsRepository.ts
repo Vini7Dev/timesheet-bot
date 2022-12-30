@@ -5,6 +5,8 @@ import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsBy
 import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO'
 import { IMarkingsRepository } from '@modules/markings/repositories/IMarkingsRepository'
 import { Marking } from '../entities/Marking'
+import { IUpdateManyTimesheetStatusDTO, IUpdateManyTimesheetStatusResponse } from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO'
+import { IListByIdsMarkingsByUserIdDTO } from '@modules/markings/dtos/IListByIdsMarkingsByUserIdDTO'
 
 export class MarkingsRepository extends AppRepository implements IMarkingsRepository {
   public async findById(id: string): Promise<Marking | null> {
@@ -32,15 +34,23 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
           deleted_at: null
         }
       },
-      orderBy: { date: 'desc' }
+      orderBy: { date: 'desc' },
     })
 
     return filteredMarkings as Marking[]
   }
 
-  public async listByIds(ids: string[]): Promise<Marking[]> {
+  public async listByIds({
+    ids,
+    ignore_deleted_at = false,
+  }: IListByIdsMarkingsByUserIdDTO): Promise<Marking[]> {
+    const whereFilters = ignore_deleted_at
+      ? { id: { in: ids } }
+      : { id: { in: ids }, deleted_at: null }
+
     const filteredMarkings = await this.client.markings.findMany({
-      where: { id: { in: ids }, deleted_at: null }
+      where: whereFilters,
+      include: { project: { include: { customer: true } }, user: true },
     })
 
     return filteredMarkings
@@ -103,6 +113,9 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
 
   public async update({
     id,
+    on_timesheet_id,
+    on_timesheet_status,
+    timesheet_error,
     description,
     date,
     start_time,
@@ -117,6 +130,9 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
       where: { id },
       data: {
         id,
+        on_timesheet_id,
+        on_timesheet_status,
+        timesheet_error,
         description,
         date,
         start_time,
@@ -134,9 +150,30 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     return updatedMarking
   }
 
+  public async updateManyTimesheetStatus(
+    { markingsStatus }: IUpdateManyTimesheetStatusDTO
+  ): Promise<IUpdateManyTimesheetStatusResponse> {
+    for (const markingStatus of markingsStatus) {
+      await this.client.markings.update({
+        data: {
+          on_timesheet_id: markingStatus.on_timesheet_id,
+          on_timesheet_status: markingStatus.on_timesheet_status,
+          timesheet_error: markingStatus.timesheet_error,
+        },
+        where: { id: markingStatus.marking_id }
+      })
+    }
+
+    return { markingsStatus }
+  }
+
   public async delete(id: string): Promise<string> {
     await this.client.markings.update({
-      data: { deleted_at: new Date() },
+      data: {
+        on_timesheet_status: 'NOT_SENT',
+        timesheet_error: undefined,
+        deleted_at: new Date(),
+      },
       where: { id }
     })
 

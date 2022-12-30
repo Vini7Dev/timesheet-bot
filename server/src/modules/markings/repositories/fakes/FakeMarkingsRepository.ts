@@ -1,6 +1,8 @@
 import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO';
+import { IListByIdsMarkingsByUserIdDTO } from '@modules/markings/dtos/IListByIdsMarkingsByUserIdDTO';
 import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO';
 import { IListMarkingsDTO } from '@modules/markings/dtos/IListMarkingsDTO';
+import { IMarkingTimesheetStatus, IUpdateManyTimesheetStatusDTO, IUpdateManyTimesheetStatusResponse } from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO';
 import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO';
 import { Marking } from '@modules/markings/infra/prisma/entities/Marking';
 import { AppError } from '@shared/errors/AppError';
@@ -32,9 +34,14 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     return filteredMarkings
   }
 
-  public async listByIds(ids: string[]): Promise<Marking[]> {
+  public async listByIds({
+    ids,
+    ignore_deleted_at = false,
+  }: IListByIdsMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
-      .filter(marking => ids.includes(marking.id) && !marking.deleted_at)
+      .filter(
+        marking => ids.includes(marking.id) && (ignore_deleted_at || !marking.deleted_at)
+      )
 
     return filteredMarkings
   }
@@ -122,10 +129,45 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     return updatedMarking
   }
 
+  public async updateManyTimesheetStatus(
+    { markingsStatus }: IUpdateManyTimesheetStatusDTO
+  ): Promise<IUpdateManyTimesheetStatusResponse> {
+    const markingsStatusResponse: IMarkingTimesheetStatus[] = []
+
+    for(const markingStatus of markingsStatus) {
+      const markingToUpdateIndex = this.markings.findIndex(
+        marking => marking.id === markingStatus.marking_id
+      )
+
+      if (markingToUpdateIndex === -1) {
+        continue
+      }
+
+      const markingToUpdate = this.markings[markingToUpdateIndex]
+
+      if (markingStatus.on_timesheet_id) markingToUpdate.on_timesheet_id = markingStatus.on_timesheet_id
+      if (markingStatus.timesheet_error) markingToUpdate.timesheet_error = markingStatus.timesheet_error.toString()
+      markingToUpdate.on_timesheet_status = markingStatus.on_timesheet_status
+
+      this.markings[markingToUpdateIndex] = markingToUpdate
+
+      markingsStatusResponse.push({
+        marking_id: markingToUpdate.id,
+        on_timesheet_id: markingToUpdate.on_timesheet_id,
+        on_timesheet_status: markingToUpdate.on_timesheet_status,
+        timesheet_error: markingToUpdate.timesheet_error,
+      })
+    }
+
+    return { markingsStatus: markingsStatusResponse }
+  }
+
   public async delete(id: string): Promise<string> {
     const markingToDeleteIndex = this.markings.findIndex(marking => marking.id === id)
 
     if(markingToDeleteIndex !== -1) {
+      this.markings[markingToDeleteIndex].on_timesheet_status = 'NOT_SENT'
+      this.markings[markingToDeleteIndex].timesheet_error = undefined
       this.markings[markingToDeleteIndex].deleted_at = new Date()
     }
 

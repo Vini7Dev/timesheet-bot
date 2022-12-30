@@ -4,6 +4,8 @@ export const MARKINGS_BY_USER_ID = gql`
   query markingsByUserId($data: ApiFiltersInput!) {
     markingsByUserId(data: $data) {
       id
+      on_timesheet_status
+      timesheet_error
       description
       date
       start_time

@@ -21,6 +21,8 @@ export const markingsTypeDefs = gql`
 
   type Marking {
     id: ID!
+    on_timesheet_status: OnTimesheetStatus
+    timesheet_error: String
     description: String!
     date: String!
     start_time: String!
@@ -35,6 +37,13 @@ export const markingsTypeDefs = gql`
     created_at: String!
     updated_at: String!
     deleted_at: String
+  }
+
+  enum OnTimesheetStatus {
+    NOT_SENT
+    SENDING
+    SENT
+    ERROR
   }
 
   type SendMarkingsToTimesheetResponse {

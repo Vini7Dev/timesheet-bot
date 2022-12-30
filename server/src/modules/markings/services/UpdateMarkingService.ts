@@ -148,6 +148,8 @@ export class UpdateMarkingService {
 
     const updatedMarking = await this.markingsRepository.update({
       id: markingToUpdate.id,
+      on_timesheet_status: 'NOT_SENT',
+      timesheet_error: undefined,
       description: description ?? markingToUpdate.description,
       date: date ?? markingToUpdate.date,
       start_time: start_time ?? markingToUpdate.start_time,

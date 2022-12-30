@@ -38,13 +38,6 @@ const rootTypeDefs = gql`
     perPage: Int
     search: String
   }
-
-  enum OnTimesheetStatus {
-    NOT_SENT
-    SENDING
-    SENT
-    ERROR
-  }
 `
 
 const rootResolvers = {

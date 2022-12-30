@@ -18,11 +18,11 @@ export const checkIfTimeRangeIsInAnotherTimeRange = (
   ) {
     return true
   } else if (
-    finishNumber <= compareFinishNumber && finishNumber >= compareStartNumber
+    finishNumber <= compareFinishNumber && finishNumber > compareStartNumber
   ) {
     return true
   } else if (
-    startNumber >= compareStartNumber && startNumber <= compareFinishNumber
+    startNumber >= compareStartNumber && startNumber < compareFinishNumber
   ) {
     return true
   }
