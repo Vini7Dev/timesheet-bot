@@ -32,6 +32,7 @@ export default {
   handle: async ({
     providers: {
       crawlerProvider,
+      markingsRepository,
     },
     data: {
       userCredentials: { user_id, username, password },
@@ -97,6 +98,19 @@ export default {
           deletedMarkings.otherError,
         ]
       }
+
+      console.log('====> crawlerResponses', crawlerResponses)
+
+      const updatedMarkingsStatus = await markingsRepository.updateManyTimesheetStatus({
+        markingsStatus: crawlerResponses.markingsResponse.map(marking => ({
+          marking_id: marking.id,
+          on_timesheet_id: marking.on_timesheet_id,
+          on_timesheet_status: marking.on_timesheet_status,
+          timesheet_error: marking.timesheet_error ? marking.timesheet_error.join(';') : ''
+        }))
+      })
+
+      console.log('====> updatedMarkingsStatus', updatedMarkingsStatus)
 
       return crawlerResponses
     } catch (err) {

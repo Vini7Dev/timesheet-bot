@@ -281,7 +281,7 @@ export class SeleniumProvider implements ICrawler {
           {
             by: 'id',
             selector: 'f_data_b',
-            value: marking.date.split('/').reverse().join('/')
+            value: marking.date.split('-').reverse().join('/')
           },
         ])
 
