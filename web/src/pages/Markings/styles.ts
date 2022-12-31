@@ -128,7 +128,7 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
       font-family: 'Roboto', sans-serif;
       font-size: 1rem;
       color: #C6D2D9;
-      padding: 0 0.75rem 0 0.375px;
+      padding: 0 0.75rem 0 0.023rem;
     }
 
     .marking-billable-button {

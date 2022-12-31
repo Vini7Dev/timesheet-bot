@@ -40,19 +40,19 @@ export const TimerTrackerContainer = styled.div`
 
       #timer-change-start-input-container {
         position: absolute;
-        bottom: -74px;
+        bottom: -4.625rem;
         right: 0;
         display: flex;
         align-items: center;
         background-color: #12191D;
-        padding: 12px 8px;
+        padding: 0.75rem 0.5rem;
 
         & > span {
           font-family: 'Roboto', sans-serif;
           font-size: 0.8571rem;
           color: #90A4AE;
           display: block;
-          width: 225px;
+          width: 14.063rem;
         }
       }
     }

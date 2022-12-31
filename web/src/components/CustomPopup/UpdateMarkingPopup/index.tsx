@@ -271,7 +271,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               style={{
                 textAlign: 'center',
                 padding: 0,
-                width: '50px'
+                width: '3.125rem'
               }}
               value={startTimeUpdated}
               onChange={(e) => setStartTimeUpdated(e.target.value)}
@@ -283,7 +283,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               style={{
                 textAlign: 'center',
                 padding: 0,
-                width: '50px'
+                width: '3.125rem'
               }}
               value={finishTimeUpdated}
               onChange={(e) => setFinishTimeUpdated(e.target.value)}
@@ -301,7 +301,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               style={{
                 textAlign: 'center',
                 padding: 0,
-                width: '50px'
+                width: '3.125rem'
               }}
               value={startIntervalTimeUpdated}
               onChange={(e) => setStartIntervalTimeUpdated(e.target.value)}
@@ -313,7 +313,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               style={{
                 textAlign: 'center',
                 padding: 0,
-                width: '50px'
+                width: '3.125rem'
               }}
               value={finishIntervalTimeUpdated}
               onChange={(e) => setFinishIntervalTimeUpdated(e.target.value)}

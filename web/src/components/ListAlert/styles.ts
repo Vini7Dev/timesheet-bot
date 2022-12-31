@@ -16,14 +16,14 @@ export const ListAlertContainer = styled.div`
     color: #C6D2D9;
 
     svg {
-      margin-right: 8px;
+      margin-right: 0.5rem;
     }
   }
 
   div {
     width: 100%;
-    max-width: 280px;
-    margin-top: 8px;
+    max-width: 17.5rem;
+    margin-top: 0.5rem;
   }
 
   @media screen and (min-width: 969px) {

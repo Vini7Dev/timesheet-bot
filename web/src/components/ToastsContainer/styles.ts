@@ -6,8 +6,8 @@ interface IToastProps {
 
 export const Container = styled.div`
   position: absolute;
-  right: 20px;
-  bottom: 20px;
+  right: 1.25rem;
+  bottom: 1.25rem;
   overflow: hidden;
 `
 

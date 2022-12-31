@@ -15,7 +15,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
   .popup-marking-row {
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 3.75rem;
     margin: 1rem 0;
   }
 
@@ -23,13 +23,13 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
     #marking-timesheet-status {
       display: flex;
       align-items: center;
-      padding: 6px 8px;
+      padding: 0.375rem 0.5rem;
       font-family: 'Roboto', sans-serif;
       text-align: left;
       background: none;
       font-size: 1rem;
       font-weight: 500;
-      border-radius: 4px;
+      border-radius: 0.25rem;
       border: 1px solid ${({ onTimesheetStatus }) => {
         switch (onTimesheetStatus) {
           case 'SENT': return '#4CAF50'
@@ -50,7 +50,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       }};
 
       svg {
-        margin-right: 8px;
+        margin-right: 0.5rem;
       }
 
       .sending-icon {
@@ -75,7 +75,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0 12px;
+      padding: 0 0.75rem;
       border: none;
       background-color: transparent;
       font-family: 'Roboto', sans-serif;
@@ -87,7 +87,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
   }
 
   .popup-marking-third-row {
-    padding: 0 12px;
+    padding: 0 0.75rem;
 
     .marking-billable-button {
       display: flex;
@@ -108,7 +108,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       align-items: flex-start;
 
       .marking-times-text {
-        margin-left: 5px;
+        margin-left: 0.313rem;
         font-family: 'Roboto', sans-serif;
         font-size: 0.9rem;
         color: #C6D2D9;
@@ -117,10 +117,10 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       .marking-time-inputs {
         display: flex;
         align-items: center;
-        height: 20px;
+        height: 1.25rem;
 
         .marking-time-inputs-divisor {
-          margin: 0 8px;
+          margin: 0 0.5rem;
         }
       }
     }
@@ -144,7 +144,7 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
   }
 
   .popup-button-small {
-    max-width: 100px;
+    max-width: 6.25rem;
     margin-left: auto;
   }
 
