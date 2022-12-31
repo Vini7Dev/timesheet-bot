@@ -10,7 +10,7 @@ interface ICustomPopupProps {
 
 export const CustomPopup: React.FC<ICustomPopupProps & any> = ({
   hideCloseButton = false,
-  onClickToClose,
+  onClickToClose = () => null,
   children
 }) => {
   return (

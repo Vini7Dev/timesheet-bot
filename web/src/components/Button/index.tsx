@@ -5,7 +5,7 @@ import { PulseLoader } from 'react-spinners'
 
 interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string
-  buttonStyle?: 'primary' | 'danger'
+  buttonStyle?: 'primary' | 'danger' | 'pending'
   isLoading?: boolean
 }
 

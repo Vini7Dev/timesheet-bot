@@ -77,8 +77,8 @@ export class SendMarkingsToTimesheetService {
     }
 
     const markingsToProccess = markingResults
-      .filter(markingResult => !markingResult.error)
-      .map(markingResult => markingResult.data)
+      .filter(markingResult => !markingResult.error && markingResult.data)
+      .map(markingResult => markingResult.data) as Marking[]
 
     await this.queueProvider.add({
       name: JOB_MARKINGS_ON_TIMESHEET,
@@ -90,6 +90,15 @@ export class SendMarkingsToTimesheetService {
           password: this.encryptProvider.decrypt(userOwner.password),
         }
       }
+    })
+
+    await this.markingsRepository.updateManyTimesheetStatus({
+      markingsStatus: markingsToProccess.map(markingToProcess => ({
+        marking_id: markingToProcess?.id,
+        on_timesheet_id: markingToProcess.on_timesheet_id,
+        on_timesheet_status: 'SENDING',
+        timesheet_error: ''
+      }))
     })
 
     return {

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 
 interface IButtonContainerProps {
-  buttonStyle: 'primary' | 'danger'
+  buttonStyle: 'primary' | 'danger' | 'pending'
 }
 
 export const ButtonContainer = styled.div<IButtonContainerProps>`
@@ -17,6 +17,10 @@ export const ButtonContainer = styled.div<IButtonContainerProps>`
 
       case 'danger': return css`
         background-color: #F44336;
+      `
+
+      case 'pending': return css`
+        background-color: #FFC107D0;
       `
 
       default: return null
