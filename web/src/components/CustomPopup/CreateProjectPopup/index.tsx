@@ -73,6 +73,11 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
         }
       })
 
+      toast.addToast({
+        type: 'success',
+        message: 'Projeto cadastrado com sucesso!'
+      })
+
       afterSubmit(createProjectResponse?.createProject as IProjectProps)
     } catch (err: any) {
       toast.addToast({

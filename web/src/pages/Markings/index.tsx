@@ -154,6 +154,12 @@ export const Markings: React.FC = () => {
           data: markingData
         }
       })
+
+      toast.addToast({
+        type: 'success',
+        message: 'Marcação atualizada com sucesso!'
+      })
+
       handleGetUserMarkings()
     } catch (err: any) {
       toast.addToast({

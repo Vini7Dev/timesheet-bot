@@ -134,6 +134,11 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
         }
       })
 
+      toast.addToast({
+        type: 'success',
+        message: 'Marcação atualizada com sucesso!'
+      })
+
       beforeUpdate()
     } catch (err: any) {
       toast.addToast({
@@ -155,6 +160,11 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
 
       await client.mutate<{ deleteMarking: string }>({
         mutation: DELETE_MARKING, variables: { deleteMarkingId: id }
+      })
+
+      toast.addToast({
+        type: 'success',
+        message: 'Marcação removida com sucesso!'
       })
 
       beforeDelete()

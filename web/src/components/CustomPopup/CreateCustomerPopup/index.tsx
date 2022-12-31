@@ -59,6 +59,11 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
         }
       })
 
+      toast.addToast({
+        type: 'success',
+        message: 'Cliente cadastrado com sucesso!'
+      })
+
       afterSubmit(createCustomerResponse?.createCustomer as ICustomerProps)
     } catch (err: any) {
       toast.addToast({

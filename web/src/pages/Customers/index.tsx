@@ -91,6 +91,11 @@ export const Customers: React.FC = () => {
         mutation: DELETE_CUSTOMER, variables: { deleteCustomerId: id }
       })
 
+      toast.addToast({
+        type: 'success',
+        message: 'Cliente removido com sucesso!'
+      })
+
       await handleGetCustomers()
     } catch (err: any) {
       toast.addToast({
@@ -133,6 +138,11 @@ export const Customers: React.FC = () => {
         variables: {
           data: customerData
         }
+      })
+
+      toast.addToast({
+        type: 'success',
+        message: 'Cliente atualizado com sucesso!'
       })
 
       handleGetCustomers()

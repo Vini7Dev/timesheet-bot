@@ -100,8 +100,13 @@ export const Projects: React.FC = () => {
         return
       }
 
-      const { errors } = await client.mutate<{ deleteProject: string }>({
+      await client.mutate<{ deleteProject: string }>({
         mutation: DELETE_PROJECT, variables: { deleteProjectId: id }
+      })
+
+      toast.addToast({
+        type: 'success',
+        message: 'Projeto removido com sucesso!'
       })
 
       await handleGetProjects()
@@ -155,6 +160,11 @@ export const Projects: React.FC = () => {
         variables: {
           data: projectData
         }
+      })
+
+      toast.addToast({
+        type: 'success',
+        message: 'Projeto atualizado com sucesso!'
       })
 
       handleGetProjects()

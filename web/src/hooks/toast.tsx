@@ -28,8 +28,8 @@ export const ToastProvider: React.FC<any> = ({ children }) => {
   const [messages, setMessages] = useState<IToastProps[]>([])
 
   const removeToast = useCallback((id: string) => {
-    setMessages(messages.filter(message => message.id !== id))
-  }, [messages])
+    setMessages(oldMessages => oldMessages.filter(message => message.id !== id))
+  }, [])
 
   const addToast = useCallback(({ message, type }: IAddToastProps) => {
     const id = uuidv4()
@@ -40,12 +40,12 @@ export const ToastProvider: React.FC<any> = ({ children }) => {
       type
     }
 
-    setMessages([...messages, newMessage])
+    setMessages(oldMessages => [...oldMessages, newMessage])
 
     setTimeout(() => {
       removeToast(id)
     }, 5000)
-  }, [messages, removeToast])
+  }, [removeToast])
 
   return (
     <ToastContext.Provider value={{ messages, addToast, removeToast }}>

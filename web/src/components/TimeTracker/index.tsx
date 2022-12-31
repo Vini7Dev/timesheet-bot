@@ -119,6 +119,11 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
         }
       })
 
+      toast.addToast({
+        type: 'success',
+        message: 'Marcação cadastrada com sucesso!'
+      })
+
       setCreateMarkingIsLoading(false)
       beforeCreateMarking()
 
