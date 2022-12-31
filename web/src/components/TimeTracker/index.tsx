@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiDollarSign } from 'react-icons/fi'
 import * as Yup from 'yup'
 
 import { CREATE_MARKING } from '../../graphql/createMarking'
 import { yupFormValidator } from '../../utils/yupFormValidator'
+import { useOutsideAlerter } from '../../hooks/outsideAlerter'
 import { useToast } from '../../hooks/toast'
 import { useTimer } from '../../hooks/timer'
 import { Input } from '../Input'
@@ -16,6 +17,12 @@ interface ITimeTrackerProps {
   beforeCreateMarking?: () => void
 }
 
+interface IHandleUpdateTimerMarkingDataProps {
+  newDescription?: string
+  newIsBillable?: boolean
+  newProject?: IProjectProps
+}
+
 export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   beforeCreateMarking = () => null
 }) => {
@@ -23,12 +30,15 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   const toast = useToast()
   const {
     timerRunning,
+    timerMarking,
     getFormattedTimer,
     getFormattedStartTime,
     getFormattedNowTime,
     startTimer,
     stopTimer,
-    changeStartTime
+    changeStartTime,
+    updateTimerMarkingData,
+    saveMarkingBkpOnSessionStorage
   } = useTimer()
 
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
@@ -36,9 +46,26 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   const [changeStartInputValue, setChangeStartInputValue] = useState('')
   const [createMarkingIsLoading, setCreateMarkingIsLoading] = useState(false)
 
-  const [isBillable, setIsBillable] = useState(true)
-  const [description, setDescription] = useState('')
-  const [project, setProject] = useState<IProjectProps | undefined>()
+  const [editingMarkingTime, setEditingMarkingTime] = useState(false)
+
+  const wrapperRef = useRef(null)
+  useOutsideAlerter({
+    ref: editingMarkingTime ? wrapperRef : {},
+    callback: () => {
+      setEditingMarkingTime(false)
+      saveMarkingBkpOnSessionStorage()
+    }
+  })
+
+  const handleUpdateTimerMarkingData = useCallback((
+    { newDescription, newIsBillable, newProject }: IHandleUpdateTimerMarkingDataProps
+  ) => {
+    updateTimerMarkingData({
+      description: newDescription ?? timerMarking.description,
+      isBillable: newIsBillable ?? timerMarking.isBillable,
+      project: newProject ?? timerMarking.project
+    })
+  }, [timerMarking.description, timerMarking.isBillable, timerMarking.project, updateTimerMarkingData])
 
   const handleCreateMarking = useCallback(async () => {
     const startTime = getFormattedStartTime()
@@ -46,10 +73,10 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
     const date = new Date()
 
     const markingData = {
-      project_id: project?.id,
-      description,
+      project_id: timerMarking?.project?.id ?? '',
+      description: timerMarking.description,
       date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+      work_class: timerMarking.isBillable ? 'PRODUCTION' : 'ABSENCE',
       start_time: startTime,
       finish_time: finishTime
     }
@@ -105,11 +132,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
       setCreateMarkingIsLoading(false)
       return false
     }
-  }, [beforeCreateMarking, client, description, getFormattedNowTime, getFormattedStartTime, isBillable, project, toast.addToast])
-
-  const toggleIsBillable = useCallback(() => {
-    setIsBillable(!isBillable)
-  }, [isBillable])
+  }, [beforeCreateMarking, client, getFormattedNowTime, getFormattedStartTime, toast.addToast, timerMarking])
 
   const toggleProjectPopupIsOpen = useCallback(() => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
@@ -164,13 +187,15 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   }, [changeStartInputValue, changeStartTime, timerRunning])
 
   return (
-    <TimerTrackerContainer>
+    <TimerTrackerContainer ref={wrapperRef} onClick={() => setEditingMarkingTime(true)}>
       <div className="timer-row timer-row-first">
         <Input
           placeholder="Descrição..."
           inputStyle="high"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={timerMarking.description}
+          onChange={(e) => handleUpdateTimerMarkingData({
+            newDescription: e.target.value
+          })}
         />
 
         <button
@@ -178,8 +203,8 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
           onClick={toggleProjectPopupIsOpen}
         >
           {
-            project
-              ? project.name
+            timerMarking.project
+              ? timerMarking.project.name
               : '+ Projeto'
           }
         </button>
@@ -188,7 +213,10 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
           <SelectPopup
             popupType="projects"
             onSelect={(selectedProject) => {
-              setProject(selectedProject as IProjectProps)
+              handleUpdateTimerMarkingData({
+                newProject: selectedProject as IProjectProps
+              })
+              saveMarkingBkpOnSessionStorage()
               toggleProjectPopupIsOpen()
             }}
           />
@@ -196,9 +224,14 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
       </div>
 
       <div className="timer-row timer-row-second">
-        <button id="timer-billable-button" onClick={toggleIsBillable}>
+        <button id="timer-billable-button" onClick={() => {
+          handleUpdateTimerMarkingData({
+            newIsBillable: !timerMarking.isBillable
+          })
+          saveMarkingBkpOnSessionStorage()
+        }}>
           <FiDollarSign
-            color={isBillable ? '#03A9F4' : '#C6D2D9'}
+            color={timerMarking.isBillable ? '#03A9F4' : '#C6D2D9'}
             size={22}
           />
         </button>

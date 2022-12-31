@@ -11,6 +11,7 @@ import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
 import { orderMarkingsByTime } from '../../utils/orderMarkingsByTime'
 import { formatTimeNumberToString } from '../../utils/formatTimeNumberToString'
 import { calculateTotalHoursOfMarking } from '../../utils/calculateTotalHoursOfMarking'
+import { useOutsideAlerter } from '../../hooks/outsideAlerter'
 import { useToast } from '../../hooks/toast'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
@@ -21,7 +22,6 @@ import { CustomPopup } from '../../components/CustomPopup'
 import { ListAlert } from '../../components/ListAlert'
 import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
 import { MainContent, MarkingItemContainer, PageContainer } from './styles'
-import { useOutsideAlerter } from '../../hooks/outsideAlerter'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
