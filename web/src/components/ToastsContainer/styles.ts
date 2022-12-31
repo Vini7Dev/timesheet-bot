@@ -5,10 +5,16 @@ interface IToastProps {
 }
 
 export const Container = styled.div`
-  position: absolute;
-  right: 1.25rem;
-  bottom: 1.25rem;
+  position: fixed;
+  right: 0;
+  top: 5.25rem;
   overflow: hidden;
+  width: 100vw;
+
+  @media screen and (min-width: 969px) {
+    right: 1.25rem;
+    width: auto;
+  }
 `
 
 const toastTypes = {
@@ -30,7 +36,7 @@ export const Toast = styled.div<IToastProps>`
   cursor: pointer;
   position: relative;
   display: flex;
-  width: 22.5rem;
+  width: 100%;
   padding: 0.75rem;
   margin-top: 0.625rem;
   border-radius: 0.625rem;
@@ -49,5 +55,9 @@ export const Toast = styled.div<IToastProps>`
     svg {
       margin-right: 0.25rem;
     }
+  }
+
+  @media screen and (min-width: 969px) {
+    width: 22.5rem;
   }
 `
