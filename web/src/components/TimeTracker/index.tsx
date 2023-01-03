@@ -170,7 +170,10 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
     }
 
     if (!changeStartInputValue?.includes(':')) {
-      alert('Fomato inválido!')
+      toast.addToast({
+        type: 'error',
+        message: 'Fomato inválido!'
+      })
 
       return
     }
@@ -178,7 +181,10 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
     const [hours, minutes] = changeStartInputValue.split(':')
 
     if (!hours || !minutes) {
-      alert('Fomato inválido!')
+      toast.addToast({
+        type: 'error',
+        message: 'Fomato inválido!'
+      })
 
       return
     }
