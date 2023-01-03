@@ -110,4 +110,8 @@ export const SendToTimesheetPopupContainer = styled.div`
       color: #C6D2D9;
     }
   }
+
+  .popup-button-margin-top {
+    margin-top: 1rem;
+  }
 `

@@ -4,6 +4,7 @@ import * as Yup from 'yup'
 
 import { MARKINGS_BY_USER_ID } from '../../graphql/markingsByUserId'
 import { UPDATE_MARKING } from '../../graphql/updateMarking'
+import { SEND_MARKINGS_TO_TIMESHEET } from '../../graphql/sendMarkingsToTimesheet'
 import { yupFormValidator } from '../../utils/yupFormValidator'
 import { formatDateString } from '../../utils/formatDateString'
 import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
@@ -34,6 +35,11 @@ interface IUpdateMarkingProps {
   work_class?: WorkClass
 }
 
+interface IHandleSetMarkingsToTimesheetProps {
+  markingId: string
+  send: boolean
+}
+
 interface IMarkingToSend {
   send: boolean
   marking: IMarkingData
@@ -52,28 +58,78 @@ export const Markings: React.FC = () => {
   const [markings, setMarkings] = useState<IMarkingData[]>([])
   const [markingsToTimesheet, setMarkingsToTimesheet] = useState<IMarkingToSend[]>([])
 
-  const toggleSendToTimesheetIsOpen = useCallback(() => {
-    setSendToTimesheetIsOpen(!sendToTimesheetIsOpen)
-  }, [sendToTimesheetIsOpen])
-
   const toggleEditMarkingIsOpen = useCallback(() => {
     setEditMarkingIsOpen(!editMarkingIsOpen)
   }, [editMarkingIsOpen])
 
+  const toggleSendToTimesheetIsOpen = useCallback(() => {
+    setSendToTimesheetIsOpen(!sendToTimesheetIsOpen)
+  }, [sendToTimesheetIsOpen])
+
+  const handleOpenSendToTimesheetPopup = useCallback(() => {
+    setMarkingsToTimesheet(markings
+      .filter(marking => (
+        marking.on_timesheet_status !== 'SENT' && marking.on_timesheet_status !== 'SENDING'
+      ))
+      .map(marking => ({ send: true, marking }))
+    )
+
+    toggleSendToTimesheetIsOpen()
+  }, [markings, toggleSendToTimesheetIsOpen])
+
   const handleSetMarkingsToTimesheet = useCallback((
-    updatedMarkintsToTimesheet?: IMarkingToSend[]
+    { markingId, send }: IHandleSetMarkingsToTimesheetProps
   ) => {
-    if (updatedMarkintsToTimesheet) {
-      setMarkingsToTimesheet(updatedMarkintsToTimesheet)
-    } else {
-      setMarkingsToTimesheet(markings
-        .filter(marking => (
-          marking.on_timesheet_status !== 'SENT' && marking.on_timesheet_status !== 'SENDING'
-        ))
-        .map(marking => ({ send: true, marking }))
-      )
+    const updatedMarkings = markingsToTimesheet
+
+    const markingToUpdateIndex = updatedMarkings.findIndex(markingToTimesheet =>
+      markingToTimesheet.marking.id === markingId
+    )
+
+    if (markingToUpdateIndex === -1) {
+      return
     }
-  }, [markings])
+
+    updatedMarkings[markingToUpdateIndex].send = send
+
+    setMarkingsToTimesheet(updatedMarkings)
+  }, [markingsToTimesheet])
+
+  const handleSendMarkingsToTimesheet = useCallback(async () => {
+    const markingsToSend = markingsToTimesheet.filter(marking => marking.send)
+
+    if (markingsToSend.length === 0) {
+      toast.addToast({
+        type: 'error',
+        message: 'Selecione ao menos uma tarefa para atualizar'
+      })
+
+      return
+    }
+
+    const markingIds = markingsToSend.map(markingToSend => markingToSend.marking.id)
+
+    try {
+      await client.mutate({
+        mutation: SEND_MARKINGS_TO_TIMESHEET,
+        variables: {
+          data: { markingIds }
+        }
+      })
+
+      toast.addToast({
+        type: 'success',
+        message: 'As marcações estão sendo processadas!'
+      })
+
+      toggleSendToTimesheetIsOpen()
+    } catch (err: any) {
+      toast.addToast({
+        type: 'error',
+        message: err.message
+      })
+    }
+  }, [client, markingsToTimesheet, toast, toggleSendToTimesheetIsOpen])
 
   const handleSetEditMarking = useCallback((id: string) => {
     const markingToEdit = markings.find(marking => marking.id === id)
@@ -199,10 +255,7 @@ export const Markings: React.FC = () => {
               <div id="send-timesheet-button">
                 <Button
                   text="Atualizar no Multidados"
-                  onClick={() => {
-                    handleSetMarkingsToTimesheet()
-                    toggleSendToTimesheetIsOpen()
-                  }}
+                  onClick={handleOpenSendToTimesheetPopup}
                   buttonStyle="pending"
                 />
               </div>
@@ -287,13 +340,28 @@ export const Markings: React.FC = () => {
                     className="popup-marking-container"
                     key={marking.id}
                   >
-                    <input type="checkbox" defaultChecked={send} />
+                    <input
+                      type="checkbox"
+                      defaultChecked={send}
+                      onChange={(e) => handleSetMarkingsToTimesheet({
+                        markingId: marking.id,
+                        send: e.target.checked
+                      })}
+                    />
 
                     <div className="popup-marking-data">
                       <p>{marking.description}</p>
                     </div>
                   </label>
                 ))}
+              </div>
+
+              <div className="popup-button-margin-top">
+                <Button
+                  text="Atualizar"
+                  isLoading={false}
+                  onClick={handleSendMarkingsToTimesheet}
+                />
               </div>
             </SendToTimesheetPopupContainer>
           </CustomPopup>
