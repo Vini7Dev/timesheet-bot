@@ -4,7 +4,6 @@ import * as Yup from 'yup'
 
 import { MARKINGS_BY_USER_ID } from '../../graphql/markingsByUserId'
 import { UPDATE_MARKING } from '../../graphql/updateMarking'
-import { SEND_MARKINGS_TO_TIMESHEET } from '../../graphql/sendMarkingsToTimesheet'
 import { yupFormValidator } from '../../utils/yupFormValidator'
 import { formatDateString } from '../../utils/formatDateString'
 import { groupMarkingsByDate } from '../../utils/groupMarkingsByDate'
@@ -16,10 +15,11 @@ import { TimeTracker } from '../../components/TimeTracker'
 import { Navigation } from '../../components/Navigation'
 import { CustomPopup } from '../../components/CustomPopup'
 import { ListAlert } from '../../components/ListAlert'
-import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
-import { MainContent, PageContainer, SendToTimesheetPopupContainer } from './styles'
 import { Button } from '../../components/Button'
+import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
+import { SendToTimesheetPopup } from '../../components/CustomPopup/SendToTimesheetPopup'
 import { MarkingItem } from './MarkingItem'
+import { MainContent, PageContainer } from './styles'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
@@ -35,16 +35,6 @@ interface IUpdateMarkingProps {
   work_class?: WorkClass
 }
 
-interface IHandleSetMarkingsToTimesheetProps {
-  markingId: string
-  send: boolean
-}
-
-interface IMarkingToSend {
-  send: boolean
-  marking: IMarkingData
-}
-
 export const Markings: React.FC = () => {
   const client = useApolloClient()
   const toast = useToast()
@@ -56,7 +46,6 @@ export const Markings: React.FC = () => {
   const [loadingMarkings, setLoadingMarkings] = useState(false)
 
   const [markings, setMarkings] = useState<IMarkingData[]>([])
-  const [markingsToTimesheet, setMarkingsToTimesheet] = useState<IMarkingToSend[]>([])
 
   const toggleEditMarkingIsOpen = useCallback(() => {
     setEditMarkingIsOpen(!editMarkingIsOpen)
@@ -65,71 +54,6 @@ export const Markings: React.FC = () => {
   const toggleSendToTimesheetIsOpen = useCallback(() => {
     setSendToTimesheetIsOpen(!sendToTimesheetIsOpen)
   }, [sendToTimesheetIsOpen])
-
-  const handleOpenSendToTimesheetPopup = useCallback(() => {
-    setMarkingsToTimesheet(markings
-      .filter(marking => (
-        marking.on_timesheet_status !== 'SENT' && marking.on_timesheet_status !== 'SENDING'
-      ))
-      .map(marking => ({ send: true, marking }))
-    )
-
-    toggleSendToTimesheetIsOpen()
-  }, [markings, toggleSendToTimesheetIsOpen])
-
-  const handleSetMarkingsToTimesheet = useCallback((
-    { markingId, send }: IHandleSetMarkingsToTimesheetProps
-  ) => {
-    const updatedMarkings = markingsToTimesheet
-
-    const markingToUpdateIndex = updatedMarkings.findIndex(markingToTimesheet =>
-      markingToTimesheet.marking.id === markingId
-    )
-
-    if (markingToUpdateIndex === -1) {
-      return
-    }
-
-    updatedMarkings[markingToUpdateIndex].send = send
-
-    setMarkingsToTimesheet(updatedMarkings)
-  }, [markingsToTimesheet])
-
-  const handleSendMarkingsToTimesheet = useCallback(async () => {
-    const markingsToSend = markingsToTimesheet.filter(marking => marking.send)
-
-    if (markingsToSend.length === 0) {
-      toast.addToast({
-        type: 'error',
-        message: 'Selecione ao menos uma tarefa para atualizar'
-      })
-
-      return
-    }
-
-    const markingIds = markingsToSend.map(markingToSend => markingToSend.marking.id)
-
-    try {
-      await client.mutate({
-        mutation: SEND_MARKINGS_TO_TIMESHEET,
-        variables: {
-          data: { markingIds }
-        }
-      })
-
-      toast.addToast({
-        type: 'success',
-        message: 'As marcações estão sendo processadas!'
-      })
-
-      toggleSendToTimesheetIsOpen()
-    } catch (err: any) {
-      toast.addToast({
-        type: 'error',
-        message: err.message
-      })
-    }
-  }, [client, markingsToTimesheet, toast, toggleSendToTimesheetIsOpen])
 
   const handleSetEditMarking = useCallback((id: string) => {
     const markingToEdit = markings.find(marking => marking.id === id)
@@ -255,7 +179,7 @@ export const Markings: React.FC = () => {
               <div id="send-timesheet-button">
                 <Button
                   text="Atualizar no Multidados"
-                  onClick={handleOpenSendToTimesheetPopup}
+                  onClick={toggleSendToTimesheetIsOpen}
                   buttonStyle="pending"
                 />
               </div>
@@ -327,43 +251,10 @@ export const Markings: React.FC = () => {
       {
         sendToTimesheetIsOpen && (
           <CustomPopup onClickToClose={toggleSendToTimesheetIsOpen}>
-            <SendToTimesheetPopupContainer>
-              <h1 id="popup-form-title">Atualizar no Multidados</h1>
-              <p id="popup-form-subtitle">Selecione as marcações que serão enviadas</p>
-
-              <div id="popup-list-container">
-                {markingsToTimesheet.map(({
-                  send,
-                  marking
-                }) => (
-                  <label
-                    className="popup-marking-container"
-                    key={marking.id}
-                  >
-                    <input
-                      type="checkbox"
-                      defaultChecked={send}
-                      onChange={(e) => handleSetMarkingsToTimesheet({
-                        markingId: marking.id,
-                        send: e.target.checked
-                      })}
-                    />
-
-                    <div className="popup-marking-data">
-                      <p>{marking.description}</p>
-                    </div>
-                  </label>
-                ))}
-              </div>
-
-              <div className="popup-button-margin-top">
-                <Button
-                  text="Atualizar"
-                  isLoading={false}
-                  onClick={handleSendMarkingsToTimesheet}
-                />
-              </div>
-            </SendToTimesheetPopupContainer>
+            <SendToTimesheetPopup
+              markings={markings}
+              afterSendMarkings={toggleSendToTimesheetIsOpen}
+            />
           </CustomPopup>
         )
       }
