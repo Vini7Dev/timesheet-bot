@@ -15,8 +15,6 @@ import '@shared/containers'
 import { context, IWSAppContext } from './context'
 import { resolvers, typeDefs } from './schemas'
 import { BullProvider } from '../../containers/providers/Queue/implementations/BullProvider'
-import { redisConfig } from '@configs/redis'
-
 
 (async function startApolloServer(typeDefs, resolvers) {
   const app = express()
@@ -25,7 +23,7 @@ import { redisConfig } from '@configs/redis'
   serverAdapter.setBasePath('/bull-board')
 
   createBullBoard({
-    queues: new BullProvider({ redis: redisConfig })
+    queues: new BullProvider()
       .getQueues()
       .map(queue => new BullAdapter(queue.bull)),
     serverAdapter

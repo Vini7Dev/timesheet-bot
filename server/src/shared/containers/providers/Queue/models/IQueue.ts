@@ -1,9 +1,12 @@
+import { RedisPubSub } from 'graphql-redis-subscriptions'
+
 export interface IAddQueueProps {
   name: string
   data: object | object[]
 }
 
 export interface IProcessProps {
+  pubsub: RedisPubSub
   providers: object
 }
 

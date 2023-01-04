@@ -1,12 +1,10 @@
+import { formatPad } from './formatPad'
+
 interface IFormatTimeNumberToStringProps {
   timeStartedAt: number
   currentTime: number
   hideSecondsWhenHoursExist?: boolean
   forceToShowHours?: boolean
-}
-
-const formatPad = (value: number): string => {
-  return value.toString().padStart(2, '0')
 }
 
 export const formatTimeNumberToString = ({

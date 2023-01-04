@@ -5,10 +5,10 @@ import { createMarking } from './resolvers/createMarkingResolver'
 import { updateMarking } from './resolvers/updateMarkingResolver'
 import { deleteMarking } from './resolvers/deleteMarkingResolver'
 import { sendMarkingsToTimesheet } from './resolvers/sendMarkingsToTimesheetResolver'
-import { getOnSendMarkingsToTimesheet } from './subscriptions/getOnSendMarkingsToTimesheet'
+import { onSendMarkingsToTimesheet } from './subscriptions/onSendMarkingsToTimesheet'
 
 export const markingsResolvers = {
   Query: { marking, markings, markingsByUserId },
   Mutation: { createMarking, updateMarking, deleteMarking, sendMarkingsToTimesheet },
-  Subscription: { onSendMarkingsToTimesheet: getOnSendMarkingsToTimesheet() },
+  Subscription: { onSendMarkingsToTimesheet },
 }

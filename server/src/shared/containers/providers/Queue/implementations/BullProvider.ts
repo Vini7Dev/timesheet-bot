@@ -1,11 +1,14 @@
-import Bull, { Queue, QueueOptions } from 'bull'
+import Bull, { Queue } from 'bull'
+
+import { RedisPubSub } from 'graphql-redis-subscriptions'
 
 import * as Jobs from '@jobs/index'
+import { redisConfig } from '@configs/redis'
 import { AppError } from '@shared/errors/AppError'
 import { IQueue, IAddQueueProps, IProcessProps } from '../models/IQueue'
-import { redisConfig } from '@configs/redis'
 
 export interface IHandleProps {
+  pubsub: RedisPubSub
   providers: object
   data: object
 }
@@ -39,10 +42,11 @@ export class BullProvider implements IQueue {
     queueToAdd.bull.add(data)
   }
 
-  public process({ providers }: IProcessProps): void {
+  public process({ providers, pubsub }: IProcessProps): void {
     this.queues.forEach(queue => {
       queue.bull.process(async job => {
         queue.handle({
+          pubsub,
           providers,
           data: job.data
         })

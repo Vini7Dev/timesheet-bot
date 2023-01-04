@@ -7,6 +7,7 @@ import { useOutsideAlerter } from '../../../hooks/outsideAlerter'
 import { Input } from '../../../components/Input'
 import { SelectPopup } from '../../../components/SelectPopup'
 import { MarkingItemContainer } from './styles'
+import { formatDatePad } from '../../../utils/formatPad'
 
 interface IUpdateMarkingProps {
   date: string
@@ -89,7 +90,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
       finish_time: newFinishTime,
       work_class: newWorkClass
     })
-  }, [date, id, onUpdate])
+  }, [id, onUpdate])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
@@ -178,7 +179,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               formatTimeNumberToString({
                 timeStartedAt: 0,
                 currentTime: calculateTotalHoursOfMarking({
-                  date,
+                  date: formatDatePad(date),
                   startTime: start_time,
                   finishTime: finish_time,
                   startIntervalTime: start_interval_time,

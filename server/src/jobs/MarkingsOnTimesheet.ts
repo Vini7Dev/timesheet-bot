@@ -1,4 +1,4 @@
-import { JOB_MARKINGS_ON_TIMESHEET } from '@utils/constants'
+import { JOB_MARKINGS_ON_TIMESHEET, TRIGGER_MARKINGS_TO_TIMESHEET } from '@utils/constants'
 import { ICrawler } from '@shared/containers/providers/Crawler/models/ICrawler'
 import { IHandleProps } from '@shared/containers/providers/Queue/implementations/BullProvider'
 import { IUpdateMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IUpdateMarkingsDTO'
@@ -30,6 +30,7 @@ interface IActionGroups {
 export default {
   key: JOB_MARKINGS_ON_TIMESHEET,
   handle: async ({
+    pubsub,
     providers: {
       crawlerProvider,
       markingsRepository,
@@ -99,8 +100,6 @@ export default {
         ]
       }
 
-      console.log('====> crawlerResponses', crawlerResponses)
-
       const updatedMarkingsStatus = await markingsRepository.updateManyTimesheetStatus({
         markingsStatus: crawlerResponses.markingsResponse.map(marking => ({
           marking_id: marking.id,
@@ -110,7 +109,17 @@ export default {
         }))
       })
 
-      console.log('====> updatedMarkingsStatus', updatedMarkingsStatus)
+      const updatedMarkingsToClient = updatedMarkingsStatus.markingsStatus.map(marking => ({
+        id: marking.marking_id,
+        on_timesheet_status: marking.on_timesheet_status,
+        timesheet_error: marking.timesheet_error,
+      }))
+
+      pubsub.publish(TRIGGER_MARKINGS_TO_TIMESHEET, {
+        onSendMarkingsToTimesheet: updatedMarkingsToClient,
+        userOwnerId: user_id,
+      })
+
     } catch (err) {
       console.error(`${new Date()} - ${err}`)
 

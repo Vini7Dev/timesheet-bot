@@ -8,6 +8,7 @@ import { DELETE_MARKING } from '../../../graphql/deleteMarking'
 import { calculateTotalHoursOfMarking } from '../../../utils/calculateTotalHoursOfMarking'
 import { formatTimeNumberToString } from '../../../utils/formatTimeNumberToString'
 import { yupFormValidator } from '../../../utils/yupFormValidator'
+import { formatDatePad } from '../../../utils/formatPad'
 import { useToast } from '../../../hooks/toast'
 import { Button } from '../../Button'
 import { Input } from '../../Input'
@@ -43,9 +44,10 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
   const [updateMarkingIsLoading, setUpdateMarkingIsLoading] = useState(false)
 
+  const [dateUpdated, setDateUpdated] = useState(formatDatePad(date))
+
   const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [descriptionUpdated, setDescriptionUpdated] = useState(description)
-  const [dateUpdated, setDateUpdated] = useState(date)
   const [startTimeUpdated, setStartTimeUpdated] = useState(start_time)
   const [finishTimeUpdated, setFinishTimeUpdated] = useState(finish_time)
   const [startIntervalTimeUpdated, setStartIntervalTimeUpdated] = useState(start_interval_time)
@@ -235,7 +237,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
           placeholder="Data"
           inputStyle="high"
           type="date"
-          value={dateUpdated}
+          defaultValue={dateUpdated}
           onChange={(e) => setDateUpdated(e.target.value)}
           containerStyle={{ width: 'fit-content' }}
         />

@@ -1,6 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+
 import { browseSessionStorage } from '../utils/browseSessionStorage'
 import { formatTimeNumberToString } from '../utils/formatTimeNumberToString'
+import { formatPad } from '../utils/formatPad'
 
 interface ITimerContext {
   timerRunning: boolean
@@ -70,16 +72,12 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
     browseSessionStorage.removeItem({ keyOrigin: 'timer', key: 'timer' })
   }, [])
 
-  const formatPad = useCallback((value: number): string => {
-    return value.toString().padStart(2, '0')
-  }, [])
-
   const formatDateTime = useCallback((date: Date): string => {
     const hours = date.getHours()
     const minutes = date.getMinutes()
 
     return `${formatPad(hours)}:${formatPad(minutes)}`
-  }, [formatPad])
+  }, [])
 
   const getFormattedTimer = useCallback((): string => {
     return formatTimeNumberToString({
