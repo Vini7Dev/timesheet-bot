@@ -1,23 +1,24 @@
 import { JOB_MARKINGS_ON_TIMESHEET, TRIGGER_MARKINGS_TO_TIMESHEET } from '@utils/constants'
 import { ICrawler } from '@shared/containers/providers/Crawler/models/ICrawler'
+import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { IHandleProps } from '@shared/containers/providers/Queue/implementations/BullProvider'
 import { IUpdateMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IUpdateMarkingsDTO'
 import { IDeleteMarkingsDTO } from '@shared/containers/providers/Crawler/dtos/IDeleteMarkingsDTO'
 import { IMarkingsRepository } from '@modules/markings/repositories/IMarkingsRepository'
 import { Marking } from '@modules/markings/infra/prisma/entities/Marking'
+import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
+import { AppError } from '@shared/errors/AppError'
 
 interface IJobMarkingsOnTimesheetProps extends IHandleProps {
   providers: {
+    usersRepository: IUsersRepository
     markingsRepository: IMarkingsRepository
     crawlerProvider: ICrawler
+    encryptProvider: IEncrypt
   }
   data: {
+    userOwnerId: string
     markings: Marking[]
-    userCredentials: {
-      user_id: string,
-      username: string
-      password: string
-    }
   }
 }
 
@@ -32,14 +33,27 @@ export default {
   handle: async ({
     pubsub,
     providers: {
-      crawlerProvider,
+      usersRepository,
       markingsRepository,
+      crawlerProvider,
+      encryptProvider,
     },
     data: {
-      userCredentials: { user_id, username, password },
+      userOwnerId,
       markings,
     },
   }: IJobMarkingsOnTimesheetProps) => {
+    const userOwner = await usersRepository.findById(userOwnerId)
+    if (!userOwner) {
+      throw new AppError('User not found!', 404)
+    }
+
+    for (const marking of markings) {
+      if (marking.user_id !== userOwner.id) {
+        throw new AppError('You do not have permission to send one of these marking!', 403)
+      }
+    }
+
     const actionGroups: IActionGroups = {
       save: [],
       update: [],
@@ -59,8 +73,8 @@ export default {
     try {
       // Authenticate on Timesheet
       await crawlerProvider.authenticateTimesheet({
-        username,
-        password,
+        username: userOwner.username,
+        password: encryptProvider.decrypt(userOwner.password),
       })
 
       // Saving markins
@@ -87,7 +101,7 @@ export default {
 
       // Build response
       const crawlerResponses = {
-        user_id,
+        user_id: userOwner.id,
         markingsResponse: [
           ...createdMarkings.markingsResponse,
           ...updatedMarkings.markingsResponse,
@@ -117,7 +131,7 @@ export default {
 
       pubsub.publish(TRIGGER_MARKINGS_TO_TIMESHEET, {
         onSendMarkingsToTimesheet: updatedMarkingsToClient,
-        userOwnerId: user_id,
+        userOwnerId: userOwner.id,
       })
 
     } catch (err) {

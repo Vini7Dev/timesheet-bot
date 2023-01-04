@@ -83,12 +83,8 @@ export class SendMarkingsToTimesheetService {
     await this.queueProvider.add({
       name: JOB_MARKINGS_ON_TIMESHEET,
       data: {
+        userOwnerId: userOwner.id,
         markings: markingsToProccess,
-        userCredentials: {
-          user_id: userOwner.id,
-          username: userOwner.username,
-          password: this.encryptProvider.decrypt(userOwner.password),
-        }
       }
     })
 
