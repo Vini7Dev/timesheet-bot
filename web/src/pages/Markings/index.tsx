@@ -253,7 +253,10 @@ export const Markings: React.FC = () => {
           <CustomPopup onClickToClose={toggleSendToTimesheetIsOpen}>
             <SendToTimesheetPopup
               markings={markings}
-              afterSendMarkings={toggleSendToTimesheetIsOpen}
+              afterSendMarkings={() => {
+                handleGetUserMarkings()
+                toggleSendToTimesheetIsOpen()
+              }}
             />
           </CustomPopup>
         )

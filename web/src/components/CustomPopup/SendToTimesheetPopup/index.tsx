@@ -29,6 +29,7 @@ export const SendToTimesheetPopup: React.FC<ISendToTimesheetPopupProps> = ({
   const toast = useToast()
   const client = useApolloClient()
 
+  const [markingsToTimesheetIsLoading, setMarkingsToTimesheetIsLoading] = useState(false)
   const [markingsToTimesheet, setMarkingsToTimesheet] = useState<IMarkingToSend[]>([])
 
   const handleSetMarkingsToTimesheet = useCallback((
@@ -61,6 +62,8 @@ export const SendToTimesheetPopup: React.FC<ISendToTimesheetPopupProps> = ({
       return
     }
 
+    setMarkingsToTimesheetIsLoading(true)
+
     const markingIds = markingsToSend.map(markingToSend => markingToSend.marking.id)
 
     try {
@@ -83,6 +86,8 @@ export const SendToTimesheetPopup: React.FC<ISendToTimesheetPopupProps> = ({
         message: err.message
       })
     }
+
+    setMarkingsToTimesheetIsLoading(false)
   }, [afterSendMarkings, client, markingsToTimesheet, toast])
 
   useEffect(() => {
@@ -127,7 +132,7 @@ export const SendToTimesheetPopup: React.FC<ISendToTimesheetPopupProps> = ({
       <div className="popup-button-margin-top">
         <Button
           text="Atualizar"
-          isLoading={false}
+          isLoading={markingsToTimesheetIsLoading}
           onClick={handleSendMarkingsToTimesheet}
         />
       </div>
