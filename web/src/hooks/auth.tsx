@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react'
 
-import { LOGIN_USER } from '../graphql/loginUser'
+import { LOGIN_USER } from '../graphql/mutations/loginUser'
 import { useMutation } from '@apollo/client'
 import { useToast } from './toast'
 import { useNavigate } from 'react-router-dom'

@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 
 import { yupFormValidator } from '../../../utils/yupFormValidator'
 import { useToast } from '../../../hooks/toast'
-import { CREATE_CUSTOMER } from '../../../graphql/createCustomer'
+import { CREATE_CUSTOMER } from '../../../graphql/mutations/createCustomer'
 import { Button } from '../../Button'
 import { Input } from '../../Input'
 import { CreateCustomerForm } from './styles'

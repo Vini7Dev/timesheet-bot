@@ -3,7 +3,7 @@ import { useApolloClient } from '@apollo/client'
 import { FiDollarSign } from 'react-icons/fi'
 import * as Yup from 'yup'
 
-import { CREATE_MARKING } from '../../graphql/createMarking'
+import { CREATE_MARKING } from '../../graphql/mutations/createMarking'
 import { yupFormValidator } from '../../utils/yupFormValidator'
 import { useOutsideAlerter } from '../../hooks/outsideAlerter'
 import { useToast } from '../../hooks/toast'

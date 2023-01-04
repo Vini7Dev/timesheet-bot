@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client'
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { SEND_MARKINGS_TO_TIMESHEET } from '../../../graphql/sendMarkingsToTimesheet'
+import { SEND_MARKINGS_TO_TIMESHEET } from '../../../graphql/mutations/sendMarkingsToTimesheet'
 import { useToast } from '../../../hooks/toast'
 import { Button } from '../../Button'
 

@@ -7,7 +7,7 @@ import { yupFormValidator } from '../../utils/yupFormValidator'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { TopBar } from '../../components/TopBar'
-import { CREATE_USER } from '../../graphql/createUser'
+import { CREATE_USER } from '../../graphql/mutations/createUser'
 import { useToast } from '../../hooks/toast'
 import { MainContent, PageContainer, SignUpForm } from './styles'
 
