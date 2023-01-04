@@ -121,16 +121,16 @@ export class SeleniumProvider implements ICrawler {
     await this.waitByElements([
       { by: 'id', selector: 'login' },
       { by: 'id', selector: 'password_sem_md5' },
-      { by: 'id', selector: 'submit' },
+      { by: 'css', selector: '#login_portal > div:nth-child(6) > button' },
     ])
 
     // Fill login form and submit
     await this.driver.findElement(By.id('login')).sendKeys(username)
     await this.driver.findElement(By.id('password_sem_md5')).sendKeys(password)
-    await this.driver.findElement(By.id('submit')).click()
+    await this.driver.findElement(By.css('#login_portal > div:nth-child(6) > button')).click()
 
     // Wait loading of authenticated page
-    await this.waitByElements([{ by: 'css', selector: '[title="Timesheet"]' }])
+    await this.waitByElements([{ by: 'css', selector: '#main_menu > li:nth-child(5)' }])
   }
 
   public async saveTimesheetTasks({
