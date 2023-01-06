@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import * as Yup from 'yup'
 
+import { ON_SEND_MARKINGS_TO_TIMESHEET } from '../../graphql/subscriptions/onSendMarkingsToTimesheet'
 import { MARKINGS_BY_USER_ID } from '../../graphql/queries/markingsByUserId'
 import { UPDATE_MARKING } from '../../graphql/mutations/updateMarking'
 import { yupFormValidator } from '../../utils/yupFormValidator'
@@ -161,6 +162,21 @@ export const Markings: React.FC = () => {
   useEffect(() => {
     handleGetUserMarkings()
   }, [handleGetUserMarkings])
+
+  useEffect(() => {
+    client.subscribe<{
+      onSendMarkingsToTimesheet: any[]
+    }>({
+      query: ON_SEND_MARKINGS_TO_TIMESHEET
+    }).subscribe({
+      error: (err) => console.error('=======> err', err),
+      next: ({ data }) => {
+        if (data?.onSendMarkingsToTimesheet) {
+          handleGetUserMarkings()
+        }
+      }
+    })
+  }, [client, handleGetUserMarkings])
 
   return (
     <PageContainer>
