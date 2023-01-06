@@ -4,6 +4,7 @@ import { FiDollarSign } from 'react-icons/fi'
 import * as Yup from 'yup'
 
 import { CREATE_MARKING } from '../../graphql/mutations/createMarking'
+import { formatDatePad } from '../../utils/formatPad'
 import { yupFormValidator } from '../../utils/yupFormValidator'
 import { useOutsideAlerter } from '../../hooks/outsideAlerter'
 import { useToast } from '../../hooks/toast'
@@ -75,7 +76,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
     const markingData = {
       project_id: timerMarking?.project?.id ?? '',
       description: timerMarking.description,
-      date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      date: formatDatePad(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`),
       work_class: timerMarking.isBillable ? 'PRODUCTION' : 'ABSENCE',
       start_time: startTime,
       finish_time: finishTime

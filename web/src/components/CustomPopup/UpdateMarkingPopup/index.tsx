@@ -238,7 +238,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
           inputStyle="high"
           type="date"
           defaultValue={dateUpdated}
-          onChange={(e) => setDateUpdated(e.target.value)}
+          onChange={(e) => setDateUpdated(formatDatePad(e.target.value))}
           containerStyle={{ width: 'fit-content' }}
         />
 
