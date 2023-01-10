@@ -179,14 +179,14 @@ export const Markings: React.FC = () => {
     }>({
       query: ON_SEND_MARKINGS_TO_TIMESHEET
     }).subscribe({
-      error: (err) => console.error('=======> err', err),
+      error: (err) => console.error(err),
       next: ({ data }) => {
         if (data?.onSendMarkingsToTimesheet) {
           handleGetUserMarkings()
         }
       }
     })
-  }, [client, handleGetUserMarkings])
+  }, [])
 
   return (
     <PageContainer>

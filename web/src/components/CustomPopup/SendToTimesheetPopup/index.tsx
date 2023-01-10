@@ -123,6 +123,14 @@ export const SendToTimesheetPopup: React.FC<ISendToTimesheetPopupProps> = ({
             />
 
             <div className="popup-marking-data">
+              <span>[
+                {(function () {
+                  if (marking.deleted_at) return 'Remover'
+                  if (marking.on_timesheet_id) return 'Atualizar'
+                  return 'Salvar'
+                })()}
+              ]</span>
+
               <p>{marking.description}</p>
             </div>
           </label>

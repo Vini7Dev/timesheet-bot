@@ -374,24 +374,28 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
         </div>
       </div>
 
-      <div className="popup-button-margin-top">
-        <Button
-          text="Atualizar"
-          disabled={disabledEditingMarking}
-          isLoading={updateMarkingIsLoading}
-          onClick={handleUpdateMarking}
-        />
-      </div>
+      {
+        !disabledEditingMarking && (
+          <>
+            <div className="popup-button-margin-top">
+              <Button
+                text="Atualizar"
+                isLoading={updateMarkingIsLoading}
+                onClick={handleUpdateMarking}
+              />
+            </div>
 
-      <div className="popup-button-margin-top popup-button-small">
-        <Button
-          text="Apagar"
-          disabled={disabledEditingMarking}
-          buttonStyle="danger"
-          isLoading={false}
-          onClick={handleDeleteMarking}
-        />
-      </div>
+            <div className="popup-button-margin-top popup-button-small">
+              <Button
+                text="Apagar"
+                buttonStyle="danger"
+                isLoading={false}
+                onClick={handleDeleteMarking}
+              />
+            </div>
+          </>
+        )
+      }
     </UpdateMarkingPopupForm>
   )
 }

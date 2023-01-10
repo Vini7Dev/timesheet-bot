@@ -117,7 +117,9 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
             (() => {
               switch (onTimesheetStatus) {
                 case 'SENT': return <FiCheck color="#4CAF50" size={20} />
-                case 'SENDING': return <FiLoader color="#008BEA" size={20} className="sending-icon" />
+                case 'SENDING': return <FiLoader color={
+                  timesheetDeletionIsPending ? '#F44336' : '#008BEA'
+                } size={20} className="sending-icon" />
                 case 'NOT_SENT': return <FiUpload color={
                   timesheetDeletionIsPending ? '#F44336' : '#FFC107'
                 } size={20} />

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 interface IUpdateMarkingPopupFormProps {
   disabledEditingMarking: boolean
@@ -31,7 +31,9 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
       font-size: 1rem;
       font-weight: 500;
       border-radius: 0.25rem;
-      border: 1px solid ${({ onTimesheetStatus }) => {
+      border: 1px solid ${({ disabledEditingMarking, onTimesheetStatus }) => {
+        if (disabledEditingMarking) return '#F44336'
+
         switch (onTimesheetStatus) {
           case 'SENT': return '#4CAF50'
           case 'SENDING': return '#008BEA'
@@ -40,7 +42,9 @@ export const UpdateMarkingPopupForm = styled.form<IUpdateMarkingPopupFormProps>`
           default: return '#F44336'
         }
       }};
-      color: ${({ onTimesheetStatus }) => {
+      color: ${({ disabledEditingMarking, onTimesheetStatus }) => {
+        if (disabledEditingMarking) return '#F44336'
+
         switch (onTimesheetStatus) {
           case 'SENT': return '#4CAF50'
           case 'SENDING': return '#008BEA'

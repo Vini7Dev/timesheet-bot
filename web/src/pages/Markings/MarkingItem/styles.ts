@@ -6,22 +6,12 @@ interface IMarkingItemContainerProps {
 }
 
 export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
-  border: 1px solid ${({ onTimesheetStatus }) => {
-    switch (onTimesheetStatus) {
-      case 'SENT': return '#12191D'
-      case 'SENDING': return '#008BEA70'
-      case 'NOT_SENT': return '#FFC10770'
-      case 'ERROR': return '#F4433670'
-      default: return '#F4433670'
-    }
-  }};
 
   ${({ timesheetDeletionIsPending }) => (
     timesheetDeletionIsPending &&
     css`
       opacity: 0.5;
       text-decoration: line-through !important;
-      border: 1px solid #F4433670 !important;
     `
   )}
 

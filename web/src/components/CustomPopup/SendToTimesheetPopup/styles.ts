@@ -26,11 +26,21 @@ export const SendToTimesheetPopupContainer = styled.div`
       margin-right: 8px;
     }
 
-    .popup-marking-data p {
-      font-family: 'Roboto', sans-serif;
-      font-size: 1rem;
-      font-weight: normal;
-      color: #C6D2D9;
+    .popup-marking-data {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      span, p {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1rem;
+        color: #C6D2D9;
+      }
+
+      span {
+        margin-right: 4px;
+        font-weight: 600;
+      }
     }
   }
 
