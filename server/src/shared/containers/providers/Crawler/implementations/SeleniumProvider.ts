@@ -385,7 +385,7 @@ export class SeleniumProvider implements ICrawler {
 
         markingsResponse.push({
           id: marking.id,
-          on_timesheet_id: marking.on_timesheet_id,
+          on_timesheet_id: undefined,
           on_timesheet_status: 'NOT_SENT',
         })
       } catch(err: any) {

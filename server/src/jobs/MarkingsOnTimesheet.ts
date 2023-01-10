@@ -77,6 +77,11 @@ export default {
         password: encryptProvider.decrypt(userOwner.password),
       })
 
+      // Delete markins
+      const deletedMarkings = await crawlerProvider.deleteTimesheetTasks({
+        markings: actionGroups.delete,
+      } as IDeleteMarkingsDTO)
+
       // Saving markins
       const createdMarkings = await crawlerProvider.saveTimesheetTasks({
         markings: actionGroups.save.map(marking => ({
@@ -90,11 +95,6 @@ export default {
       const updatedMarkings = await crawlerProvider.updateTimesheetTasks({
         markings: actionGroups.update,
       } as IUpdateMarkingsDTO)
-
-      // Delete markins
-      const deletedMarkings = await crawlerProvider.deleteTimesheetTasks({
-        markings: actionGroups.delete,
-      } as IDeleteMarkingsDTO)
 
       // Close crawler
       await crawlerProvider.stopCrawler()

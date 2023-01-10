@@ -100,6 +100,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     work_class,
     project_id,
     user_id,
+    on_timesheet_id,
   }: ICreateMarkingDTO): Promise<Marking> {
     const createdMarking = await this.client.markings.create({
       data: {
@@ -113,6 +114,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
         work_class,
         project_id,
         user_id,
+        on_timesheet_id,
       },
       include: { project: true, user: true }
     })
@@ -165,7 +167,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     for (const markingStatus of markingsStatus) {
       await this.client.markings.update({
         data: {
-          on_timesheet_id: markingStatus.on_timesheet_id,
+          on_timesheet_id: markingStatus.on_timesheet_id ?? null,
           on_timesheet_status: markingStatus.on_timesheet_status,
           timesheet_error: markingStatus.timesheet_error,
         },

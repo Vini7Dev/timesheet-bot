@@ -75,6 +75,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     work_class,
     project_id,
     user_id,
+    on_timesheet_id,
   }: ICreateMarkingDTO): Promise<Marking> {
     const createDate = new Date()
 
@@ -90,6 +91,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
       work_class,
       project_id,
       user_id,
+      on_timesheet_id,
       created_at: createDate,
       updated_at: createDate,
     } as Marking
@@ -150,8 +152,8 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
 
       const markingToUpdate = this.markings[markingToUpdateIndex]
 
-      if (markingStatus.on_timesheet_id) markingToUpdate.on_timesheet_id = markingStatus.on_timesheet_id
       if (markingStatus.timesheet_error) markingToUpdate.timesheet_error = markingStatus.timesheet_error.toString()
+      markingToUpdate.on_timesheet_id = markingStatus.on_timesheet_id
       markingToUpdate.on_timesheet_status = markingStatus.on_timesheet_status
 
       this.markings[markingToUpdateIndex] = markingToUpdate

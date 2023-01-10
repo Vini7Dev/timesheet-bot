@@ -52,6 +52,14 @@ export class UpdateMarkingService {
       throw new AppError('Marking not found!', 404)
     }
 
+    if (
+      project_id &&
+      markingToUpdate.on_timesheet_id &&
+      markingToUpdate.project_id !== project_id
+    ) {
+      throw new AppError("Should not be able to update the marking's project where it is already sent to the timesheet!")
+    }
+
     const startNumber = parseInt(
       (start_time ?? markingToUpdate.start_time).replace(':', '')
     )

@@ -419,7 +419,7 @@ describe('UpdateMarkingService', () => {
     ).rejects.toEqual(new AppError('Interval times are outside of the start and finish times!'))
   })
 
-  it('should not be able to create markings with start times equal or greater than finish times', async () => {
+  it('should not be able to update markings with start times equal or greater than finish times', async () => {
     const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
@@ -470,5 +470,48 @@ describe('UpdateMarkingService', () => {
         finish_interval_time: '08:00',
       })
     ).rejects.toEqual(new AppError('Start interval time cannot be equal or greater than finish interval time!'))
+  })
+
+  it("should not be able to update the marking's project where it is already sent to the timesheet", async () => {
+    const authenticatedUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const otherProjectToReference = await projectsRepository.create({
+      code: 'ABCDE',
+      name: 'Project Example',
+      customer_id: 'any-customer-id',
+    })
+
+    const createdMarking = await markingsRepository.create({
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      user_id: authenticatedUser.id,
+      project_id: 'project-reference-id',
+      on_timesheet_id: 'any-timesheet-id'
+    })
+
+    const dataToUpdateMarkingWithNewProjectReference = {
+      project_id: otherProjectToReference.id,
+      marking_id: createdMarking.id,
+      description: 'Updated Description Example',
+      date: '02/01/2022',
+      work_class: WorkClass.ABSENCE,
+      authenticatedUserId: authenticatedUser.id,
+    }
+
+    await expect(
+      updateMarkingService.execute({
+        ...dataToUpdateMarkingWithNewProjectReference,
+      })
+    ).rejects.toEqual(new AppError("Should not be able to update the marking's project where it is already sent to the timesheet!"))
   })
 })
