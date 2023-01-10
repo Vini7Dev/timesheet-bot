@@ -142,7 +142,7 @@ export class SeleniumProvider implements ICrawler {
     for(const marking of markings) {
       try {
         // Open add marking page on marking date (to get marking id on timesheet)
-        await this.driver.get(urls.addMarking({ DATA: marking.date, SHOW: 'list' }))
+        await this.driver.get(urls.markings({ DATA: marking.date, SHOW: 'list' }))
 
         await this.waitByElements([{ by: 'css', selector: 'td > table.list-table' }])
 
@@ -212,7 +212,7 @@ export class SeleniumProvider implements ICrawler {
           })
 
           // Reload window
-          await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+          await this.driver.get(urls.markings({ SHOW: 'list' }))
         } catch {
           // Marking susseffull saved, getting timesheet id
           await this.waitByElements([{ by:'css', selector: 'td > table.list-table > tbody' }])
@@ -251,7 +251,7 @@ export class SeleniumProvider implements ICrawler {
         })
 
         // Reload window
-        await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+        await this.driver.get(urls.markings({ SHOW: 'list' }))
       }
     }
 
@@ -264,7 +264,7 @@ export class SeleniumProvider implements ICrawler {
     await this.checkDriverStatus()
 
     // Open markings list page
-    await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+    await this.driver.get(urls.markings({ SHOW: 'list' }))
 
     const markingsResponse: IMarkingResponse[] = []
     for (const marking of markings) {
@@ -329,7 +329,7 @@ export class SeleniumProvider implements ICrawler {
           })
 
           // Reload window
-          await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+          await this.driver.get(urls.markings({ SHOW: 'list' }))
         } catch {
           // Marking susseffull saved, getting timesheet id
           await this.waitByElements([{ by:'css', selector: 'td > table.list-table > tbody' }])
@@ -350,7 +350,7 @@ export class SeleniumProvider implements ICrawler {
         })
 
         // Reload window
-        await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+        await this.driver.get(urls.markings({ SHOW: 'list' }))
       }
     }
 
@@ -363,7 +363,7 @@ export class SeleniumProvider implements ICrawler {
     await this.checkDriverStatus()
 
     // Open markings list page
-    await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+    await this.driver.get(urls.markings({ SHOW: 'list' }))
 
     const markingsResponse: IMarkingResponse[] = []
     for (const marking of markings) {
@@ -398,7 +398,7 @@ export class SeleniumProvider implements ICrawler {
         })
 
         // Reload window
-        await this.driver.get(urls.addMarking({ SHOW: 'list' }))
+        await this.driver.get(urls.markings({ SHOW: 'list' }))
       }
     }
 

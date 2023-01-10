@@ -11,7 +11,7 @@ const buildUrlQuery = (queryObj: any) => new URLSearchParams(queryObj)
 export const crawlerConfig = {
   urls: {
     login: () => `${BASE_URL}/login.php`,
-    addMarking: ({
+    markings: ({
       CMD = 'listar',
       SHOW = 'mes',
       DATA,
