@@ -1,4 +1,5 @@
 import { ICreateMarkingDTO } from '../dtos/ICreateMarkingDTO'
+import { IDeleteMarkingOptionsDTO } from '../dtos/IDeleteMarkingOptionsDTO'
 import { IListMarkingsDTO } from '../dtos/IListMarkingsDTO'
 import { IListMarkingsByUserIdDTO } from '../dtos/IListMarkingsByUserIdDTO'
 import { IListByIdsMarkingsByUserIdDTO } from '../dtos/IListByIdsMarkingsByUserIdDTO'
@@ -17,5 +18,5 @@ export interface IMarkingsRepository {
   create(data: ICreateMarkingDTO): Promise<Marking>
   update(data: IUpdateMarkingDTO): Promise<Marking>
   updateManyTimesheetStatus(data: IUpdateManyTimesheetStatusDTO): Promise<IUpdateManyTimesheetStatusResponse>
-  delete(id: string): Promise<string>
+  delete(id: string, options?: IDeleteMarkingOptionsDTO): Promise<string>
 }

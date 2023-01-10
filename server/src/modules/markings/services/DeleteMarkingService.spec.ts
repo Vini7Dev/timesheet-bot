@@ -38,6 +38,27 @@ describe('DeleteMarkingService', () => {
     expect(result).toEqual(createdMarking.id)
   })
 
+  it ('should be able to delete marking with options', async () => {
+    const createdMarking = await markingsRepository.create({
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: 'any-user-id'
+    })
+
+    const result = await deleteMarkingService.execute({
+      marking_id: createdMarking.id,
+      options: { clearTimesheetId: true }
+    })
+
+    expect(result).toEqual(createdMarking.id)
+  })
+
   it('should not be able to delete a non-existent marking', async () => {
     await expect(
       deleteMarkingService.execute({

@@ -36,6 +36,11 @@ interface IUpdateMarkingProps {
   work_class?: WorkClass
 }
 
+interface IHandleSetEditMarkingProps {
+  id: string
+  disabledMarking: boolean
+}
+
 export const Markings: React.FC = () => {
   const client = useApolloClient()
   const toast = useToast()
@@ -43,6 +48,7 @@ export const Markings: React.FC = () => {
   const [sendToTimesheetIsOpen, setSendToTimesheetIsOpen] = useState(false)
   const [editMarkingIsOpen, setEditMarkingIsOpen] = useState(false)
   const [markingToEdit, setMarkingToEdit] = useState<IMarkingData>({} as unknown as IMarkingData)
+  const [disabledEditingMarking, setDisabledEditingMarking] = useState(false)
 
   const [loadingMarkings, setLoadingMarkings] = useState(false)
 
@@ -56,11 +62,15 @@ export const Markings: React.FC = () => {
     setSendToTimesheetIsOpen(!sendToTimesheetIsOpen)
   }, [sendToTimesheetIsOpen])
 
-  const handleSetEditMarking = useCallback((id: string) => {
+  const handleSetEditMarking = useCallback(({
+    id,
+    disabledMarking
+  }: IHandleSetEditMarkingProps) => {
     const markingToEdit = markings.find(marking => marking.id === id)
 
     if (markingToEdit) {
       setMarkingToEdit(markingToEdit)
+      setDisabledEditingMarking(disabledMarking)
 
       toggleEditMarkingIsOpen()
     }
@@ -230,8 +240,8 @@ export const Markings: React.FC = () => {
                                 key={marking.id}
                                 marking={marking}
                                 onUpdate={handleUpdateMarking}
-                                onEdit={() => {
-                                  handleSetEditMarking(marking.id)
+                                onEdit={({ id, disabledMarking }) => {
+                                  handleSetEditMarking({ id, disabledMarking })
                                 }}
                               />
                             ))
@@ -250,6 +260,7 @@ export const Markings: React.FC = () => {
         editMarkingIsOpen && (
           <CustomPopup onClickToClose={toggleEditMarkingIsOpen}>
             <UpdateMarkingPopup
+              disabledEditingMarking={disabledEditingMarking}
               marking={markingToEdit}
               beforeUpdate={() => {
                 toggleEditMarkingIsOpen()

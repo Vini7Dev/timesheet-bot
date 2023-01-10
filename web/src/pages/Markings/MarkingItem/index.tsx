@@ -27,9 +27,14 @@ interface IHandleUpdateMarkingProps {
   newWorkClass?: WorkClass
 }
 
+interface IOnEditMarkingProps {
+  id: string
+  disabledMarking: boolean
+}
+
 interface IMarkingItemProps {
   marking: IMarkingData
-  onEdit: (id: string) => void
+  onEdit: (data: IOnEditMarkingProps) => void
   onUpdate: (data: IUpdateMarkingProps) => Promise<void>
 }
 
@@ -44,7 +49,9 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
     start_interval_time,
     finish_interval_time,
     work_class,
-    on_timesheet_status
+    on_timesheet_id,
+    on_timesheet_status,
+    deleted_at
   },
   onEdit,
   onUpdate
@@ -52,6 +59,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
   const [editingMarkingTime, setEditingMarkingTime] = useState(false)
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
+  const [timesheetDeletionIsPending] = useState(!!(deleted_at && on_timesheet_id))
   const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
   const [onTimesheetStatus] = useState<OnTimesheetStatus>(on_timesheet_status)
   const [startTime, setStarTime] = useState(start_time)
@@ -98,7 +106,11 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
   }, [handleUpdateMarking, isBillable])
 
   return (
-    <MarkingItemContainer onTimesheetStatus={onTimesheetStatus} ref={wrapperRef}>
+    <MarkingItemContainer
+      onTimesheetStatus={onTimesheetStatus}
+      timesheetDeletionIsPending={timesheetDeletionIsPending}
+      ref={wrapperRef}
+    >
       <div className="marking-row marking-row-first">
         <button className="marking-timesheet-status">
           {
@@ -106,7 +118,9 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               switch (onTimesheetStatus) {
                 case 'SENT': return <FiCheck color="#4CAF50" size={20} />
                 case 'SENDING': return <FiLoader color="#008BEA" size={20} className="sending-icon" />
-                case 'NOT_SENT': return <FiUpload color="#FFC107" size={20} />
+                case 'NOT_SENT': return <FiUpload color={
+                  timesheetDeletionIsPending ? '#F44336' : '#FFC107'
+                } size={20} />
                 case 'ERROR': return <FiX color="#F44336" size={20} />
                 default: return <FiX color="#F44336" size={20} />
               }
@@ -119,10 +133,12 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
           inputStyle="high"
           defaultValue={description}
           onBlur={(e) => handleUpdateMarking({ newDescription: e.target.value })}
+          disabled={timesheetDeletionIsPending}
         />
 
         <button
           className="marking-project-button"
+          disabled={timesheetDeletionIsPending}
           onClick={toggleProjectPopupIsOpen}
         >
           {project.name}
@@ -143,6 +159,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
         <div className="marking-row-first-column ">
           <button
             className="marking-billable-button"
+            disabled={timesheetDeletionIsPending}
             onClick={toggleIsBillable}
           >
             <FiDollarSign
@@ -159,6 +176,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               value={startTime}
               onChange={(e) => setStarTime(e.target.value)}
               onFocus={() => setEditingMarkingTime(true)}
+              disabled={timesheetDeletionIsPending}
             />
             :
             <Input
@@ -168,6 +186,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               value={finishTime}
               onChange={(e) => setFinishTime(e.target.value)}
               onFocus={() => setEditingMarkingTime(true)}
+              disabled={timesheetDeletionIsPending}
             />
           </div>
         </div>
@@ -192,7 +211,10 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
           </div>
 
           <div className="marking-more-options">
-            <button onClick={() => onEdit(id)}>
+            <button onClick={() => onEdit({
+              id,
+              disabledMarking: timesheetDeletionIsPending
+            })}>
               <FiMoreVertical color="#C6D2D9" size={14} />
             </button>
           </div>

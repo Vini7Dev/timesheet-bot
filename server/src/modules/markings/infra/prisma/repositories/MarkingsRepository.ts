@@ -1,12 +1,18 @@
+import { OnTimesheetStatus } from '@prisma/client'
+
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
 import { buildRepositoryFiltersObject } from '@utils/buildRepositoryFiltersObject'
-import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO'
-import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO'
-import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO'
 import { IMarkingsRepository } from '@modules/markings/repositories/IMarkingsRepository'
-import { Marking } from '../entities/Marking'
-import { IUpdateManyTimesheetStatusDTO, IUpdateManyTimesheetStatusResponse } from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO'
+import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO'
+import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO'
+import { IDeleteMarkingOptionsDTO } from '@modules/markings/dtos/IDeleteMarkingOptionsDTO'
+import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO'
 import { IListByIdsMarkingsByUserIdDTO } from '@modules/markings/dtos/IListByIdsMarkingsByUserIdDTO'
+import {
+  IUpdateManyTimesheetStatusDTO,
+  IUpdateManyTimesheetStatusResponse
+} from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO'
+import { Marking } from '../entities/Marking'
 
 export class MarkingsRepository extends AppRepository implements IMarkingsRepository {
   public async findById(id: string): Promise<Marking | null> {
@@ -66,13 +72,16 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
       skip: page,
       take: perPage,
       where: {
+        ...buildRepositoryFiltersObject({
+          date,
+          user_id,
+        }),
         AND: {
-          ...buildRepositoryFiltersObject({
-            date,
-            user_id,
-          }),
-          deleted_at: null
-        }
+          OR: [
+            { deleted_at: null },
+            { deleted_at: { not: null }, on_timesheet_id: { not: null } },
+          ],
+        },
       },
       orderBy: { date: 'desc' },
       include: { project: true }
@@ -167,13 +176,21 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     return { markingsStatus }
   }
 
-  public async delete(id: string): Promise<string> {
+  public async delete(id: string, options?: IDeleteMarkingOptionsDTO): Promise<string> {
+    const dataToReset = {
+      on_timesheet_status: OnTimesheetStatus.NOT_SENT,
+      timesheet_error: undefined,
+      deleted_at: new Date(),
+    }
+
+    if (options?.clearTimesheetId) {
+      Object.assign(dataToReset, {
+        on_timesheet_id: undefined
+      })
+    }
+
     await this.client.markings.update({
-      data: {
-        on_timesheet_status: 'NOT_SENT',
-        timesheet_error: undefined,
-        deleted_at: new Date(),
-      },
+      data: dataToReset,
       where: { id }
     })
 

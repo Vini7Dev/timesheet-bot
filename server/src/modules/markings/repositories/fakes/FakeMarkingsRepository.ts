@@ -1,11 +1,16 @@
+import { AppError } from '@shared/errors/AppError';
 import { ICreateMarkingDTO } from '@modules/markings/dtos/ICreateMarkingDTO';
+import { IDeleteMarkingOptionsDTO } from '@modules/markings/dtos/IDeleteMarkingOptionsDTO';
 import { IListByIdsMarkingsByUserIdDTO } from '@modules/markings/dtos/IListByIdsMarkingsByUserIdDTO';
 import { IListMarkingsByUserIdDTO } from '@modules/markings/dtos/IListMarkingsByUserIdDTO';
 import { IListMarkingsDTO } from '@modules/markings/dtos/IListMarkingsDTO';
-import { IMarkingTimesheetStatus, IUpdateManyTimesheetStatusDTO, IUpdateManyTimesheetStatusResponse } from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO';
 import { IUpdateMarkingDTO } from '@modules/markings/dtos/IUpdateMarkingDTO';
+import {
+  IMarkingTimesheetStatus,
+  IUpdateManyTimesheetStatusDTO,
+  IUpdateManyTimesheetStatusResponse
+} from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO';
 import { Marking } from '@modules/markings/infra/prisma/entities/Marking';
-import { AppError } from '@shared/errors/AppError';
 import { IMarkingsRepository } from '../IMarkingsRepository'
 
 export class FakeMarkingsRepository implements IMarkingsRepository {
@@ -162,13 +167,17 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     return { markingsStatus: markingsStatusResponse }
   }
 
-  public async delete(id: string): Promise<string> {
+  public async delete(id: string, options?: IDeleteMarkingOptionsDTO): Promise<string> {
     const markingToDeleteIndex = this.markings.findIndex(marking => marking.id === id)
 
     if(markingToDeleteIndex !== -1) {
       this.markings[markingToDeleteIndex].on_timesheet_status = 'NOT_SENT'
       this.markings[markingToDeleteIndex].timesheet_error = undefined
       this.markings[markingToDeleteIndex].deleted_at = new Date()
+
+      if (options?.clearTimesheetId) {
+        this.markings[markingToDeleteIndex].on_timesheet_id = undefined
+      }
     }
 
     return id

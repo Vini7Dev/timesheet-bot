@@ -21,6 +21,7 @@ export const markingsTypeDefs = gql`
 
   type Marking {
     id: ID!
+    on_timesheet_id: String
     on_timesheet_status: OnTimesheetStatus
     timesheet_error: String
     description: String!

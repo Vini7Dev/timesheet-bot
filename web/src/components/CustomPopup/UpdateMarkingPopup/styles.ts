@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 interface IUpdateMarkingPopupFormProps {
+  disabledEditingMarking: boolean
   onTimesheetStatus: OnTimesheetStatus
 }
 

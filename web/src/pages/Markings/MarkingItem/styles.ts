@@ -1,7 +1,8 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 interface IMarkingItemContainerProps {
   onTimesheetStatus: OnTimesheetStatus
+  timesheetDeletionIsPending: boolean
 }
 
 export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
@@ -14,6 +15,15 @@ export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
       default: return '#F4433670'
     }
   }};
+
+  ${({ timesheetDeletionIsPending }) => (
+    timesheetDeletionIsPending &&
+    css`
+      opacity: 0.5;
+      text-decoration: line-through !important;
+      border: 1px solid #F4433670 !important;
+    `
+  )}
 
   .marking-row-first {
     padding: 0 0.75rem 0;

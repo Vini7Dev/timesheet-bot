@@ -4,6 +4,7 @@ type WorkClass = 'PRODUCTION' | 'ABSENCE'
 
 interface IMarkingData {
   id: string
+  on_timesheet_id?: string
   on_timesheet_status: OnTimesheetStatus
   timesheet_error?: string
   description: string
@@ -15,6 +16,7 @@ interface IMarkingData {
   work_class: WorkClass
   user_id: string
   project_id: string
+  deleted_at?: string
   project: {
     id: string
     name: string

@@ -16,12 +16,14 @@ import { SelectPopup } from '../../SelectPopup'
 import { UpdateMarkingPopupForm } from './styles'
 
 interface IUpdateMarkingPopupProps {
+  disabledEditingMarking: boolean
   marking: IMarkingData
   beforeUpdate: () => void
   beforeDelete: () => void
 }
 
 export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
+  disabledEditingMarking,
   marking: {
     id,
     on_timesheet_status,
@@ -179,13 +181,25 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
   }, [beforeDelete, client, id])
 
   return (
-    <UpdateMarkingPopupForm onTimesheetStatus={on_timesheet_status}>
+    <UpdateMarkingPopupForm
+      disabledEditingMarking={disabledEditingMarking}
+      onTimesheetStatus={on_timesheet_status}
+    >
       <h1 id="popup-form-title">Editar Marcação</h1>
 
       <div className="popup-marking-row popup-marking-first-row">
         <button id="marking-timesheet-status" type="button">
           {
             (() => {
+              if (disabledEditingMarking) {
+                return (
+                  <>
+                    <FiUpload color="#F44336" size={20} />
+                    Remoção pendente no timesheet
+                  </>
+                )
+              }
+
               switch (on_timesheet_status) {
                 case 'SENT': return (
                   <>
@@ -231,6 +245,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
           inputStyle="high"
           value={descriptionUpdated}
           onChange={(e) => setDescriptionUpdated(e.target.value)}
+          disabled={disabledEditingMarking}
         />
 
         <Input
@@ -240,10 +255,12 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
           defaultValue={dateUpdated}
           onChange={(e) => setDateUpdated(formatDatePad(e.target.value))}
           containerStyle={{ width: 'fit-content' }}
+          disabled={disabledEditingMarking}
         />
 
         <button
           className="marking-project-button"
+          disabled={disabledEditingMarking}
           onClick={toggleProjectPopupIsOpen}
           type="button"
         >
@@ -264,6 +281,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       <div className="popup-marking-row popup-marking-third-row">
         <button
           className="marking-billable-button"
+          disabled={disabledEditingMarking}
           onClick={toggleIsBillable}
           type="button"
         >
@@ -287,6 +305,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={startTimeUpdated}
               onChange={(e) => setStartTimeUpdated(e.target.value)}
+              disabled={disabledEditingMarking}
             />
             <span className="marking-time-inputs-divisor">:</span>
             <Input
@@ -299,6 +318,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={finishTimeUpdated}
               onChange={(e) => setFinishTimeUpdated(e.target.value)}
+              disabled={disabledEditingMarking}
             />
           </div>
         </div>
@@ -317,6 +337,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={startIntervalTimeUpdated}
               onChange={(e) => setStartIntervalTimeUpdated(e.target.value)}
+              disabled={disabledEditingMarking}
             />
             <span className="marking-time-inputs-divisor">:</span>
             <Input
@@ -329,6 +350,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={finishIntervalTimeUpdated}
               onChange={(e) => setFinishIntervalTimeUpdated(e.target.value)}
+              disabled={disabledEditingMarking}
             />
           </div>
         </div>
@@ -355,6 +377,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       <div className="popup-button-margin-top">
         <Button
           text="Atualizar"
+          disabled={disabledEditingMarking}
           isLoading={updateMarkingIsLoading}
           onClick={handleUpdateMarking}
         />
@@ -363,6 +386,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       <div className="popup-button-margin-top popup-button-small">
         <Button
           text="Apagar"
+          disabled={disabledEditingMarking}
           buttonStyle="danger"
           isLoading={false}
           onClick={handleDeleteMarking}
