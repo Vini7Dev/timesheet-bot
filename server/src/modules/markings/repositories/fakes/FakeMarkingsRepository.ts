@@ -53,12 +53,14 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
 
   public async listByUserId({
     user_id,
+    on_timesheet_status,
     page = 0,
     perPage = 10,
     date,
   }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
       .filter(marking => date ? marking.date === date : true)
+      .filter(marking => on_timesheet_status ? marking.on_timesheet_status === on_timesheet_status : true)
       .filter(marking => marking.user_id === user_id && !marking.deleted_at)
       .slice(page, perPage + page)
 
@@ -76,12 +78,13 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     project_id,
     user_id,
     on_timesheet_id,
+    on_timesheet_status,
   }: ICreateMarkingDTO): Promise<Marking> {
     const createDate = new Date()
 
     const createdMarking = {
       id: Math.random().toString(),
-      on_timesheet_status: 'NOT_SENT',
+      on_timesheet_status: on_timesheet_status ?? 'NOT_SENT',
       description,
       date,
       start_time,

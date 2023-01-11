@@ -64,6 +64,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
 
   public async listByUserId({
     user_id,
+    on_timesheet_status,
     page,
     perPage,
     date
@@ -75,6 +76,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
         ...buildRepositoryFiltersObject({
           date,
           user_id,
+          on_timesheet_status,
         }),
         AND: {
           OR: [
@@ -101,10 +103,11 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     project_id,
     user_id,
     on_timesheet_id,
+    on_timesheet_status,
   }: ICreateMarkingDTO): Promise<Marking> {
     const createdMarking = await this.client.markings.create({
       data: {
-        on_timesheet_status: 'NOT_SENT',
+        on_timesheet_status: on_timesheet_status ?? 'NOT_SENT',
         description,
         date,
         start_time,

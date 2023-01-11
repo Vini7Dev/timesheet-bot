@@ -48,6 +48,15 @@ export class SendMarkingsToTimesheetService {
       throw new AppError('User not found!', 404)
     }
 
+    const userWithSendingMarkings = await this.markingsRepository.listByUserId({
+      user_id: userOwner.id,
+      on_timesheet_status: 'SENDING'
+    })
+
+    if (userWithSendingMarkings.length !== 0) {
+      throw new AppError('Wait for your markings to finish sending!')
+    }
+
     const markingsFinded = await this.markingsRepository.listByIds({
       ids: markingIds,
       ignore_deleted_at: true,

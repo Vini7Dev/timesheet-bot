@@ -157,4 +157,41 @@ describe('SendMarkingsToTimesheetService', () => {
       new AppError('You do not have permission to send this marking!', 403)
     )
   })
+
+  it('should not be able to send markings to the timesheet when there are already markings being processed', async () => {
+    const authenticatedUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    await markingsRepository.create({
+      description: 'Description Example - 1',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: authenticatedUser.id,
+      on_timesheet_status: 'SENDING'
+    })
+
+    const userMarkingToSend = await markingsRepository.create({
+      description: 'Description Example - 1',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: authenticatedUser.id
+    })
+
+    await expect(
+      sendMarkingsToTimesheetService.execute({
+        authenticatedUserId: authenticatedUser.id,
+        markingIds: [userMarkingToSend.id]
+      })
+    ).rejects.toEqual(new AppError('Wait for your markings to finish sending!'))
+  })
 })

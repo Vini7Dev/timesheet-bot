@@ -1,3 +1,5 @@
+import { OnTimesheetStatus } from '@prisma/client'
+
 import { JOB_MARKINGS_ON_TIMESHEET, TRIGGER_MARKINGS_TO_TIMESHEET } from '@utils/constants'
 import { ICrawler } from '@shared/containers/providers/Crawler/models/ICrawler'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
@@ -26,6 +28,12 @@ interface IActionGroups {
   save: Marking[]
   update: Marking[]
   delete: Marking[]
+}
+
+interface IUpdatedMarkingsToClientProps {
+  id: string
+  on_timesheet_status: OnTimesheetStatus
+  timesheet_error: string | null | undefined
 }
 
 export default {
@@ -69,6 +77,8 @@ export default {
         actionGroups.update.push(marking)
       }
     }
+
+    let updatedMarkingsToClient: IUpdatedMarkingsToClientProps[] = []
 
     try {
       // Authenticate on Timesheet
@@ -123,22 +133,28 @@ export default {
         }))
       })
 
-      const updatedMarkingsToClient = updatedMarkingsStatus.markingsStatus.map(marking => ({
+      updatedMarkingsToClient = updatedMarkingsStatus.markingsStatus.map(marking => ({
         id: marking.marking_id,
         on_timesheet_status: marking.on_timesheet_status,
         timesheet_error: marking.timesheet_error,
       }))
-
-      pubsub.publish(TRIGGER_MARKINGS_TO_TIMESHEET, {
-        onSendMarkingsToTimesheet: updatedMarkingsToClient,
-        userOwnerId: userOwner.id,
-      })
 
     } catch (err) {
       console.error(`${new Date()} - ${err}`)
 
       // Close crawler
       await crawlerProvider.stopCrawler()
+
+      updatedMarkingsToClient ||= markings.map(marking => ({
+        id: marking.id,
+        on_timesheet_status: marking.on_timesheet_status,
+        timesheet_error: marking.timesheet_error,
+      }))
+    } finally {
+      pubsub.publish(TRIGGER_MARKINGS_TO_TIMESHEET, {
+        onSendMarkingsToTimesheet: updatedMarkingsToClient,
+        userOwnerId: userOwner.id,
+      })
     }
   }
 }
