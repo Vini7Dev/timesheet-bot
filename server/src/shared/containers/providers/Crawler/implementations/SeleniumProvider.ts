@@ -38,9 +38,15 @@ const {
 } = crawlerConfig
 
 export class SeleniumProvider implements ICrawler {
-  private driverStatus: 'OFF' | 'ON' = 'OFF'
+  private driverStatus: 'OFF' | 'ON'
 
   private driver: WebDriver
+
+  constructor() {
+    this.driverStatus = 'OFF'
+
+    chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build())
+  }
 
   private async checkDriverStatus(): Promise<void> {
     if (this.driverStatus === 'OFF') {
@@ -49,8 +55,6 @@ export class SeleniumProvider implements ICrawler {
   }
 
   private async init(): Promise<void> {
-    chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build())
-
     this.driver = await new Builder()
       .forBrowser('chrome')
       .withCapabilities(webdriver.Capabilities.chrome())

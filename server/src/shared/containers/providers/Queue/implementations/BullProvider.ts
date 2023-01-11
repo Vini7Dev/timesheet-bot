@@ -45,7 +45,7 @@ export class BullProvider implements IQueue {
   public process({ providers, pubsub }: IProcessProps): void {
     this.queues.forEach(queue => {
       queue.bull.process(async job => {
-        queue.handle({
+        await queue.handle({
           pubsub,
           providers,
           data: job.data
