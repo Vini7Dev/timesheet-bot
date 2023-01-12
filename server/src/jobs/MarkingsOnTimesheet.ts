@@ -92,6 +92,11 @@ export default {
         markings: actionGroups.delete,
       } as IDeleteMarkingsDTO)
 
+      // Update markins
+      const updatedMarkings = await crawlerProvider.updateTimesheetTasks({
+        markings: actionGroups.update,
+      } as IUpdateMarkingsDTO)
+
       // Saving markins
       const createdMarkings = await crawlerProvider.saveTimesheetTasks({
         markings: actionGroups.save.map(marking => ({
@@ -100,11 +105,6 @@ export default {
           custumer_code: marking.project?.customer?.code ?? '',
         })),
       })
-
-      // Update markins
-      const updatedMarkings = await crawlerProvider.updateTimesheetTasks({
-        markings: actionGroups.update,
-      } as IUpdateMarkingsDTO)
 
       // Close crawler
       await crawlerProvider.stopCrawler()
