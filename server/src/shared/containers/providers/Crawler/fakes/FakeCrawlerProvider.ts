@@ -8,11 +8,11 @@ import { IUpdateMarkingsDTO } from '../dtos/IUpdateMarkingsDTO'
 import { ITimesheetAuthDTO } from '../dtos/ITimesheetAuthDTO'
 
 export class FakeCrawlerProvider implements ICrawler {
-  public async authenticateTimesheet(_data: ITimesheetAuthDTO): Promise<void> {
+  public async authenticateOnTimesheet(_data: ITimesheetAuthDTO): Promise<void> {
     return
   }
 
-  public async stopCrawler(): Promise<void> {
+  public async closeCrawler(): Promise<void> {
     return
   }
 

@@ -3,6 +3,7 @@ import webdriver from 'selenium-webdriver'
 import chrome from 'selenium-webdriver/chrome'
 import chromedriver from 'chromedriver'
 
+import { formatDateString } from '@utils/formatDateString'
 import { delay } from '@utils/delay'
 import { crawlerConfig } from '@configs/crawler'
 import { ICrawler } from '../models/ICrawler'
@@ -21,7 +22,7 @@ type BySelectors = 'id'
   | 'partialLinkText'
   | 'xpath'
 
-interface IWaitByElement {
+interface IWaitForElementLoad {
   by: BySelectors
   selector: string
 }
@@ -34,7 +35,8 @@ interface IFillFormInputElements {
 
 const {
   browserWindowRect,
-  urls,
+  driverTimeout,
+  urls: { timesheetUrls },
 } = crawlerConfig
 
 export class SeleniumProvider implements ICrawler {
@@ -42,16 +44,13 @@ export class SeleniumProvider implements ICrawler {
 
   private driver: WebDriver
 
+  private driverTimeout: number
+
   constructor() {
     this.driverStatus = 'OFF'
+    this.driverTimeout = driverTimeout
 
     chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build())
-  }
-
-  private async checkDriverStatus(): Promise<void> {
-    if (this.driverStatus === 'OFF') {
-      await this.init()
-    }
   }
 
   private async init(): Promise<void> {
@@ -65,42 +64,25 @@ export class SeleniumProvider implements ICrawler {
     this.driverStatus = 'ON'
   }
 
-  private async waitByElements(elementFilters: IWaitByElement[]): Promise<void> {
-    const promises: Promise<any>[] = []
+  private async initDriverIfItIsOff(): Promise<void> {
+    if (this.driverStatus === 'OFF') {
+      await this.init()
+    }
+  }
 
-    elementFilters.forEach((elementFilter) => {
-      promises.push(
+  private async waitForElementsLoad(elementsToWait: IWaitForElementLoad[]): Promise<void> {
+    const elementPromises: Promise<any>[] = []
+
+    elementsToWait.forEach((elementToWait) => {
+      elementPromises.push(
         this.driver.wait(
-          until.elementLocated(By[elementFilter.by](elementFilter.selector)),
-          30000,
+          until.elementLocated(By[elementToWait.by](elementToWait.selector)),
+          this.driverTimeout,
         )
       )
     })
 
-    await Promise.all(promises)
-  }
-
-  private async getAlertErrors(): Promise<string[]> {
-    const alert = await this.driver.switchTo().alert()
-    const alertText = await alert.getText()
-
-    const errorsMessages = alertText.replace(/\n/gi, '').split('-  ')
-    errorsMessages.shift()
-
-    await alert.accept()
-
-    return errorsMessages
-  }
-
-  public async stopCrawler(): Promise<void> {
-    try {
-      await this.driver.close()
-    } catch (err) {
-      console.error(err)
-    } finally {
-      this.driverStatus = 'OFF'
-      this.driver = null as unknown as WebDriver
-    }
+    await Promise.all(elementPromises)
   }
 
   private async fillFormInputElements(
@@ -113,77 +95,120 @@ export class SeleniumProvider implements ICrawler {
     }
   }
 
-  public async authenticateTimesheet({
+  private async getAlertTexts(): Promise<string[]> {
+    try {
+      const alert = await this.driver.switchTo().alert()
+      const alertText = await alert.getText()
+
+      const errorsMessages = alertText.replace(/\n/gi, '').split('-  ')
+      errorsMessages.shift()
+
+      await alert.accept()
+
+      return errorsMessages
+    } catch (err) {
+      return []
+    }
+  }
+
+  private getEditHoraScript(onTimesheetId?: string): string {
+    if (onTimesheetId) {
+      return `editHora('', '', '', '${onTimesheetId}', 'T')`
+    }
+
+    return 'editHora()'
+  }
+
+  public async closeCrawler(): Promise<void> {
+    try {
+      await this.driver.close()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      this.driverStatus = 'OFF'
+      this.driver = null as unknown as WebDriver
+    }
+  }
+
+  public async authenticateOnTimesheet({
     username,
     password,
   }: ITimesheetAuthDTO): Promise<void> {
-    await this.checkDriverStatus()
+    await this.initDriverIfItIsOff()
 
-    // Open login page
-    await this.driver.get(urls.login())
+    await this.driver.get(timesheetUrls.login())
 
-    await this.waitByElements([
+    await this.waitForElementsLoad([
       { by: 'id', selector: 'login' },
       { by: 'id', selector: 'password_sem_md5' },
       { by: 'css', selector: '#login_portal > div:nth-child(6) > button' },
     ])
 
-    // Fill login form and submit
     await this.driver.findElement(By.id('login')).sendKeys(username)
     await this.driver.findElement(By.id('password_sem_md5')).sendKeys(password)
     await this.driver.findElement(By.css('#login_portal > div:nth-child(6) > button')).click()
 
-    // Wait loading of authenticated page
-    await this.waitByElements([{ by: 'css', selector: '#main_menu > li:nth-child(5)' }])
+    await this.waitForElementsLoad([{
+      by: 'css', selector: '#main_menu > li:nth-child(5)'
+    }])
   }
 
   public async saveTimesheetTasks({
     markings,
   }: ISaveMarkingsDTO): Promise<ICrawlerResponseDTO> {
-    await this.checkDriverStatus()
+    await this.initDriverIfItIsOff()
 
     const markingsResponse: IMarkingResponse[] = []
+
     for(const marking of markings) {
       try {
-        // Open add marking page on marking date (to get marking id on timesheet)
-        await this.driver.get(urls.markings({ DATA: marking.date, SHOW: 'list' }))
+        await this.driver.get(timesheetUrls.markings({ DATA: marking.date, SHOW: 'list' }))
 
-        await this.waitByElements([{ by: 'css', selector: 'td > table.list-table' }])
+        await this.waitForElementsLoad([{ by: 'css', selector: 'td > table.list-table' }])
 
-        // Open modal to add marking
-        await this.driver.executeScript(`editHora()`)
+        await this.driver.executeScript(this.getEditHoraScript())
 
-        await this.waitByElements([
+        await this.waitForElementsLoad([
           { by: 'id', selector: 'codcliente_form_lanctos' },
           { by: 'id', selector: 'codprojeto_form_lanctos' },
           { by: 'id', selector: 'f_data_b' }
         ])
 
-        // Select customer and project
         await this.driver.findElement(By.id('codcliente_form_lanctos'))
           .sendKeys(marking.custumer_code.padStart(10, '0'))
+
         await this.driver.findElement(By.id('codprojeto_form_lanctos'))
           .sendKeys(marking.project_code)
 
-        // Set marking date
-        await this.fillFormInputElements([
-          {
-            by: 'id',
-            selector: 'f_data_b',
-            value: marking.date.split('-').reverse().join('/')
-          },
-        ])
+        await this.fillFormInputElements([{
+          by: 'id',
+          selector: 'f_data_b',
+          value: formatDateString({
+            date: marking.date,
+            fromSeparator: '-',
+            toSeparator: '/'
+          })
+        }])
 
-        // Set marking work class
         if (marking.work_class === 'PRODUCTION') {
-          await this.waitByElements([{ by: 'css', selector: '#idutbms_classe > option[value="63"]' } ])
-          await this.driver.findElement(By.css('#idutbms_classe > option[value="63"]')).click()
+          await this.waitForElementsLoad([{
+            by: 'css', selector: '#idutbms_classe > option[value="63"]'
+          }])
+
+          await this.driver.findElement(
+            By.css('#idutbms_classe > option[value="63"]')
+          ).click()
         } else {
-          await this.waitByElements([{ by: 'css', selector: '#idutbms_classe > option[value="57"]' } ])
-          await this.driver.findElement(By.css('#idutbms_classe > option[value="57"]')).click()
+          await this.waitForElementsLoad([{
+            by: 'css', selector: '#idutbms_classe > option[value="57"]'
+          }])
+
+          await this.driver.findElement(
+            By.css('#idutbms_classe > option[value="57"]')
+          ).click()
         }
 
-        await this.waitByElements([
+        await this.waitForElementsLoad([
           { by: 'id', selector: 'narrativa_principal' },
           { by: 'id', selector: 'hora' },
           { by: 'id', selector: 'hora_fim' },
@@ -191,7 +216,6 @@ export class SeleniumProvider implements ICrawler {
           { by: 'id', selector: 'intervalo_hr_final' },
         ])
 
-        // Set times and description
         await this.fillFormInputElements([
           { by: 'id', selector: 'hora', value: marking.start_time },
           { by: 'id', selector: 'intervalo_hr_inicial', value: marking.start_interval_time ?? '00:00' },
@@ -207,55 +231,51 @@ export class SeleniumProvider implements ICrawler {
 
         await delay(3000)
 
-        try {
-          // The method "getAlertErrors" throw an error if alert does not exists
+        const alertErrors = await this.getAlertTexts()
+
+        if (alertErrors.length > 0) {
           markingsResponse.push({
             id: marking.id,
             on_timesheet_status: 'ERROR',
-            timesheet_error: await this.getAlertErrors()
+            timesheet_error: alertErrors
           })
 
-          // Reload window
-          await this.driver.get(urls.markings({ SHOW: 'list' }))
-        } catch {
-          // Marking susseffull saved, getting timesheet id
-          await this.waitByElements([{ by:'css', selector: 'td > table.list-table > tbody' }])
+          continue
+        }
 
-          const tableMarkingsElements = await this.driver.findElements(
-            By.css('td > table.list-table > tbody > tr > td')
-          )
+        await this.waitForElementsLoad([{
+          by:'css', selector: 'td > table.list-table > tbody'
+        }])
 
-          // Getting marking timesheet id
-          for (const tableMarkingElement of tableMarkingsElements) {
-            const markingElementText = await tableMarkingElement.getText()
-            const elementStartAndFinishTime = markingElementText.replace(/\n/gi, '')
-              .split('Total Horas')[0]
-              .split('Horário : ')[1]
+        const tableMarkingsElements = await this.driver.findElements(
+          By.css('td > table.list-table > tbody > tr > td')
+        )
 
-            const markingStartFinishTime = `${marking.start_time} - ${marking.finish_time}`
-            if (elementStartAndFinishTime === markingStartFinishTime) {
-              const timesheetMarking = await tableMarkingElement.getAttribute('id')
+        for (const tableMarkingElement of tableMarkingsElements) {
+          const markingElementText = await tableMarkingElement.getText()
+          const elementStartAndFinishTime = markingElementText.replace(/\n/gi, '')
+            .split('Total Horas')[0]
+            .split('Horário : ')[1]
 
-              markingsResponse.push({
-                id: marking.id,
-                on_timesheet_id: timesheetMarking,
-                on_timesheet_status: 'SENT',
-              })
+          const markingStartFinishTime = `${marking.start_time} - ${marking.finish_time}`
+          if (elementStartAndFinishTime === markingStartFinishTime) {
+            const timesheetMarking = await tableMarkingElement.getAttribute('id')
 
-              break
-            }
+            markingsResponse.push({
+              id: marking.id,
+              on_timesheet_id: timesheetMarking,
+              on_timesheet_status: 'SENT',
+            })
+
+            break
           }
         }
       } catch(err: any) {
-        // An error occurred before save marking
         markingsResponse.push({
           id: marking.id,
           on_timesheet_status: 'ERROR',
           timesheet_error: [err.message]
         })
-
-        // Reload window
-        await this.driver.get(urls.markings({ SHOW: 'list' }))
       }
     }
 
@@ -265,41 +285,51 @@ export class SeleniumProvider implements ICrawler {
   public async updateTimesheetTasks({
     markings,
   }: IUpdateMarkingsDTO): Promise<ICrawlerResponseDTO> {
-    await this.checkDriverStatus()
+    await this.initDriverIfItIsOff()
 
-    // Open markings list page
-    await this.driver.get(urls.markings({ SHOW: 'list' }))
+    await this.driver.get(timesheetUrls.markings({ SHOW: 'list' }))
 
     const markingsResponse: IMarkingResponse[] = []
+
     for (const marking of markings) {
       try {
-        // Wait page loading
-        await this.waitByElements([{ by: 'css', selector: 'td > table.list-table' }])
+        await this.waitForElementsLoad([{ by: 'css', selector: 'td > table.list-table' }])
 
-        // Open marking data modal
-        await this.driver.executeScript(`editHora('', '', '', '${marking.on_timesheet_id}', 'T')`)
+        await this.driver.executeScript(this.getEditHoraScript(marking.on_timesheet_id))
 
-        await this.waitByElements([{ by: 'id', selector: 'f_data_b' }])
+        await this.waitForElementsLoad([{ by: 'id', selector: 'f_data_b' }])
 
-        // Set marking date
         await this.fillFormInputElements([
           {
             by: 'id',
             selector: 'f_data_b',
-            value: marking.date.split('-').reverse().join('/')
+            value: formatDateString({
+              date: marking.date,
+              fromSeparator: '-',
+              toSeparator: '/'
+            })
           },
         ])
 
-        // Set marking work class
         if (marking.work_class === 'PRODUCTION') {
-          await this.waitByElements([{ by: 'css', selector: '#idutbms_classe > option[value="63"]' } ])
-          await this.driver.findElement(By.css('#idutbms_classe > option[value="63"]')).click()
+          await this.waitForElementsLoad([{
+            by: 'css', selector: '#idutbms_classe > option[value="63"]'
+          }])
+
+          await this.driver.findElement(
+            By.css('#idutbms_classe > option[value="63"]')
+          ).click()
         } else {
-          await this.waitByElements([{ by: 'css', selector: '#idutbms_classe > option[value="57"]' } ])
-          await this.driver.findElement(By.css('#idutbms_classe > option[value="57"]')).click()
+          await this.waitForElementsLoad([{
+            by: 'css', selector: '#idutbms_classe > option[value="57"]'
+          }])
+
+          await this.driver.findElement(
+            By.css('#idutbms_classe > option[value="57"]')
+          ).click()
         }
 
-        await this.waitByElements([
+        await this.waitForElementsLoad([
           { by: 'id', selector: 'narrativa_principal' },
           { by: 'id', selector: 'hora' },
           { by: 'id', selector: 'hora_fim' },
@@ -307,7 +337,6 @@ export class SeleniumProvider implements ICrawler {
           { by: 'id', selector: 'intervalo_hr_final' },
         ])
 
-        // Set times and description
         await this.fillFormInputElements([
           { by: 'id', selector: 'hora', value: marking.start_time },
           { by: 'id', selector: 'intervalo_hr_inicial', value: marking.start_interval_time ?? '00:00' },
@@ -323,29 +352,29 @@ export class SeleniumProvider implements ICrawler {
 
         await delay(3000)
 
-        try {
-          // The method "getAlertErrors" throw an error if alert does not exists
+        const alertErrors = await this.getAlertTexts()
+
+        if (alertErrors.length > 0) {
           markingsResponse.push({
             id: marking.id,
             on_timesheet_id: marking.on_timesheet_id,
             on_timesheet_status: 'ERROR',
-            timesheet_error: await this.getAlertErrors()
+            timesheet_error: alertErrors
           })
 
-          // Reload window
-          await this.driver.get(urls.markings({ SHOW: 'list' }))
-        } catch {
-          // Marking susseffull saved, getting timesheet id
-          await this.waitByElements([{ by:'css', selector: 'td > table.list-table > tbody' }])
-
-          markingsResponse.push({
-            id: marking.id,
-            on_timesheet_id: marking.on_timesheet_id,
-            on_timesheet_status: 'SENT',
-          })
+          continue
         }
+
+        await this.waitForElementsLoad([{
+          by:'css', selector: 'td > table.list-table > tbody'
+        }])
+
+        markingsResponse.push({
+          id: marking.id,
+          on_timesheet_id: marking.on_timesheet_id,
+          on_timesheet_status: 'SENT',
+        })
       } catch(err: any) {
-        // An error occurred before save marking
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
@@ -353,8 +382,7 @@ export class SeleniumProvider implements ICrawler {
           timesheet_error: [err.message]
         })
 
-        // Reload window
-        await this.driver.get(urls.markings({ SHOW: 'list' }))
+        await this.driver.get(timesheetUrls.markings({ SHOW: 'list' }))
       }
     }
 
@@ -364,22 +392,20 @@ export class SeleniumProvider implements ICrawler {
   public async deleteTimesheetTasks({
     markings,
   }: IDeleteMarkingsDTO): Promise<ICrawlerResponseDTO> {
-    await this.checkDriverStatus()
+    await this.initDriverIfItIsOff()
 
-    // Open markings list page
-    await this.driver.get(urls.markings({ SHOW: 'list' }))
+    await this.driver.get(timesheetUrls.markings({ SHOW: 'list' }))
 
     const markingsResponse: IMarkingResponse[] = []
+
     for (const marking of markings) {
       try {
-        // Wait page loading
-        await this.waitByElements([{ by: 'css', selector: 'td > table.list-table' }])
+        await this.waitForElementsLoad([{ by: 'css', selector: 'td > table.list-table' }])
 
-        // Open marking data modal
         await this.driver.executeScript(`editHora('', '', '', '${marking.on_timesheet_id}', 'T')`)
 
         // Click on delete button
-        await this.waitByElements([{ by: 'css', selector: 'button:nth-child(1)' }])
+        await this.waitForElementsLoad([{ by: 'css', selector: 'button:nth-child(1)' }])
 
         await this.driver.findElement(By.css('button:nth-child(1)')).click()
 
@@ -393,7 +419,6 @@ export class SeleniumProvider implements ICrawler {
           on_timesheet_status: 'NOT_SENT',
         })
       } catch(err: any) {
-        // An error occurred before save marking
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
@@ -401,8 +426,7 @@ export class SeleniumProvider implements ICrawler {
           timesheet_error: [err.message]
         })
 
-        // Reload window
-        await this.driver.get(urls.markings({ SHOW: 'list' }))
+        await this.driver.get(timesheetUrls.markings({ SHOW: 'list' }))
       }
     }
 

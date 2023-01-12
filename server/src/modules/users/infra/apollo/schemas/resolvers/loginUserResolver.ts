@@ -21,10 +21,12 @@ export const loginUser = async (
     emailOrUsername, password
   })
 
+  const oneDayInMiliseconds = 1000 * 60 * 60 * 24
+
   ctx.res.cookie('multifyToken', authenticationData.token, {
     secure: true,
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    maxAge: oneDayInMiliseconds,
     path: '/',
     sameSite: 'none',
   })

@@ -81,23 +81,19 @@ export default {
     let updatedMarkingsToClient: IUpdatedMarkingsToClientProps[] = []
 
     try {
-      // Authenticate on Timesheet
-      await crawlerProvider.authenticateTimesheet({
+      await crawlerProvider.authenticateOnTimesheet({
         username: userOwner.username,
         password: encryptProvider.decrypt(userOwner.password),
       })
 
-      // Delete markins
       const deletedMarkings = await crawlerProvider.deleteTimesheetTasks({
         markings: actionGroups.delete,
       } as IDeleteMarkingsDTO)
 
-      // Update markins
       const updatedMarkings = await crawlerProvider.updateTimesheetTasks({
         markings: actionGroups.update,
       } as IUpdateMarkingsDTO)
 
-      // Saving markins
       const createdMarkings = await crawlerProvider.saveTimesheetTasks({
         markings: actionGroups.save.map(marking => ({
           ...marking,
@@ -106,10 +102,8 @@ export default {
         })),
       })
 
-      // Close crawler
-      await crawlerProvider.stopCrawler()
+      await crawlerProvider.closeCrawler()
 
-      // Build response
       const crawlerResponses = {
         user_id: userOwner.id,
         markingsResponse: [
@@ -142,8 +136,7 @@ export default {
     } catch (err) {
       console.error(`${new Date()} - ${err}`)
 
-      // Close crawler
-      await crawlerProvider.stopCrawler()
+      await crawlerProvider.closeCrawler()
 
       updatedMarkingsToClient ||= markings.map(marking => ({
         id: marking.id,
