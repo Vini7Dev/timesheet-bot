@@ -47,6 +47,11 @@ export class UpdateMarkingService {
     work_class,
     authenticatedUserId,
   }: IServiceProps): Promise<Marking> {
+    const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
+    if (!authenticatedUser) {
+      throw new AppError('User not found!', 404)
+    }
+
     const markingToUpdate = await this.markingsRepository.findById(marking_id)
     if (!markingToUpdate) {
       throw new AppError('Marking not found!', 404)
@@ -58,11 +63,6 @@ export class UpdateMarkingService {
 
     if (markingToUpdate.user_id !== authenticatedUserId) {
       throw new AppError('You do not have permission to delete this marking!', 403)
-    }
-
-    const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
-    if (!authenticatedUser) {
-      throw new AppError('User not found!', 404)
     }
 
     if (

@@ -27,6 +27,11 @@ export class DeleteMarkingService {
     marking_id,
     options
   }: IServiceProps): Promise<string> {
+    const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
+    if (!authenticatedUser) {
+      throw new AppError('User not found!', 404)
+    }
+
     const markingToDelete = await this.markingsRepository.findById(marking_id)
     if (!markingToDelete) {
       throw new AppError('Marking not found!', 404)
@@ -38,11 +43,6 @@ export class DeleteMarkingService {
 
     if (markingToDelete.user_id !== authenticatedUserId) {
       throw new AppError('You do not have permission to delete this marking!', 403)
-    }
-
-    const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
-    if (!authenticatedUser) {
-      throw new AppError('User not found!', 404)
     }
 
     const projectIdDeleted = await this.markingsRepository.delete(marking_id, {
