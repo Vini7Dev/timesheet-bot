@@ -52,6 +52,10 @@ export class UpdateMarkingService {
       throw new AppError('Marking not found!', 404)
     }
 
+    if (markingToUpdate.on_timesheet_status === 'SENDING') {
+      throw new AppError('This marking is being processed in the timesheet')
+    }
+
     if (
       project_id &&
       markingToUpdate.on_timesheet_id &&
