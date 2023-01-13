@@ -13,11 +13,12 @@ export const marking = async (
   { id }: IMarkingInput,
   ctx: IAppContext,
 ) => {
-  ensureAuthenticated(ctx)
+  const authenticatedUserId = ensureAuthenticated(ctx)
 
   const showMarkingService = container.resolve(ShowMarkingService)
 
   const markingFinded = await showMarkingService.execute({
+    authenticatedUserId: authenticatedUserId,
     marking_id: id,
   })
 
