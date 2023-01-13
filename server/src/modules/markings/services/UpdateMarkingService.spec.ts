@@ -152,19 +152,6 @@ describe('UpdateMarkingService', () => {
   })
 
   it('should not be able to update marking with a non-existent user', async () => {
-    const userReference = await usersRepository.create({
-      name: 'Jhon Doe',
-      email: 'jhondoe@mail.com',
-      username: 'jhon.doe',
-      password: 'jhon123',
-    })
-
-    const projectReference = await projectsRepository.create({
-      code: 'ABCDE',
-      name: 'Project Example',
-      customer_id: 'any-customer-id',
-    })
-
     const createdMarking = await markingsRepository.create({
       description: 'Description Example',
       date: '01/01/2022',
@@ -173,8 +160,8 @@ describe('UpdateMarkingService', () => {
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
       work_class: WorkClass.PRODUCTION,
-      project_id: projectReference.id,
-      user_id: userReference.id,
+      project_id: 'any-project-id',
+      user_id: 'invalid-user-id',
     })
 
     await expect(
@@ -190,6 +177,32 @@ describe('UpdateMarkingService', () => {
         authenticatedUserId: 'invalid-user-id',
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
+  })
+
+  it("should not be able to delete different user's marking", async () => {
+    const differentUser = await usersRepository.create({
+      name: 'Jhon Doe',
+      email: 'jhondoe@mail.com',
+      username: 'jhon.doe',
+      password: 'jhon123',
+    })
+
+    const createdMarking = await markingsRepository.create({
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: 'user-owner-id',
+    })
+
+    await expect(updateMarkingService.execute({
+      marking_id: createdMarking.id,
+      authenticatedUserId: differentUser.id,
+    })).rejects.toEqual(new AppError('You do not have permission to delete this marking!', 403))
   })
 
   it('should not be able to update marking with a non-existent project', async () => {

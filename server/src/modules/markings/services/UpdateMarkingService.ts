@@ -56,6 +56,15 @@ export class UpdateMarkingService {
       throw new AppError('This marking is being processed in the timesheet')
     }
 
+    if (markingToUpdate.user_id !== authenticatedUserId) {
+      throw new AppError('You do not have permission to delete this marking!', 403)
+    }
+
+    const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
+    if (!authenticatedUser) {
+      throw new AppError('User not found!', 404)
+    }
+
     if (
       project_id &&
       markingToUpdate.on_timesheet_id &&
@@ -99,11 +108,6 @@ export class UpdateMarkingService {
       }
     }
 
-    const userToRefer = await this.usersRepository.findById(authenticatedUserId)
-    if (!userToRefer) {
-      throw new AppError('User not found!', 404)
-    }
-
     if (project_id) {
       const projectToRefer = await this.projectsRepository.findById(project_id)
       if (!projectToRefer) {
@@ -117,7 +121,7 @@ export class UpdateMarkingService {
 
     while (true) {
       const markingsList = await this.markingsRepository.listByUserId({
-        user_id: userToRefer.id,
+        user_id: authenticatedUser.id,
         page,
         perPage,
         date,
@@ -170,7 +174,7 @@ export class UpdateMarkingService {
       finish_interval_time: finish_interval_time ?? markingToUpdate.finish_interval_time as any,
       work_class: work_class ?? markingToUpdate.work_class,
       project_id: project_id ?? markingToUpdate.project_id as any,
-      user_id: userToRefer.id,
+      user_id: authenticatedUser.id,
     })
 
     return updatedMarking
