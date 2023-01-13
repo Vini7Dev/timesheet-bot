@@ -226,6 +226,16 @@ export const TopBar: React.FC = () => {
                 </div>
 
                 <div id="popup-edit-user-button-container">
+                  {
+                    editingUserData && (
+                      <Button
+                        text="Cancelar"
+                        buttonStyle="danger"
+                        onClick={toggleEditingUserData}
+                      />
+                    )
+                  }
+
                   <Button
                     text={editingUserData ? 'Salvar' : 'Editar'}
                     buttonStyle="primary"

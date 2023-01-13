@@ -97,12 +97,17 @@ export const PopupContentContainer = styled.div`
   }
 
   #popup-edit-user-button-container {
+    display: flex;
     margin-bottom: 0.65rem;
     margin-left: auto;
-    max-width: 6.25rem;
+    max-width: 12.5rem;
 
     & > div {
       height: 2rem;
+    }
+
+    & > div:first-child {
+      margin-right: 0.25rem;
     }
   }
 
