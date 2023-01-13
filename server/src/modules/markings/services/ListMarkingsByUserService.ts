@@ -6,7 +6,7 @@ import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { AppError } from '@shared/errors/AppError'
 
 interface IServiceProps {
-  user_id: string
+  authenticatedUserId: string,
   page?: number
   perPage?: number
 }
@@ -22,18 +22,18 @@ export class ListMarkingsByUserService {
   ) {}
 
   public async execute({
-    user_id,
+    authenticatedUserId,
     page,
     perPage,
   }: IServiceProps): Promise<Marking[]> {
-    const userOwner = await this.usersRepository.findById(user_id)
+    const userOwner = await this.usersRepository.findById(authenticatedUserId)
 
     if (!userOwner) {
       throw new AppError('User not found!', 404)
     }
 
     const markingsList = await this.markingsRepository.listByUserId({
-      user_id,
+      user_id: authenticatedUserId,
       page,
       perPage,
     })

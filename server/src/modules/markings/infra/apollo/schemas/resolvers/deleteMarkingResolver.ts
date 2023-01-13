@@ -13,11 +13,12 @@ export const deleteMarking = async (
   { id }: IDeleteMarkingInput,
   ctx: IAppContext,
 ) => {
-  ensureAuthenticated(ctx)
+  const authenticatedUserId = ensureAuthenticated(ctx)
 
   const deleteMarkingService = container.resolve(DeleteMarkingService)
 
   const deletedMarkingId = await deleteMarkingService.execute({
+    authenticatedUserId: authenticatedUserId,
     marking_id: id,
   })
 

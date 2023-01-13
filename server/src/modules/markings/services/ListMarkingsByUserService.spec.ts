@@ -24,7 +24,7 @@ describe('ListMarkingsByUserService', () => {
   })
 
   it('should be able to list markings by user', async () => {
-    const createdUser = await usersRepository.create({
+    const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -40,20 +40,20 @@ describe('ListMarkingsByUserService', () => {
       finish_interval_time: '11:00',
       work_class: WorkClass.PRODUCTION,
       project_id: 'any-project-id',
-      user_id: createdUser.id
+      user_id: authenticatedUser.id
     })
 
     const markingsList = await listMarkingsByUserService.execute({
-      user_id: createdUser.id
+      authenticatedUserId: authenticatedUser.id
     })
 
     expect(markingsList).toHaveLength(1)
     expect(markingsList[0].id).toEqual(createdMarking.id)
-    expect(markingsList[0].user_id).toEqual(createdUser.id)
+    expect(markingsList[0].user_id).toEqual(authenticatedUser.id)
   })
 
   it('should be able to list projects with pagination filters', async () => {
-    const createdUser = await usersRepository.create({
+    const authenticatedUser = await usersRepository.create({
       name: 'Jhon Doe',
       email: 'jhondoe@mail.com',
       username: 'jhon.doe',
@@ -67,7 +67,7 @@ describe('ListMarkingsByUserService', () => {
       finish_time: '12:00',
       work_class: WorkClass.PRODUCTION,
       project_id: 'any-project-id',
-      user_id: createdUser.id
+      user_id: authenticatedUser.id
     })
 
     const secondMarking = await markingsRepository.create({
@@ -77,7 +77,7 @@ describe('ListMarkingsByUserService', () => {
       finish_time: '12:00',
       work_class: WorkClass.PRODUCTION,
       project_id: 'any-project-id',
-      user_id: createdUser.id
+      user_id: authenticatedUser.id
     })
 
     await markingsRepository.create({
@@ -87,24 +87,24 @@ describe('ListMarkingsByUserService', () => {
       finish_time: '12:00',
       work_class: WorkClass.PRODUCTION,
       project_id: 'any-project-id',
-      user_id: createdUser.id
+      user_id: authenticatedUser.id
     })
 
     const projectsList = await listMarkingsByUserService.execute({
       page: 1,
       perPage: 1,
-      user_id: createdUser.id
+      authenticatedUserId: authenticatedUser.id
     })
 
     expect(projectsList).toHaveLength(1)
     expect(projectsList[0].id).toEqual(secondMarking.id)
-    expect(projectsList[0].user_id).toEqual(createdUser.id)
+    expect(projectsList[0].user_id).toEqual(authenticatedUser.id)
   })
 
   it('should not be able to list markings from an non-existend user', async () => {
     await expect(
       listMarkingsByUserService.execute({
-        user_id: 'non-existend-id'
+        authenticatedUserId: 'non-existend-id'
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
   })

@@ -16,16 +16,12 @@ export const markingsByUserId = async (
   { data: { page, perPage } }: IApiFiltersInput,
   ctx: IAppContext,
 ) => {
-  ensureAuthenticated(ctx)
-
-  const {
-    authentication: { user_id }
-  } = ctx
+  const authenticatedUserId = ensureAuthenticated(ctx)
 
   const listMarkingsByUserService = container.resolve(ListMarkingsByUserService)
 
   const markingsList = await listMarkingsByUserService.execute({
-    user_id: user_id!,
+    authenticatedUserId: authenticatedUserId,
     page,
     perPage,
   })
