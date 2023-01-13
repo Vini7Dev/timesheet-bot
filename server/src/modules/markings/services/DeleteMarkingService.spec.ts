@@ -66,4 +66,26 @@ describe('DeleteMarkingService', () => {
       })
     ).rejects.toEqual(new AppError('Marking not found!', 404))
   })
+
+  it('should not be able to delete marking if it has status sending in timesheet', async () => {
+    const createdMarkingWithSendingStatus = await markingsRepository.create({
+      description: 'Description Example',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      start_interval_time: '10:00',
+      finish_interval_time: '11:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: 'any-user-id',
+      on_timesheet_id: 'any-timesheet-id',
+      on_timesheet_status: 'SENDING'
+    })
+
+    await expect(
+      deleteMarkingService.execute({
+        marking_id: createdMarkingWithSendingStatus.id,
+      })
+    ).rejects.toEqual(new AppError('This marking is being processed in the timesheet'))
+  })
 })

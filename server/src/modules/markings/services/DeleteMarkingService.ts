@@ -24,6 +24,10 @@ export class DeleteMarkingService {
       throw new AppError('Marking not found!', 404)
     }
 
+    if (markingToDelete.on_timesheet_status === 'SENDING') {
+      throw new AppError('This marking is being processed in the timesheet')
+    }
+
     const projectIdDeleted = await this.markingsRepository.delete(marking_id, {
       clearTimesheetId: options?.clearTimesheetId,
     })
