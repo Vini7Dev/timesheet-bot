@@ -66,20 +66,43 @@ export const PopupContentContainer = styled.div`
       margin-right: 1rem;
     }
 
-    #popup-user-info-name {
-      display: block;
-      font-family: 'Roboto',sans-serif;
-      font-size: 1rem;
-      color: #FFFFFF;
-      margin: -0.05rem 0 0.40rem;
-    }
+    #popup-content-container {
+      width: 100%;
 
-    .popup-user-info-email-username {
-      display: block;
-      font-family: 'Roboto',sans-serif;
-      font-size: 0.8571rem;
-      color: #90A4AE;
-      margin-bottom: 0.25rem;
+      #popup-user-info-name {
+        display: block;
+        font-family: 'Roboto',sans-serif;
+        font-size: 1rem;
+        color: #FFFFFF;
+        margin: -0.05rem 0 0.40rem;
+      }
+
+      .popup-user-info-email-username {
+        display: block;
+        font-family: 'Roboto',sans-serif;
+        font-size: 0.8571rem;
+        color: #90A4AE;
+        margin-bottom: 0.25rem;
+      }
+
+      #popup-user-edit-info .popup-user-edit-input {
+        margin-bottom: 0.25rem;
+      }
+
+      #popup-user-edit-password,
+      #popup-user-edit-current-password {
+        margin-top: 1.5rem;
+      }
+    }
+  }
+
+  #popup-edit-user-button-container {
+    margin-bottom: 0.65rem;
+    margin-left: auto;
+    max-width: 6.25rem;
+
+    & > div {
+      height: 2rem;
     }
   }
 
@@ -93,13 +116,15 @@ export const PopupContentContainer = styled.div`
         font-size: 1.5rem;
       }
 
-      #popup-user-info-name {
-        font-size: 2rem;
-        margin: -0.15rem 0 0.5rem;
-      }
+      #popup-content-container {
+        #popup-user-info-name {
+          font-size: 2rem;
+          margin: -0.15rem 0 0.5rem;
+        }
 
-      .popup-user-info-email-username {
-        font-size: 1rem;
+        .popup-user-info-email-username {
+          font-size: 1rem;
+        }
       }
     }
   }

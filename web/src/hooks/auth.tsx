@@ -21,18 +21,25 @@ interface ILoginData {
   token: string
   user_id: string
   name: string
-  username: string
   email: string
+  username: string
 }
 
 interface ILoginResponse {
   loginUser: ILoginData
 }
 
+interface IUpdateUserDataProps {
+  name: string
+  email: string
+  username: string
+}
+
 interface IAuthContext {
   user?: IUser
   signIn: (loginCredentials: ILoginCredentials) => Promise<void>
   signOut: () => void
+  updateUserData: (data: IUpdateUserDataProps) => void
 }
 
 const AuthContext = createContext<IAuthContext>({} as unknown as IAuthContext)
@@ -107,8 +114,26 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     })
   }, [navigate])
 
+  const updateUserData = useCallback(({
+    name,
+    email,
+    username
+  }: IUpdateUserDataProps) => {
+    const updatedUser = user
+
+    if (!updatedUser) {
+      return
+    }
+
+    updatedUser.name = name
+    updatedUser.email = email
+    updatedUser.username = username
+
+    setUser(updatedUser)
+  }, [user])
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, signOut, updateUserData }}>
       {children}
     </AuthContext.Provider>
   )
