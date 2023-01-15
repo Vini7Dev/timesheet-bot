@@ -168,6 +168,6 @@ describe('DeleteMarkingService', () => {
         authenticatedUserId: authenticatedUser.id,
         marking_id: createdMarkingWithSendingStatus.id,
       })
-    ).rejects.toEqual(new AppError('This marking is being processed in the timesheet'))
+    ).rejects.toEqual(new AppError('This marking is being processed in the timesheet!'))
   })
 })

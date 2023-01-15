@@ -11,5 +11,6 @@ export interface ICreateMarkingDTO {
   user_id: string
   project_id: string
   on_timesheet_id?: string
-  on_timesheet_status?: OnTimesheetStatus
+  on_timesheet_status?: OnTimesheetStatus,
+  deleted_at?: string
 }

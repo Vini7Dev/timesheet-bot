@@ -555,6 +555,6 @@ describe('UpdateMarkingService', () => {
         marking_id: createdMarkingWithSendingStatus.id,
         authenticatedUserId: authenticatedUser.id,
       })
-    ).rejects.toEqual(new AppError('This marking is being processed in the timesheet'))
+    ).rejects.toEqual(new AppError('This marking is being processed in the timesheet!'))
   })
 })

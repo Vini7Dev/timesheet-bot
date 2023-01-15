@@ -79,6 +79,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     user_id,
     on_timesheet_id,
     on_timesheet_status,
+    deleted_at,
   }: ICreateMarkingDTO): Promise<Marking> {
     const createDate = new Date()
 
@@ -97,6 +98,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
       on_timesheet_id,
       created_at: createDate,
       updated_at: createDate,
+      deleted_at: deleted_at,
     } as Marking
 
     this.markings.push(createdMarking)

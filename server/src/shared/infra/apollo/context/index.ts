@@ -1,18 +1,18 @@
 import { ExpressContext } from 'apollo-server-express'
-import { RedisPubSub } from 'graphql-redis-subscriptions'
 
+import { IPubSub } from '../models/IPubSub'
+import { ApolloRedisPubSub } from './ApolloRedisPubSub'
 import { getAuthentedUser } from './getAuthentedUser'
-import { pubsub } from './pubsub'
 
 export interface IAppContext extends ExpressContext {
-  pubsub: RedisPubSub
+  pubSub: IPubSub
   authentication: {
     user_id: string | undefined
   }
 }
 
 export interface IWSAppContext {
-  pubsub: RedisPubSub
+  pubSub: IPubSub
   authentication: {
     user_id: string | undefined
   }
@@ -23,7 +23,7 @@ export const context = async (
 ): Promise<IAppContext | IWSAppContext> => {
   return {
     ...ctx,
-    pubsub,
+    pubSub: new ApolloRedisPubSub(),
     authentication: {
       user_id: await getAuthentedUser(ctx),
     },

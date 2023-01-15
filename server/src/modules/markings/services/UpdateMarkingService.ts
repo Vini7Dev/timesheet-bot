@@ -58,7 +58,7 @@ export class UpdateMarkingService {
     }
 
     if (markingToUpdate.on_timesheet_status === 'SENDING') {
-      throw new AppError('This marking is being processed in the timesheet')
+      throw new AppError('This marking is being processed in the timesheet!')
     }
 
     if (markingToUpdate.user_id !== authenticatedUserId) {

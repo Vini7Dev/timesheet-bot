@@ -17,8 +17,8 @@ interface IPayload {
 
 export const onSendMarkingsToTimesheet = {
   subscribe: withFilter(
-    (_: any, __: any, { pubsub }: IWSAppContext) => {
-      return pubsub.asyncIterator(TRIGGER_MARKINGS_TO_TIMESHEET)
+    (_: any, __: any, { pubSub }: IWSAppContext) => {
+      return pubSub.asyncIterator(TRIGGER_MARKINGS_TO_TIMESHEET)
     },
     (payload: IPayload, _: any, context: IAppContext) => {
       return context.authentication.user_id === payload.userOwnerId

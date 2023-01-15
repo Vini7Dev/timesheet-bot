@@ -38,7 +38,7 @@ export class DeleteMarkingService {
     }
 
     if (markingToDelete.on_timesheet_status === 'SENDING') {
-      throw new AppError('This marking is being processed in the timesheet')
+      throw new AppError('This marking is being processed in the timesheet!')
     }
 
     if (markingToDelete.user_id !== authenticatedUserId) {

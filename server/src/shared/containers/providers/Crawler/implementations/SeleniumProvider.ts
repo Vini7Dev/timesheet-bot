@@ -237,7 +237,7 @@ export class SeleniumProvider implements ICrawler {
           markingsResponse.push({
             id: marking.id,
             on_timesheet_status: 'ERROR',
-            timesheet_error: alertErrors
+            timesheet_error: alertErrors,
           })
 
           continue
@@ -265,6 +265,7 @@ export class SeleniumProvider implements ICrawler {
               id: marking.id,
               on_timesheet_id: timesheetMarking,
               on_timesheet_status: 'SENT',
+              timesheet_error: [],
             })
 
             break
@@ -274,7 +275,7 @@ export class SeleniumProvider implements ICrawler {
         markingsResponse.push({
           id: marking.id,
           on_timesheet_status: 'ERROR',
-          timesheet_error: [err.message]
+          timesheet_error: [err.message],
         })
       }
     }
@@ -359,7 +360,7 @@ export class SeleniumProvider implements ICrawler {
             id: marking.id,
             on_timesheet_id: marking.on_timesheet_id,
             on_timesheet_status: 'ERROR',
-            timesheet_error: alertErrors
+            timesheet_error: alertErrors,
           })
 
           continue
@@ -373,13 +374,14 @@ export class SeleniumProvider implements ICrawler {
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
           on_timesheet_status: 'SENT',
+          timesheet_error: [],
         })
       } catch(err: any) {
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
           on_timesheet_status: 'ERROR',
-          timesheet_error: [err.message]
+          timesheet_error: [err.message],
         })
 
         await this.driver.get(timesheetUrls.markings({ SHOW: 'list' }))
@@ -417,13 +419,14 @@ export class SeleniumProvider implements ICrawler {
           id: marking.id,
           on_timesheet_id: undefined,
           on_timesheet_status: 'NOT_SENT',
+          timesheet_error: [],
         })
       } catch(err: any) {
         markingsResponse.push({
           id: marking.id,
           on_timesheet_id: marking.on_timesheet_id,
           on_timesheet_status: 'ERROR',
-          timesheet_error: [err.message]
+          timesheet_error: [err.message],
         })
 
         await this.driver.get(timesheetUrls.markings({ SHOW: 'list' }))

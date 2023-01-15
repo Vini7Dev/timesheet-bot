@@ -1,4 +1,4 @@
-import { RedisPubSub } from 'graphql-redis-subscriptions'
+import { IPubSub } from '@shared/infra/apollo/models/IPubSub'
 
 export interface IAddQueueProps {
   name: string
@@ -6,7 +6,7 @@ export interface IAddQueueProps {
 }
 
 export interface IProcessProps {
-  pubsub: RedisPubSub
+  pubSub: IPubSub
   providers: object
 }
 

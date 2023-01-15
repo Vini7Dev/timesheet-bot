@@ -18,13 +18,20 @@ export default {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ['<rootDir>/src/modules/**/services/**/*.ts'],
+  collectCoverageFrom: [
+    '<rootDir>/src/modules/**/services/**/*.ts',
+    '<rootDir>/src/jobs/**/*.ts'
+  ],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: ['text-summary', 'lcov'],
+  coveragePathIgnorePatterns: [
+    'text-summary',
+    'lcov',
+    '<rootDir>/src/jobs/index.ts'
+  ],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8',

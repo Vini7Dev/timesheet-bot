@@ -104,6 +104,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     user_id,
     on_timesheet_id,
     on_timesheet_status,
+    deleted_at,
   }: ICreateMarkingDTO): Promise<Marking> {
     const createdMarking = await this.client.markings.create({
       data: {
@@ -118,6 +119,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
         project_id,
         user_id,
         on_timesheet_id,
+        deleted_at,
       },
       include: { project: true, user: true }
     })
