@@ -20,10 +20,10 @@ export const SendToTimesheetPopupContainer = styled.div`
 
   .popup-marking-container {
     display: flex;
-    padding: 10px 0;
+    padding: 0.625rem 0;
 
     input {
-      margin-right: 8px;
+      margin-right: 0.5rem;
     }
 
     .popup-marking-data {
@@ -38,7 +38,7 @@ export const SendToTimesheetPopupContainer = styled.div`
       }
 
       span {
-        margin-right: 4px;
+        margin-right: 0.25rem;
         font-weight: 600;
       }
     }

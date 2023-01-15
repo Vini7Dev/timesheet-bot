@@ -50,13 +50,14 @@ export const PopupContentContainer = styled.div`
   #popup-container {
     display: flex;
     margin-bottom: 0.85rem;
+    padding: 0.5rem;
 
     #popup-user-icon {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 2.5rem;
-      width: 2.5rem;
+      width: 3rem;
       border-radius: 100%;
       border: none;
       font-family: 'Roboto', sans-serif;
@@ -106,8 +107,8 @@ export const PopupContentContainer = styled.div`
       height: 2rem;
     }
 
-    & > div:first-child {
-      margin-right: 0.25rem;
+    & > div:nth-child(2) {
+      margin-left: 0.25rem;
     }
   }
 
@@ -117,7 +118,7 @@ export const PopupContentContainer = styled.div`
 
       #popup-user-icon {
         height: 4rem;
-        width: 4rem;
+        width: 4.5rem;
         font-size: 1.5rem;
       }
 
