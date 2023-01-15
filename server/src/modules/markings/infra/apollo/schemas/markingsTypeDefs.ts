@@ -3,8 +3,8 @@ import { gql } from 'apollo-server'
 export const markingsTypeDefs = gql`
   extend type Query {
     marking(id: ID!): Marking!
-    markings(data: ApiMarkingFiltersInput!): [Marking!]!
-    markingsByUserId(data: ApiMarkingFiltersInput!): [Marking!]!
+    markings(data: ApiFiltersInput!): [Marking!]!
+    markingsByUserId(data: ApiFiltersInput!): [Marking!]!
   }
 
   extend type Mutation {

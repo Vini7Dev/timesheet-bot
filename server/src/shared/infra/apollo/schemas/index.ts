@@ -38,11 +38,6 @@ const rootTypeDefs = gql`
     perPage: Int
     search: String
   }
-
-  input ApiMarkingFiltersInput {
-    page: Int
-    perPage: Int
-  }
 `
 
 const rootResolvers = {
