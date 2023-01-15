@@ -62,7 +62,7 @@ describe('ListUsersService', () => {
     expect(usersList[0].id).toEqual(secondUser.id)
   })
 
-  it('should be able to list customers with search filter', async () => {
+  it('should be able to list users with search filter', async () => {
     await usersRepository.create({
       name: 'First User',
       email: 'jhondoe1@mail.com',

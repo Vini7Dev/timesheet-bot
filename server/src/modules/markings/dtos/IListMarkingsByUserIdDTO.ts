@@ -5,5 +5,6 @@ export interface IListMarkingsByUserIdDTO {
   on_timesheet_status?: OnTimesheetStatus
   page?: number
   perPage?: number
+  search?: string
   date?: string
 }

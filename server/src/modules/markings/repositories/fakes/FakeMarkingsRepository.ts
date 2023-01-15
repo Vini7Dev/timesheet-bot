@@ -13,11 +13,20 @@ import {
 import { Marking } from '@modules/markings/infra/prisma/entities/Marking';
 import { IMarkingsRepository } from '../IMarkingsRepository'
 
+interface ISearchValidationProps {
+  value: string
+  search: string
+}
+
 export class FakeMarkingsRepository implements IMarkingsRepository {
   private markings: Marking[]
 
   constructor () {
     this.markings = []
+  }
+
+  private searchValidation({ value, search }: ISearchValidationProps): boolean {
+    return value.toLocaleLowerCase().includes(search.toLocaleLowerCase())
   }
 
   public async findById(id: string): Promise<Marking | null> {
@@ -29,12 +38,19 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
   public async list({
     page = 0,
     perPage = 10,
+    search,
     date,
   }: IListMarkingsDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
       .filter(marking => date ? marking.date === date : true)
       .filter(marking => !marking.deleted_at)
       .slice(page, perPage + page)
+
+    if (search) {
+      return filteredMarkings.filter(
+        marking => this.searchValidation({ value: marking.description, search })
+      )
+    }
 
     return filteredMarkings
   }
@@ -56,6 +72,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     on_timesheet_status,
     page = 0,
     perPage = 10,
+    search,
     date,
   }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = this.markings
@@ -63,6 +80,12 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
       .filter(marking => on_timesheet_status ? marking.on_timesheet_status === on_timesheet_status : true)
       .filter(marking => marking.user_id === user_id && !marking.deleted_at)
       .slice(page, perPage + page)
+
+    if (search) {
+      return filteredMarkings.filter(
+        marking => this.searchValidation({ value: marking.description, search })
+      )
+    }
 
     return filteredMarkings
   }

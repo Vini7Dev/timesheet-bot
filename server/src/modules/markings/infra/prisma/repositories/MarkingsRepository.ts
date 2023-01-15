@@ -28,6 +28,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
   public async list({
     page,
     perPage,
+    search,
     date,
   }: IListMarkingsDTO): Promise<Marking[]> {
     const filteredMarkings = await this.client.markings.findMany({
@@ -38,6 +39,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
           ...buildRepositoryFiltersObject({
             date,
           }),
+          description: { contains: search, mode: 'insensitive' },
           deleted_at: null
         }
       },
@@ -68,6 +70,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     on_timesheet_status,
     page,
     perPage,
+    search,
     date
   }: IListMarkingsByUserIdDTO): Promise<Marking[]> {
     const filteredMarkings = await this.client.markings.findMany({
@@ -79,6 +82,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
           user_id,
           on_timesheet_status,
         }),
+        description: { contains: search, mode: 'insensitive' },
         AND: {
           OR: [
             { deleted_at: null },

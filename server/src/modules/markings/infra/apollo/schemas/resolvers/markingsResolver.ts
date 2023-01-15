@@ -8,12 +8,13 @@ interface IApiFiltersInput {
   data: {
     page?: number
     perPage?: number
+    search?: string
   }
 }
 
 export const markings = async (
   _: any,
-  { data: { page, perPage } }: IApiFiltersInput,
+  { data: { page, perPage, search } }: IApiFiltersInput,
   ctx: IAppContext,
 ) => {
   ensureAuthenticated(ctx)
@@ -23,6 +24,7 @@ export const markings = async (
   const markingsList = await listMarkingsService.execute({
     page,
     perPage,
+    search,
   })
 
   return markingsList

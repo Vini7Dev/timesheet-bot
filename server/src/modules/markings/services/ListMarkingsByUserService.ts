@@ -9,6 +9,7 @@ interface IServiceProps {
   authenticatedUserId: string,
   page?: number
   perPage?: number
+  search?: string
 }
 
 @injectable()
@@ -25,6 +26,7 @@ export class ListMarkingsByUserService {
     authenticatedUserId,
     page,
     perPage,
+    search,
   }: IServiceProps): Promise<Marking[]> {
     const userOwner = await this.usersRepository.findById(authenticatedUserId)
 
@@ -36,6 +38,7 @@ export class ListMarkingsByUserService {
       user_id: authenticatedUserId,
       page,
       perPage,
+      search,
     })
 
     return markingsList

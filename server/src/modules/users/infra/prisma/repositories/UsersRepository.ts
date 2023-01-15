@@ -44,8 +44,12 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
       skip: page,
       take: perPage,
       where: {
-        name: { contains: search, mode: 'insensitive' },
-        deleted_at: null
+        deleted_at: null,
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+          { username: { contains: search, mode: 'insensitive' } },
+        ]
       }
     })
 

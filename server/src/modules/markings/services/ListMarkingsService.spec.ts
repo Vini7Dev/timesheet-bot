@@ -75,4 +75,44 @@ describe('ListMarkingsService', () => {
     expect(projectsList).toHaveLength(1)
     expect(projectsList[0].id).toEqual(secondMarking.id)
   })
+
+  it('should be able to list markings with search filter', async () => {
+    await markingsRepository.create({
+      description: 'First Marking',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: 'any-user-id'
+    })
+
+    const secondMarking = await markingsRepository.create({
+      description: 'Second Marking',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: 'any-user-id'
+    })
+
+    const thirdMarking = await markingsRepository.create({
+      description: 'Third Marking',
+      date: '01/01/2022',
+      start_time: '09:00',
+      finish_time: '12:00',
+      work_class: WorkClass.PRODUCTION,
+      project_id: 'any-project-id',
+      user_id: 'any-user-id'
+    })
+
+    const projectsList = await listMarkingsService.execute({
+      search: 'd marking'
+    })
+
+    expect(projectsList).toHaveLength(2)
+    expect(projectsList[0].id).toEqual(secondMarking.id)
+    expect(projectsList[1].id).toEqual(thirdMarking.id)
+  })
 })
