@@ -8,23 +8,24 @@ interface IApiFiltersInput {
   data: {
     page?: number
     perPage?: number
+    search?: string
   }
 }
 
 export const users = async (
   _: any, {
-    data: { page, perPage }
+    data: { page, perPage, search }
   }: IApiFiltersInput,
   ctx: IAppContext,
 ) => {
-  const authenticatedUserId = ensureAuthenticated(ctx)
+  ensureAuthenticated(ctx)
 
   const listUsersService = container.resolve(ListUsersService)
 
   const usersList = await listUsersService.execute({
     page,
     perPage,
-    authenticatedUserId,
+    search,
   })
 
   return usersList

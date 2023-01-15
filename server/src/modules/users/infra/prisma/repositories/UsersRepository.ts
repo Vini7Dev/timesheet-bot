@@ -1,4 +1,5 @@
 import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO'
+import { IListUsersDTO } from '@modules/users/dtos/IListUsersDTO'
 import { IUpdateUserDTO } from '@modules/users/dtos/IUpdateUserDTO'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { AppRepository } from '@shared/infra/prisma/repositories/AppRepository'
@@ -37,11 +38,13 @@ export class UsersRepository extends AppRepository implements IUsersRepository {
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number }): Promise<User[]> {
+    search,
+  }: IListUsersDTO): Promise<User[]> {
     const userList = await this.client.users.findMany({
       skip: page,
       take: perPage,
       where: {
+        name: { contains: search, mode: 'insensitive' },
         deleted_at: null
       }
     })

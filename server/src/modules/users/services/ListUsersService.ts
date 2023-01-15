@@ -6,8 +6,8 @@ import { IUsersRepository } from '../repositories/IUsersRepository'
 
 interface IServiceProps {
   page?: number
-  perPage?: number,
-  authenticatedUserId: string
+  perPage?: number
+  search?: string
 }
 
 @injectable()
@@ -20,9 +20,13 @@ export class ListUsersService {
   public async execute({
     page,
     perPage,
-    authenticatedUserId,
+    search,
   }: IServiceProps): Promise<User[]> {
-    const usersList = await this.usersRepository.list({ page, perPage })
+    const usersList = await this.usersRepository.list({
+      page,
+      perPage,
+      search,
+    })
 
     return usersList
   }

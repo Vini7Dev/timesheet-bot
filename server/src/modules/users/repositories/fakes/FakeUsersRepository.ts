@@ -1,15 +1,25 @@
 import { ICreateUserDTO } from '@modules/users/dtos/ICreateUserDTO';
+import { IListUsersDTO } from '@modules/users/dtos/IListUsersDTO';
 import { IUpdateUserDTO } from '@modules/users/dtos/IUpdateUserDTO';
 import { AppError } from '@shared/errors/AppError';
 import { User } from '../../infra/prisma/entities/User';
 
 import { IUsersRepository } from '../IUsersRepository';
 
+interface ISearchValidationProps {
+  value: string
+  search: string
+}
+
 export class FakeUsersRepository implements IUsersRepository {
   private users: User[]
 
   constructor () {
     this.users = []
+  }
+
+  private searchValidation({ value, search }: ISearchValidationProps): boolean {
+    return value.toLocaleLowerCase().includes(search.toLocaleLowerCase())
   }
 
   public async findById(id: string): Promise<User | null> {
@@ -31,10 +41,19 @@ export class FakeUsersRepository implements IUsersRepository {
   public async list({
     page = 0,
     perPage = 10,
-  }: { page?: number, perPage?: number }): Promise<User[]> {
+    search,
+  }: IListUsersDTO): Promise<User[]> {
     const filteredUsers = this.users
       .filter(user => !user.deleted_at)
       .slice(page, perPage + page)
+
+    if (search) {
+      return filteredUsers.filter(
+        user => this.searchValidation({ value: user.name, search })
+          || this.searchValidation({ value: user.email, search })
+          || this.searchValidation({ value: user.username, search })
+      )
+    }
 
     return filteredUsers
   }

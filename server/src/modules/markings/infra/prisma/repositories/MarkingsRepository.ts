@@ -13,6 +13,7 @@ import {
   IUpdateManyTimesheetStatusResponse
 } from '@modules/markings/dtos/IUpdateManyTimesheetStatusDTO'
 import { Marking } from '../entities/Marking'
+import { IListMarkingsDTO } from '@modules/markings/dtos/IListMarkingsDTO'
 
 export class MarkingsRepository extends AppRepository implements IMarkingsRepository {
   public async findById(id: string): Promise<Marking | null> {
@@ -28,7 +29,7 @@ export class MarkingsRepository extends AppRepository implements IMarkingsReposi
     page,
     perPage,
     date,
-  }: { page?: number, perPage?: number, date?: string }): Promise<Marking[]> {
+  }: IListMarkingsDTO): Promise<Marking[]> {
     const filteredMarkings = await this.client.markings.findMany({
       skip: page,
       take: perPage,
