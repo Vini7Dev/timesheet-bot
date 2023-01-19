@@ -89,6 +89,16 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
     newFinishTime,
     newWorkClass
   }: IHandleUpdateMarkingProps) => {
+    if (
+      newProjectId === project.id ||
+      newDescription === description ||
+      newStartTime === start_time ||
+      newFinishTime === finish_time ||
+      newWorkClass === work_class
+    ) {
+      return
+    }
+
     onUpdate({
       date: formatDatePad(date),
       marking_id: id,
@@ -98,7 +108,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
       finish_time: newFinishTime,
       work_class: newWorkClass
     })
-  }, [date, id, onUpdate])
+  }, [date, description, finish_time, id, onUpdate, project.id, start_time, work_class])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
