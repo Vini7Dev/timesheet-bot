@@ -92,8 +92,6 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
     if (
       newProjectId === project.id ||
       newDescription === description ||
-      newStartTime === start_time ||
-      newFinishTime === finish_time ||
       newWorkClass === work_class
     ) {
       return
