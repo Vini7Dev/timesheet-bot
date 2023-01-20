@@ -8,6 +8,7 @@ import { ListAlertContainer } from './styles'
 type AlertType = 'empty' | 'loading'
 
 interface IListAlertProps {
+  alertText?: string
   alertType?: AlertType
   alertButton?: {
     buttonText: string
@@ -16,6 +17,7 @@ interface IListAlertProps {
 }
 
 export const ListAlert: React.FC<IListAlertProps> = ({
+  alertText = 'Lista vazia!',
   alertType = 'empty',
   alertButton
 }) => {
@@ -26,7 +28,7 @@ export const ListAlert: React.FC<IListAlertProps> = ({
           (() => {
             switch (alertType) {
               case 'empty':
-                return (<><FiAlertTriangle /> Lista vazia!</>)
+                return (<><FiAlertTriangle />{alertText}</>)
 
               case 'loading':
                 return (<ClockLoader color="#C6D2D9" size={32} />)

@@ -223,7 +223,9 @@ export const Projects: React.FC = () => {
                   }) => (
                     <div className="projects-customer-group" key={customer_id}>
                       <div className="projects-customer-group-header">
-                        <span className="projects-customer-group-name">{customer_name}</span>
+                        <span className="projects-customer-group-name">
+                          <span>Cliente:</span> {customer_name}
+                        </span>
 
                         <span className="projects-customer-group-label">
                           Projeto / Identificador / Cliente

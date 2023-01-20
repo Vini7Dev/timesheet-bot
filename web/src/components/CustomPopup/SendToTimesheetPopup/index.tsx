@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { SEND_MARKINGS_TO_TIMESHEET } from '../../../graphql/mutations/sendMarkingsToTimesheet'
 import { useToast } from '../../../hooks/toast'
 import { Button } from '../../Button'
+import { ListAlert } from '../../ListAlert'
 
 import { SendToTimesheetPopupContainer } from './styles'
 
@@ -105,36 +106,40 @@ export const SendToTimesheetPopup: React.FC<ISendToTimesheetPopupProps> = ({
       <p id="popup-form-subtitle">Selecione as marcações que serão enviadas</p>
 
       <div id="popup-list-container">
-        {markingsToTimesheet.map(({
-          send,
-          marking
-        }) => (
-          <label
-            className="popup-marking-container"
-            key={marking.id}
-          >
-            <input
-              type="checkbox"
-              defaultChecked={send}
-              onChange={(e) => handleSetMarkingsToTimesheet({
-                markingId: marking.id,
-                send: e.target.checked
-              })}
-            />
+        {
+          markingsToTimesheet.length === 0
+            ? <ListAlert alertType={'empty'} alertText="Sem marcações pendentes!" />
+            : markingsToTimesheet.map(({
+              send,
+              marking
+            }) => (
+              <label
+                className="popup-marking-container"
+                key={marking.id}
+              >
+                <input
+                  type="checkbox"
+                  defaultChecked={send}
+                  onChange={(e) => handleSetMarkingsToTimesheet({
+                    markingId: marking.id,
+                    send: e.target.checked
+                  })}
+                />
 
-            <div className="popup-marking-data">
-              <span>[
-                {(function () {
-                  if (marking.deleted_at) return 'Remover'
-                  if (marking.on_timesheet_id) return 'Atualizar'
-                  return 'Salvar'
-                })()}
-              ]</span>
+                <div className="popup-marking-data">
+                  <span>[
+                    {(function () {
+                      if (marking.deleted_at) return 'Remover'
+                      if (marking.on_timesheet_id) return 'Atualizar'
+                      return 'Salvar'
+                    })()}
+                  ]</span>
 
-              <p>{marking.description}</p>
-            </div>
-          </label>
-        ))}
+                  <p>{marking.description}</p>
+                </div>
+              </label>
+            ))
+        }
       </div>
 
       <div className="popup-button-margin-top">

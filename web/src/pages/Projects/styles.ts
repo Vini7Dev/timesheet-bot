@@ -59,8 +59,13 @@ export const MainContent = styled.main`
 
         .projects-customer-group-name {
           font-family: 'Roboto', sans-serif;
-          font-size: 1.286rem;
+          font-size: 1rem;
           color: #C6D2D9;
+
+          span {
+            font-weight: 700;
+            letter-spacing: 0.05rem;
+          }
         }
 
         .projects-customer-group-label {

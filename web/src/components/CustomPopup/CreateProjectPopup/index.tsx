@@ -137,17 +137,17 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
 
       <div className="input-margin-bottom">
         <Input
-          placeholder="Código do projeto no multidados"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
+          placeholder="Nome do projeto"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
       <div className="input-margin-bottom">
         <Input
-          placeholder="Nome do projeto"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          placeholder="Código do projeto no multidados"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
         />
       </div>
 
