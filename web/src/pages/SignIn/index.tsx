@@ -75,7 +75,7 @@ export const SignIn: React.FC = () => {
             />
           </div>
 
-          <a id="forgot-password-link" href="/">Esqueceu a senha?</a>
+          {/** <a id="forgot-password-link" href="/">Esqueceu a senha?</a> */}
 
           <div className="button-margin-top">
             <Button text="Entrar" onClick={handleSignIn} isLoading={authIsLoading} />
