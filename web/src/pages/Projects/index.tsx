@@ -19,6 +19,7 @@ import { CustomPopup } from '../../components/CustomPopup'
 import { CreateProjectPopup } from '../../components/CustomPopup/CreateProjectPopup'
 import { CreateCustomerPopup } from '../../components/CustomPopup/CreateCustomerPopup'
 import { MainContent, ProjectItemContainer, PageContainer } from './styles'
+import { Pagination } from '../../components/Pagination'
 
 type PopupContentToShow = 'projects' | 'customers'
 
@@ -50,10 +51,12 @@ export const Projects: React.FC = () => {
   const client = useApolloClient()
   const toast = useToast()
 
-  const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
-  const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('projects')
   const [projectsByCustomers, setProjectsByCustomers] = useState<IProectsByCustomerProps[]>([])
+  const [projectsPage, setProjectsPage] = useState(1)
+  const [projectsPerPage, setProjectsPerPage] = useState(10)
+  const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
   const [loadingProjects, setLoadingProjects] = useState(false)
+  const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('projects')
 
   const toggleShowCreateProjectForm = useCallback(() => {
     setShowCreateProjectForm(!showCreateProjectForm)
@@ -73,10 +76,16 @@ export const Projects: React.FC = () => {
     setLoadingProjects(true)
 
     try {
+      const pageSkip = (projectsPage - 1) * projectsPerPage
+      const pageTake = pageSkip + projectsPerPage
+
       const { data: projectsResponse } = await client.query<IGetProjectsGroupByCustomersResponse>({
         query: PROJECTS_GROUP_BY_CUSTOMERS,
         variables: {
-          data: {}
+          data: {
+            page: pageSkip,
+            perPage: pageTake
+          }
         },
         fetchPolicy: 'no-cache'
       })
@@ -90,7 +99,7 @@ export const Projects: React.FC = () => {
     }
 
     setLoadingProjects(false)
-  }, [client])
+  }, [client, projectsPage, projectsPerPage, toast])
 
   const handleDeleteProject = useCallback(async (id: string) => {
     try {
@@ -266,6 +275,15 @@ export const Projects: React.FC = () => {
                     </div>)
             }
           </div>
+
+          <Pagination
+            currentPage={projectsPage}
+            perPageOptions={[10, 25, 50]}
+            onChangeInputPage={(newPage) => setProjectsPage(newPage)}
+            onNextPage={(nextPage) => setProjectsPage(nextPage)}
+            onPreviousPage={(previousPage) => setProjectsPage(previousPage)}
+            onSelectPerPage={(perPageSelected) => setProjectsPerPage(perPageSelected)}
+          />
         </MainContent>
       </div>
 

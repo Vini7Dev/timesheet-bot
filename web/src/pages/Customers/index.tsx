@@ -44,8 +44,8 @@ export const Customers: React.FC = () => {
   const toast = useToast()
 
   const [customers, setCustomers] = useState<ICustomerProps[]>([])
-  const [customersPage, setCustomerPage] = useState(1)
-  const [customersPerPage, setCustomersPerPage] = useState(50)
+  const [customersPage, setCustomersPage] = useState(1)
+  const [customersPerPage, setCustomersPerPage] = useState(10)
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [showCreateCustomerForm, setShowCreateCustomerForm] = useState(false)
 
@@ -220,10 +220,10 @@ export const Customers: React.FC = () => {
 
           <Pagination
             currentPage={customersPage}
-            perPageOptions={[25, 50, 75]}
-            onChangeInputPage={(newPage) => setCustomerPage(newPage)}
-            onNextPage={(nextPage) => setCustomerPage(nextPage)}
-            onPreviousPage={(previousPage) => setCustomerPage(previousPage)}
+            perPageOptions={[10, 25, 50]}
+            onChangeInputPage={(newPage) => setCustomersPage(newPage)}
+            onNextPage={(nextPage) => setCustomersPage(nextPage)}
+            onPreviousPage={(previousPage) => setCustomersPage(previousPage)}
             onSelectPerPage={(perPageSelected) => setCustomersPerPage(perPageSelected)}
           />
         </MainContent>
