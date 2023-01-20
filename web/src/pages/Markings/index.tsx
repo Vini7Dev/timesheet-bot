@@ -82,10 +82,10 @@ export const Markings: React.FC = () => {
   const handleGetUserMarkings = useCallback(async () => {
     setLoadingMarkings(true)
 
-    const pageSkip = (markingsPage - 1) * markingsPerPage
-    const pageTake = pageSkip + markingsPerPage
-
     try {
+      const pageSkip = (markingsPage - 1) * markingsPerPage
+      const pageTake = pageSkip + markingsPerPage
+
       const { data: markingsResponse } = await client.query<IGetUserMarkingsResponse>({
         query: MARKINGS_BY_USER_ID,
         variables: {

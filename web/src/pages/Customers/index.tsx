@@ -17,6 +17,7 @@ import { ListAlert } from '../../components/ListAlert'
 import { DELETE_CUSTOMER } from '../../graphql/mutations/deleteCustomer'
 import { UPDATE_CUSTOMER } from '../../graphql/mutations/updateCustomer'
 import { CreateCustomerPopup } from '../../components/CustomPopup/CreateCustomerPopup'
+import { Pagination } from '../../components/Pagination'
 
 interface IGetCustomersResponse {
   customers: ICustomerProps[]
@@ -43,6 +44,8 @@ export const Customers: React.FC = () => {
   const toast = useToast()
 
   const [customers, setCustomers] = useState<ICustomerProps[]>([])
+  const [customersPage, setCustomerPage] = useState(1)
+  const [customersPerPage, setCustomersPerPage] = useState(50)
   const [loadingCustomers, setLoadingCustomers] = useState(false)
   const [showCreateCustomerForm, setShowCreateCustomerForm] = useState(false)
 
@@ -54,10 +57,16 @@ export const Customers: React.FC = () => {
     setLoadingCustomers(true)
 
     try {
+      const pageSkip = (customersPage - 1) * customersPerPage
+      const pageTake = pageSkip + customersPerPage
+
       const { data: customersResponse } = await client.query<IGetCustomersResponse>({
         query: CUSTOMERS,
         variables: {
-          data: {}
+          data: {
+            page: pageSkip,
+            perPage: pageTake
+          }
         },
         fetchPolicy: 'no-cache'
       })
@@ -71,7 +80,7 @@ export const Customers: React.FC = () => {
     }
 
     setLoadingCustomers(false)
-  }, [client])
+  }, [client, customersPage, customersPerPage, toast])
 
   const handleReloadCustomers = useCallback(async () => {
     handleGetCustomers()
@@ -208,6 +217,15 @@ export const Customers: React.FC = () => {
               </div>
             </div>
           </div>
+
+          <Pagination
+            currentPage={customersPage}
+            perPageOptions={[25, 50, 75]}
+            onChangeInputPage={(newPage) => setCustomerPage(newPage)}
+            onNextPage={(nextPage) => setCustomerPage(nextPage)}
+            onPreviousPage={(previousPage) => setCustomerPage(previousPage)}
+            onSelectPerPage={(perPageSelected) => setCustomersPerPage(perPageSelected)}
+          />
         </MainContent>
       </div>
 
