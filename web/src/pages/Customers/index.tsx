@@ -220,7 +220,9 @@ export const Customers: React.FC = () => {
 
           <Pagination
             currentPage={customersPage}
+            currentPerPage={customersPerPage}
             perPageOptions={[10, 25, 50]}
+            currentPageResultsCount={customers.length}
             onChangeInputPage={(newPage) => setCustomersPage(newPage)}
             onNextPage={(nextPage) => setCustomersPage(nextPage)}
             onPreviousPage={(previousPage) => setCustomersPage(previousPage)}

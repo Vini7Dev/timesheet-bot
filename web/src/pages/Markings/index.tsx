@@ -265,7 +265,9 @@ export const Markings: React.FC = () => {
 
           <Pagination
             currentPage={markingsPage}
+            currentPerPage={markingsPerPage}
             perPageOptions={[50, 100, 200]}
+            currentPageResultsCount={markings.length}
             onChangeInputPage={(newPage) => setMarkingsPage(newPage)}
             onNextPage={(nextPage) => setMarkingsPage(nextPage)}
             onPreviousPage={(previousPage) => setMarkingsPage(previousPage)}

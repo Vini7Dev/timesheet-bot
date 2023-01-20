@@ -20,6 +20,11 @@ export const PaginationContainer = styled.div`
       border: 1px solid #12191d;
     }
 
+    .pagination-button-disabled {
+      cursor: default;
+      opacity: 0.45;
+    }
+
     .pagination-input {
       width: 58px;
       margin: 0 0.5rem;

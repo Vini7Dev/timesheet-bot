@@ -280,7 +280,9 @@ export const Projects: React.FC = () => {
 
           <Pagination
             currentPage={projectsPage}
+            currentPerPage={projectsPerPage}
             perPageOptions={[10, 25, 50]}
+            currentPageResultsCount={projectsByCustomers.length}
             onChangeInputPage={(newPage) => setProjectsPage(newPage)}
             onNextPage={(nextPage) => setProjectsPage(nextPage)}
             onPreviousPage={(previousPage) => setProjectsPage(previousPage)}

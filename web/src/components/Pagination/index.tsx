@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { Input } from '../Input'
 
@@ -7,7 +7,9 @@ import { PaginationContainer } from './styles'
 
 interface IPaginationProps {
   currentPage: number
+  currentPerPage: number
   perPageOptions: number[]
+  currentPageResultsCount: number
   onChangeInputPage: (newPage: number) => void
   onNextPage: (nextPage: number) => void
   onPreviousPage: (previousPage: number) => void
@@ -16,7 +18,9 @@ interface IPaginationProps {
 
 export const Pagination: React.FC<IPaginationProps> = ({
   currentPage,
+  currentPerPage,
   perPageOptions,
+  currentPageResultsCount,
   onChangeInputPage,
   onNextPage,
   onPreviousPage,
@@ -53,7 +57,13 @@ export const Pagination: React.FC<IPaginationProps> = ({
   return (
     <PaginationContainer>
       <div id="pagination-buttons-container">
-        <button className="pagination-button" onClick={handleChangeToPreviousPage}>
+        <button
+          className={`pagination-button ${
+            currentPage === 1 ? 'pagination-button-disabled' : ''
+          }`}
+          onClick={handleChangeToPreviousPage}
+          disabled={currentPage === 1}
+        >
           <FiChevronLeft />
         </button>
 
@@ -65,7 +75,13 @@ export const Pagination: React.FC<IPaginationProps> = ({
           />
         </div>
 
-        <button className="pagination-button" onClick={handleChangeToNextPage}>
+        <button
+          className={`pagination-button ${
+            currentPageResultsCount < currentPerPage ? 'pagination-button-disabled' : ''
+          }`}
+          onClick={handleChangeToNextPage}
+          disabled={currentPageResultsCount < currentPerPage}
+        >
           <FiChevronRight />
         </button>
       </div>
