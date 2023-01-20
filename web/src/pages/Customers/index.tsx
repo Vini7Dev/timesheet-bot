@@ -80,7 +80,7 @@ export const Customers: React.FC = () => {
     }
 
     setLoadingCustomers(false)
-  }, [client, customersPage, customersPerPage, toast])
+  }, [client, customersPage, customersPerPage])
 
   const handleReloadCustomers = useCallback(async () => {
     handleGetCustomers()

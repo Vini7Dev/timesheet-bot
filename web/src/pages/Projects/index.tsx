@@ -99,7 +99,7 @@ export const Projects: React.FC = () => {
     }
 
     setLoadingProjects(false)
-  }, [client, projectsPage, projectsPerPage, toast])
+  }, [client, projectsPage, projectsPerPage])
 
   const handleDeleteProject = useCallback(async (id: string) => {
     try {
