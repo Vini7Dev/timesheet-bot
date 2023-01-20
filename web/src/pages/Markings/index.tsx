@@ -17,6 +17,7 @@ import { Navigation } from '../../components/Navigation'
 import { CustomPopup } from '../../components/CustomPopup'
 import { ListAlert } from '../../components/ListAlert'
 import { Button } from '../../components/Button'
+import { Pagination } from '../../components/Pagination'
 import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPopup'
 import { SendToTimesheetPopup } from '../../components/CustomPopup/SendToTimesheetPopup'
 import { MarkingItem } from './MarkingItem'
@@ -53,6 +54,8 @@ export const Markings: React.FC = () => {
   const [loadingMarkings, setLoadingMarkings] = useState(false)
 
   const [markings, setMarkings] = useState<IMarkingData[]>([])
+  const [markingsPage, setMarkingsPage] = useState(1)
+  const [markingsPerPage, setMarkingsPerPage] = useState(50)
 
   const toggleEditMarkingIsOpen = useCallback(() => {
     setEditMarkingIsOpen(!editMarkingIsOpen)
@@ -79,11 +82,17 @@ export const Markings: React.FC = () => {
   const handleGetUserMarkings = useCallback(async () => {
     setLoadingMarkings(true)
 
+    const pageSkip = (markingsPage - 1) * markingsPerPage
+    const pageTake = pageSkip + markingsPerPage
+
     try {
       const { data: markingsResponse } = await client.query<IGetUserMarkingsResponse>({
         query: MARKINGS_BY_USER_ID,
         variables: {
-          data: {}
+          data: {
+            page: pageSkip,
+            perPage: pageTake
+          }
         },
         fetchPolicy: 'no-cache'
       })
@@ -97,7 +106,7 @@ export const Markings: React.FC = () => {
     }
 
     setLoadingMarkings(false)
-  }, [client])
+  }, [client, markingsPage, markingsPerPage, toast])
 
   const handleUpdateMarking = useCallback(async ({
     date,
@@ -253,6 +262,15 @@ export const Markings: React.FC = () => {
                   : (<ListAlert alertType={'empty'} />)
             }
           </div>
+
+          <Pagination
+            currentPage={markingsPage}
+            perPageOptions={[50, 100, 200]}
+            onChangeInputPage={(newPage) => setMarkingsPage(newPage)}
+            onNextPage={(nextPage) => setMarkingsPage(nextPage)}
+            onPreviousPage={(previousPage) => setMarkingsPage(previousPage)}
+            onSelectPerPage={(perPageSelected) => setMarkingsPerPage(perPageSelected)}
+          />
         </MainContent>
       </div>
 
