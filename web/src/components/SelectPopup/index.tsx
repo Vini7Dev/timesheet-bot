@@ -4,9 +4,9 @@ import { PulseLoader } from 'react-spinners'
 
 import { Input } from '../Input'
 import { Button } from '../Button'
-import { useToast } from '../../hooks/toast'
 import { CUSTOMERS } from '../../graphql/queries/getCustomers'
 import { PROJECTS } from '../../graphql/queries/getProjects'
+import { useToast } from '../../hooks/toast'
 import { CustomPopup } from '../CustomPopup'
 import { CreateCustomerPopup } from '../CustomPopup/CreateCustomerPopup'
 import { SelectPopupContainer } from './styles'
@@ -64,7 +64,11 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
       const { data: projectsResponse } = await client.query<IGetProjectsResponse>({
         query: PROJECTS,
         variables: {
-          data: { search }
+          data: {
+            search,
+            page: 0,
+            perPage: 10
+          }
         },
         fetchPolicy: 'no-cache'
       })
@@ -87,7 +91,11 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
       const { data: customersResponse } = await client.query<IGetCustomersResponse>({
         query: CUSTOMERS,
         variables: {
-          data: { search }
+          data: {
+            search,
+            page: 0,
+            perPage: 10
+          }
         },
         fetchPolicy: 'no-cache'
       })
