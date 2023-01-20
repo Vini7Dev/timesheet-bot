@@ -10,6 +10,7 @@ export const Container = styled.div`
   top: 5.25rem;
   overflow: hidden;
   width: 100vw;
+  z-index: 10;
 
   @media screen and (min-width: 969px) {
     right: 1.25rem;

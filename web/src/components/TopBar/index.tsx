@@ -148,7 +148,7 @@ export const TopBar: React.FC = () => {
             <CustomPopup onClickToClose={toggleShowUserPopup}>
               <PopupContentContainer>
                 <div id="popup-container">
-                  <span id="popup-user-icon" onClick={toggleShowUserPopup}>
+                  <span id="popup-user-icon">
                     {handleGetProfileImageLetters()}
                   </span>
 
