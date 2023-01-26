@@ -6,7 +6,6 @@ interface IMarkingItemContainerProps {
 }
 
 export const MarkingItemContainer = styled.div<IMarkingItemContainerProps>`
-
   ${({ timesheetDeletionIsPending }) => (
     timesheetDeletionIsPending &&
     css`

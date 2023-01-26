@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { FiDollarSign } from 'react-icons/fi'
 import * as Yup from 'yup'
@@ -197,6 +197,18 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
 
     changeStartTime(todayDate.getTime())
   }, [changeStartInputValue, changeStartTime, timerRunning])
+
+  useEffect(() => {
+    const titleElement = document.querySelector('title')
+
+    if (titleElement) {
+      if (timerRunning) {
+        titleElement.innerHTML = `${getFormattedTimer()} ${timerMarking.description}`
+      } else {
+        titleElement.innerHTML = 'Multify'
+      }
+    }
+  }, [getFormattedTimer, timerMarking.description, timerRunning])
 
   return (
     <TimerTrackerContainer ref={wrapperRef} onClick={() => setEditingMarkingTime(true)}>
