@@ -57,11 +57,21 @@ export const Projects: React.FC = () => {
   const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
   const [loadingProjects, setLoadingProjects] = useState(false)
   const [popupContentToShow, setPopupContentToShow] = useState<PopupContentToShow>('projects')
+  const [createProjectByCustomerId, setCreateProjectByCustomerId] = useState('')
 
   const toggleShowCreateProjectForm = useCallback(() => {
+    if (showCreateProjectForm) {
+      setCreateProjectByCustomerId('')
+    }
+
     setShowCreateProjectForm(!showCreateProjectForm)
     setPopupContentToShow('projects')
   }, [showCreateProjectForm])
+
+  const handleCreateProjectByCustomer = useCallback((customerId = '') => {
+    setCreateProjectByCustomerId(customerId)
+    toggleShowCreateProjectForm()
+  }, [toggleShowCreateProjectForm])
 
   const handleChangePopupContentToShow = useCallback((contentToSet: PopupContentToShow) => {
     setPopupContentToShow(contentToSet)
@@ -257,7 +267,7 @@ export const Projects: React.FC = () => {
                                 alertType="empty"
                                 alertButton={{
                                   buttonText: 'Cadastrar projeto',
-                                  onClick: toggleShowCreateProjectForm
+                                  onClick: () => handleCreateProjectByCustomer(customer_id)
                                 }}
                               />)
                         }
@@ -298,6 +308,7 @@ export const Projects: React.FC = () => {
               popupContentToShow === 'projects'
                 ? (
                   <CreateProjectPopup
+                    defaultCustomerId={createProjectByCustomerId}
                     onSelectCreateCustomer={() => handleChangePopupContentToShow('customers')}
                     afterSubmit={handleReloadProjects}
                   />

@@ -20,12 +20,14 @@ interface IGetCustomersResponse {
 }
 
 interface ICreateProjectPopupProps {
+  defaultCustomerId?: string
   customersList?: ICustomerProps[]
   afterSubmit: (response: IProjectProps) => void
   onSelectCreateCustomer: () => void
 }
 
 export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
+  defaultCustomerId,
   customersList,
   afterSubmit,
   onSelectCreateCustomer
@@ -35,7 +37,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
 
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
-  const [customerId, setCustomerId] = useState('')
+  const [customerId, setCustomerId] = useState(defaultCustomerId)
 
   const [createIsLoading, setCreateIsLoading] = useState(false)
   const [customers, setCustomers] = useState<ICustomerProps[]>(customersList ?? [])
@@ -127,6 +129,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
               }))
             ]
           }
+          value={customerId}
           onChange={(e) => setCustomerId(e.target.value)}
         />
 
