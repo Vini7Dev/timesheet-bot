@@ -120,6 +120,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
 
       <div className="input-margin-bottom">
         <Select
+          autoFocus
           options={
             [
               { value: '', label: 'Selecione um cliente' },

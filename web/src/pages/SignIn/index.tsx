@@ -61,6 +61,7 @@ export const SignIn: React.FC = () => {
 
           <div className="input-margin-bottom">
             <Input
+              autoFocus
               placeholder="Informe seu usuário ou email"
               value={emailOrUsername}
               onChange={(e) => setEmailOrUsername(e.target.value)}

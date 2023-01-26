@@ -132,6 +132,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
   return (
     <SelectPopupContainer id="popup-container">
       <Input
+        autoFocus
         placeholder="Pesquise..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}

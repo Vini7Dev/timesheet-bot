@@ -214,6 +214,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
     <TimerTrackerContainer ref={wrapperRef} onClick={() => setEditingMarkingTime(true)}>
       <div className="timer-row timer-row-first">
         <Input
+          autoFocus
           placeholder="Descrição..."
           inputStyle="high"
           value={timerMarking.description}

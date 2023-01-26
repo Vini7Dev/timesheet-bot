@@ -161,6 +161,7 @@ export const TopBar: React.FC = () => {
                             <div id="popup-user-edit-info">
                               <div className="popup-user-edit-input">
                                 <Input
+                                  autoFocus
                                   placeholder="Nome"
                                   value={newName}
                                   onChange={(e) => setNewName(e.target.value)}

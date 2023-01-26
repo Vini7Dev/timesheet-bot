@@ -92,6 +92,7 @@ export const SignUp: React.FC = () => {
 
           <div className="input-margin-bottom">
             <Input
+              autoFocus
               placeholder="Informe seu nome"
               value={name}
               onChange={(e) => setName(e.target.value)}

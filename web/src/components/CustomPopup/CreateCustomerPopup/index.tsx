@@ -81,6 +81,7 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
 
       <div className="input-margin-bottom">
         <Input
+          autoFocus
           placeholder="Nome do cliente"
           value={name}
           onChange={(e) => setName(e.target.value)}
