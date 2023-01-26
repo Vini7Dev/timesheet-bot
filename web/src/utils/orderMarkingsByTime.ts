@@ -24,5 +24,5 @@ export const orderMarkingsByTime = (markings: IMarkingData[]): IMarkingData[] =>
       compareA: startTimeDateA,
       compareB: startTimeDateB
     })
-  })
+  }).reverse()
 }
