@@ -18,7 +18,7 @@ Com o Docker instalado, rode o seguinte comando:
 *ATENÇÃO: subistitua [container-name] por um nome para a instância/container e o [my-secret-password] pela senha do banco de dados.*
 
 ```sh
-docker run --name [container-name] -e POSTGRES_PASSWORD=[my-secret-password] -d postgres
+docker run --name [container-name] -p 5432:5432 -e POSTGRES_PASSWORD=[my-secret-password] -d postgres
 ```
 
 *OBS: Também existe algumas outras informações que podem ser adicionadas, mas neste contexto isso já é o suficiente.*
