@@ -13,7 +13,7 @@ export const MARKINGS_BY_USER_ID = gql`
       finish_time
       start_interval_time
       finish_interval_time
-      work_class
+      is_billable
       deleted_at
       project {
         id

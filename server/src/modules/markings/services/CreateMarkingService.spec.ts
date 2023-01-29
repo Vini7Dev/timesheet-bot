@@ -1,7 +1,5 @@
 import 'reflect-metadata'
 
-import { WorkClass } from '@prisma/client'
-
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
@@ -49,7 +47,7 @@ describe('CreateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     })
@@ -74,7 +72,7 @@ describe('CreateMarkingService', () => {
         finish_time: '12:00',
         start_interval_time: '10:00',
         finish_interval_time: '11:00',
-        work_class: WorkClass.PRODUCTION,
+        is_billable: true,
         project_id: projectReference.id,
         authenticatedUserId: 'invalid-user-id',
       })
@@ -97,7 +95,7 @@ describe('CreateMarkingService', () => {
         finish_time: '12:00',
         start_interval_time: '10:00',
         finish_interval_time: '11:00',
-        work_class: WorkClass.PRODUCTION,
+        is_billable: true,
         project_id: 'invalid-project-id',
         authenticatedUserId: authenticatedUser.id,
       })
@@ -125,7 +123,7 @@ describe('CreateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     })
@@ -133,7 +131,7 @@ describe('CreateMarkingService', () => {
     const dataToCreateMarkingWithoutTimes = {
       description: 'Description Example 2',
       date: '01/01/2022',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
@@ -188,7 +186,7 @@ describe('CreateMarkingService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
@@ -227,7 +225,7 @@ describe('CreateMarkingService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }
@@ -282,7 +280,7 @@ describe('CreateMarkingService', () => {
     const dataToCreateMarkingWithoutIntervalTimes = {
       description: 'Description Example',
       date: '01/01/2022',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       authenticatedUserId: authenticatedUser.id,
     }

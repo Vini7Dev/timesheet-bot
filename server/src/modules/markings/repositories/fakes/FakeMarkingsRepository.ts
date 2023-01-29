@@ -97,7 +97,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     project_id,
     user_id,
     on_timesheet_id,
@@ -115,7 +115,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
       finish_time,
       start_interval_time,
       finish_interval_time,
-      work_class,
+      is_billable,
       project_id,
       user_id,
       on_timesheet_id,
@@ -137,7 +137,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     project_id,
     user_id,
   }: IUpdateMarkingDTO): Promise<Marking> {
@@ -154,7 +154,7 @@ export class FakeMarkingsRepository implements IMarkingsRepository {
     if (finish_time) updatedMarking.finish_time = finish_time
     if (start_interval_time) updatedMarking.start_interval_time = start_interval_time
     if (finish_interval_time) updatedMarking.finish_interval_time = finish_interval_time
-    if (work_class) updatedMarking.work_class = work_class
+    if (is_billable) updatedMarking.is_billable = is_billable
     if (project_id) updatedMarking.project_id = project_id
     if (user_id) updatedMarking.user_id = user_id
     updatedMarking.updated_at = (new Date(Date.now() + 10000))

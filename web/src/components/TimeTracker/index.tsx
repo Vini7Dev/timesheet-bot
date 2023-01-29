@@ -77,7 +77,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
       project_id: timerMarking?.project?.id ?? '',
       description: timerMarking.description,
       date: formatDatePad(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`),
-      work_class: timerMarking.isBillable ? 'PRODUCTION' : 'ABSENCE',
+      is_billable: timerMarking.isBillable,
       start_time: startTime,
       finish_time: finishTime
     }
@@ -90,7 +90,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
         .min(1, 'A descrição é obrigatória!'),
       date: Yup.string()
         .required('A data é obrigatória!'),
-      work_class: Yup.string()
+      is_billable: Yup.string()
         .required('Deve informar se é billable ou não!'),
       start_time: Yup.string()
         .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'O formato do tempo inicial deve ser HH:MM')

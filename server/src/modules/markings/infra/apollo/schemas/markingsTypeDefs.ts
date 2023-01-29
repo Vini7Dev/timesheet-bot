@@ -30,7 +30,7 @@ export const markingsTypeDefs = gql`
     finish_time: String!
     start_interval_time: String
     finish_interval_time: String
-    work_class: WorkClass!
+    is_billable: Boolean!
     user_id: String!
     user: User!
     project_id: String!
@@ -64,7 +64,7 @@ export const markingsTypeDefs = gql`
     finish_time: String!
     start_interval_time: String
     finish_interval_time: String
-    work_class: WorkClass!
+    is_billable: Boolean!
     project_id: String!
   }
 
@@ -77,15 +77,10 @@ export const markingsTypeDefs = gql`
     finish_time: String
     start_interval_time: String
     finish_interval_time: String
-    work_class: WorkClass
+    is_billable: Boolean
   }
 
   input SendMarkingsToTimesheetInput {
     markingIds: [String!]!
-  }
-
-  enum WorkClass {
-    PRODUCTION,
-    ABSENCE
   }
 `

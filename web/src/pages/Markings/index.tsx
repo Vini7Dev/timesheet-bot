@@ -34,7 +34,7 @@ interface IUpdateMarkingProps {
   description?: string
   start_time?: string
   finish_time?: string
-  work_class?: WorkClass
+  is_billable?: boolean
 }
 
 interface IHandleSetEditMarkingProps {
@@ -115,7 +115,7 @@ export const Markings: React.FC = () => {
     description,
     start_time,
     finish_time,
-    work_class
+    is_billable
   }: IUpdateMarkingProps) => {
     const markingData = {
       marking_id,
@@ -124,7 +124,7 @@ export const Markings: React.FC = () => {
       description,
       start_time,
       finish_time,
-      work_class
+      is_billable
     }
 
     const schema = Yup.object().shape({
@@ -135,7 +135,7 @@ export const Markings: React.FC = () => {
         /^\d{4}-\d{2}-\d{2}$/,
         'O formato da data deve ser DD/MM/YYYY'
       ),
-      work_class: Yup.string(),
+      is_billable: Yup.boolean(),
       start_time: Yup.string().matches(
         /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
         'O formato do tempo inicial deve ser HH:MM'

@@ -1,5 +1,3 @@
-import { WorkClass } from '@prisma/client'
-
 export interface IUpdateMarkingsDTO {
   markings: IUpdateTimesheetMarkingDTO[]
 }
@@ -13,5 +11,5 @@ interface IUpdateTimesheetMarkingDTO {
   finish_time: string
   start_interval_time?: string | null
   finish_interval_time?: string | null
-  work_class: WorkClass
+  is_billable: boolean
 }

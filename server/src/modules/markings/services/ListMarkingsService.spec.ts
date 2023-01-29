@@ -1,7 +1,5 @@
 import 'reflect-metadata'
 
-import { WorkClass } from '@prisma/client'
-
 import { FakeMarkingsRepository } from '../repositories/fakes/FakeMarkingsRepository'
 import { IMarkingsRepository } from '../repositories/IMarkingsRepository'
 import { ListMarkingsService } from './ListMarkingsService'
@@ -25,7 +23,7 @@ describe('ListMarkingsService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -42,7 +40,7 @@ describe('ListMarkingsService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -52,7 +50,7 @@ describe('ListMarkingsService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -62,7 +60,7 @@ describe('ListMarkingsService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -82,7 +80,7 @@ describe('ListMarkingsService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -92,7 +90,7 @@ describe('ListMarkingsService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -102,7 +100,7 @@ describe('ListMarkingsService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })

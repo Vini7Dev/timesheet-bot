@@ -1,4 +1,3 @@
-import { WorkClass } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository';
@@ -17,7 +16,7 @@ interface IServiceProps {
   finish_time: string
   start_interval_time?: string
   finish_interval_time?: string
-  work_class: WorkClass
+  is_billable: boolean
   project_id: string
   authenticatedUserId: string
 }
@@ -42,7 +41,7 @@ export class CreateMarkingService {
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     project_id,
     authenticatedUserId,
   }: IServiceProps): Promise<Marking> {
@@ -136,7 +135,7 @@ export class CreateMarkingService {
       finish_time,
       start_interval_time,
       finish_interval_time,
-      work_class,
+      is_billable,
       project_id,
       user_id: userToRefer.id,
     })

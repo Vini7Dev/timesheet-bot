@@ -1,4 +1,4 @@
-import { WorkClass, OnTimesheetStatus } from '@prisma/client'
+import { OnTimesheetStatus } from '@prisma/client'
 
 import { Project } from '@modules/projects/infra/prisma/entities/Project'
 import { User } from '@modules/users/infra/prisma/entities/User'
@@ -24,7 +24,7 @@ export class Marking {
 
   finish_interval_time?: string | null
 
-  work_class: WorkClass
+  is_billable: boolean
 
   user_id: string | null
 

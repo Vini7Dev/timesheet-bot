@@ -1,7 +1,5 @@
 import 'reflect-metadata'
 
-import { WorkClass } from '@prisma/client'
-
 import { FakeProjectsRepository } from '@modules/projects/repositories/fakes/FakeProjectsRepository'
 import { IProjectsRepository } from '@modules/projects/repositories/IProjectsRepository'
 import { FakeUsersRepository } from '@modules/users/repositories/fakes/FakeUsersRepository'
@@ -49,7 +47,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id,
     })
@@ -62,7 +60,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '13:00',
       start_interval_time: '11:00',
       finish_interval_time: '12:00',
-      work_class: WorkClass.ABSENCE,
+      is_billable: false,
       project_id: otherProjectReference.id,
       authenticatedUserId: authenticatedUser.id,
     })
@@ -78,7 +76,7 @@ describe('UpdateMarkingService', () => {
     expect(updatedMarking.finish_time).toEqual('13:00')
     expect(updatedMarking.start_interval_time).toEqual('11:00')
     expect(updatedMarking.finish_interval_time).toEqual('12:00')
-    expect(updatedMarking.work_class).toEqual(WorkClass.ABSENCE)
+    expect(updatedMarking.is_billable).toEqual(false)
     expect(updatedMarking.updated_at).not.toEqual(updatedMarking.created_at)
   })
 
@@ -103,7 +101,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       user_id: authenticatedUser.id,
     })
@@ -117,7 +115,7 @@ describe('UpdateMarkingService', () => {
     expect(updatedMarking.id).toEqual(createdMarking.id)
     expect(updatedMarking.on_timesheet_status).toEqual('NOT_SENT')
     expect(updatedMarking.timesheet_error).toEqual(undefined)
-    expect(updatedMarking.work_class).toEqual(createdMarking.work_class)
+    expect(updatedMarking.is_billable).toEqual(createdMarking.is_billable)
     expect(updatedMarking.description).toEqual(createdMarking.description)
     expect(updatedMarking.date).toEqual(createdMarking.date)
     expect(updatedMarking.start_time).toEqual(createdMarking.start_time)
@@ -145,7 +143,7 @@ describe('UpdateMarkingService', () => {
         finish_time: '13:00',
         start_interval_time: '11:00',
         finish_interval_time: '12:00',
-        work_class: WorkClass.ABSENCE,
+        is_billable: false,
         authenticatedUserId: authenticatedUser.id,
       })
     ).rejects.toEqual(new AppError('Marking not found!', 404))
@@ -159,7 +157,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'invalid-user-id',
     })
@@ -173,7 +171,7 @@ describe('UpdateMarkingService', () => {
         finish_time: '13:00',
         start_interval_time: '11:00',
         finish_interval_time: '12:00',
-        work_class: WorkClass.ABSENCE,
+        is_billable: false,
         authenticatedUserId: 'invalid-user-id',
       })
     ).rejects.toEqual(new AppError('User not found!', 404))
@@ -194,7 +192,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'user-owner-id',
     })
@@ -220,7 +218,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: userReference.id,
     })
@@ -233,7 +231,7 @@ describe('UpdateMarkingService', () => {
         date: '02/01/2022',
         start_time: '10:00',
         finish_time: '13:00',
-        work_class: WorkClass.ABSENCE,
+        is_billable: false,
         authenticatedUserId: userReference.id,
       })
     ).rejects.toEqual(new AppError('Project not found!', 404))
@@ -260,7 +258,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       user_id: authenticatedUser.id,
     })
@@ -272,7 +270,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '18:00',
       start_interval_time: '16:00',
       finish_interval_time: '17:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       user_id: authenticatedUser.id,
     })
@@ -281,7 +279,7 @@ describe('UpdateMarkingService', () => {
       marking_id: newMarkingToUpdate.id,
       description: 'Description Example 2',
       date: '01/01/2022',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -337,7 +335,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       user_id: authenticatedUser.id,
     })
@@ -346,7 +344,7 @@ describe('UpdateMarkingService', () => {
       marking_id: createdMarking.id,
       description: 'Description Example 2',
       date: '01/01/2022',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -386,7 +384,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       user_id: authenticatedUser.id,
     })
@@ -395,7 +393,7 @@ describe('UpdateMarkingService', () => {
       marking_id: createdMarking.id,
       description: 'Description Example 2',
       date: '01/01/2022',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -453,7 +451,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectReference.id,
       user_id: authenticatedUser.id,
     })
@@ -462,7 +460,7 @@ describe('UpdateMarkingService', () => {
       marking_id: createdMarking.id,
       description: 'Updated Description Example',
       date: '02/01/2022',
-      work_class: WorkClass.ABSENCE,
+      is_billable: false,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -506,7 +504,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       user_id: authenticatedUser.id,
       project_id: 'project-reference-id',
       on_timesheet_id: 'any-timesheet-id'
@@ -517,7 +515,7 @@ describe('UpdateMarkingService', () => {
       marking_id: createdMarking.id,
       description: 'Updated Description Example',
       date: '02/01/2022',
-      work_class: WorkClass.ABSENCE,
+      is_billable: false,
       authenticatedUserId: authenticatedUser.id,
     }
 
@@ -543,7 +541,7 @@ describe('UpdateMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id,
       on_timesheet_id: 'any-timesheet-id',

@@ -1,4 +1,3 @@
-import { WorkClass } from '@prisma/client'
 import { container } from 'tsyringe'
 
 import { IAppContext } from '@shared/infra/apollo/context'
@@ -15,7 +14,7 @@ interface IUpdateMarkingInput {
     finish_time?: string
     start_interval_time?: string
     finish_interval_time?: string
-    work_class?: WorkClass
+    is_billable?: boolean
   }
 }
 
@@ -30,7 +29,7 @@ export const updateMarking = async (
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
   } }: IUpdateMarkingInput,
   ctx: IAppContext,
 ) => {
@@ -48,7 +47,7 @@ export const updateMarking = async (
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
   })
 
   return updatedMarking

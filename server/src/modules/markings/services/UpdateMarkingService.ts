@@ -1,4 +1,3 @@
-import { WorkClass } from '@prisma/client'
 import { inject, injectable } from 'tsyringe'
 
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
@@ -18,7 +17,7 @@ interface IServiceProps {
   finish_time?: string
   start_interval_time?: string
   finish_interval_time?: string
-  work_class?: WorkClass
+  is_billable?: boolean
   authenticatedUserId: string
 }
 
@@ -44,7 +43,7 @@ export class UpdateMarkingService {
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     authenticatedUserId,
   }: IServiceProps): Promise<Marking> {
     const authenticatedUser = await this.usersRepository.findById(authenticatedUserId)
@@ -172,7 +171,7 @@ export class UpdateMarkingService {
       finish_time: finish_time ?? markingToUpdate.finish_time,
       start_interval_time: start_interval_time ?? markingToUpdate.start_interval_time as any,
       finish_interval_time: finish_interval_time ?? markingToUpdate.finish_interval_time as any,
-      work_class: work_class ?? markingToUpdate.work_class,
+      is_billable: is_billable ?? markingToUpdate.is_billable,
       project_id: project_id ?? markingToUpdate.project_id as any,
       user_id: authenticatedUser.id,
     })

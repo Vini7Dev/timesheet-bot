@@ -1,7 +1,5 @@
 import 'reflect-metadata'
 
-import { WorkClass } from '@prisma/client'
-
 import { AppError } from '@shared/errors/AppError'
 import { IEncrypt } from '@shared/containers/providers/Encrypt/models/IEncrypt'
 import { IQueue } from '@shared/containers/providers/Queue/models/IQueue'
@@ -46,7 +44,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id
     })
@@ -74,7 +72,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id
     })
@@ -101,7 +99,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -127,7 +125,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id
     })
@@ -137,7 +135,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'another-user-id'
     })
@@ -171,7 +169,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id,
       on_timesheet_status: 'SENDING'
@@ -182,7 +180,7 @@ describe('SendMarkingsToTimesheetService', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id
     })

@@ -1,7 +1,5 @@
 import 'reflect-metadata'
 
-import { WorkClass } from '@prisma/client'
-
 import { AppError } from '@shared/errors/AppError'
 import { IUsersRepository } from '@modules/users/repositories/IUsersRepository'
 import { FakeUsersRepository } from '@modules/users/repositories/fakes/FakeUsersRepository'
@@ -38,7 +36,7 @@ describe('ShowMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: authenticatedUser.id
     })
@@ -75,7 +73,7 @@ describe('ShowMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'invalid-user-id'
     })
@@ -103,7 +101,7 @@ describe('ShowMarkingService', () => {
       finish_time: '12:00',
       start_interval_time: '10:00',
       finish_interval_time: '11:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })

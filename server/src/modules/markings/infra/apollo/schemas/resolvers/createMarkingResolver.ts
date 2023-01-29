@@ -1,4 +1,3 @@
-import { WorkClass } from '@prisma/client'
 import { container } from 'tsyringe'
 
 import { IAppContext } from '@shared/infra/apollo/context'
@@ -13,7 +12,7 @@ interface ICreateMarkingInput {
     finish_time: string
     start_interval_time?: string
     finish_interval_time?: string
-    work_class: WorkClass
+    is_billable: boolean
     project_id: string
   }
 }
@@ -27,7 +26,7 @@ export const createMarking = async (
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     project_id,
   } }: ICreateMarkingInput,
   ctx: IAppContext,
@@ -44,7 +43,7 @@ export const createMarking = async (
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     project_id,
   })
 

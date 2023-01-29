@@ -1,4 +1,4 @@
-import { OnTimesheetStatus, WorkClass } from '@prisma/client'
+import { OnTimesheetStatus } from '@prisma/client'
 
 export interface ICreateMarkingDTO {
   description: string
@@ -7,7 +7,7 @@ export interface ICreateMarkingDTO {
   finish_time: string
   start_interval_time?: string
   finish_interval_time?: string
-  work_class: WorkClass
+  is_billable: boolean
   user_id: string
   project_id: string
   on_timesheet_id?: string

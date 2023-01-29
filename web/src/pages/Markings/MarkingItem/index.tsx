@@ -16,7 +16,7 @@ interface IUpdateMarkingProps {
   description?: string
   start_time?: string
   finish_time?: string
-  work_class?: WorkClass
+  is_billable?: boolean
 }
 
 interface IHandleUpdateMarkingProps {
@@ -24,7 +24,7 @@ interface IHandleUpdateMarkingProps {
   newDescription?: string
   newStartTime?: string
   newFinishTime?: string
-  newWorkClass?: WorkClass
+  newIsBillable?: boolean
 }
 
 interface IOnEditMarkingProps {
@@ -48,7 +48,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     on_timesheet_id,
     on_timesheet_status,
     deleted_at
@@ -60,7 +60,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
   const [projectPopupIsOpen, setProjectPopupIsOpen] = useState(false)
 
   const [timesheetDeletionIsPending] = useState(!!(deleted_at && on_timesheet_id))
-  const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
+  const [isBillable, setIsBillable] = useState(is_billable)
   const [onTimesheetStatus] = useState<OnTimesheetStatus>(on_timesheet_status)
   const [startTime, setStarTime] = useState(start_time)
   const [finishTime, setFinishTime] = useState(finish_time)
@@ -87,12 +87,12 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
     newDescription,
     newStartTime,
     newFinishTime,
-    newWorkClass
+    newIsBillable
   }: IHandleUpdateMarkingProps) => {
     if (
       newProjectId === project.id ||
       newDescription === description ||
-      newWorkClass === work_class ||
+      newIsBillable === is_billable ||
       (newStartTime === startTime && newFinishTime === finishTime)
     ) {
       return
@@ -105,13 +105,13 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
       description: newDescription,
       start_time: newStartTime,
       finish_time: newFinishTime,
-      work_class: newWorkClass
+      is_billable: newIsBillable
     })
-  }, [date, description, finish_time, id, onUpdate, project.id, start_time, work_class])
+  }, [project.id, description, is_billable, startTime, finishTime, onUpdate, date, id])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)
-    handleUpdateMarking({ newWorkClass: isBillable ? 'ABSENCE' : 'PRODUCTION' })
+    handleUpdateMarking({ newIsBillable: !isBillable })
   }, [handleUpdateMarking, isBillable])
 
   return (

@@ -1,5 +1,3 @@
-import { WorkClass } from '@prisma/client'
-
 import MarkingsOnTimesheetJob from './MarkingsOnTimesheetJob'
 import { TRIGGER_MARKINGS_TO_TIMESHEET } from '@utils/constants'
 import { AppError } from '@shared/errors/AppError'
@@ -79,7 +77,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectExample.id,
       user_id: userOwner.id
     })
@@ -89,7 +87,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectExample.id,
       user_id: userOwner.id,
       on_timesheet_id: 'any-timesheet-id',
@@ -101,7 +99,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: projectExample.id,
       on_timesheet_id: 'any-timesheet-id',
       on_timesheet_status: 'SENT',
@@ -195,7 +193,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: userOwner.id
     })
@@ -205,7 +203,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: userOwner.id,
       on_timesheet_id: 'any-timesheet-id',
@@ -217,7 +215,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       on_timesheet_id: 'any-timesheet-id',
       on_timesheet_status: 'SENT',
@@ -283,7 +281,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: 'any-user-id'
     })
@@ -313,7 +311,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: userOwner.id,
       on_timesheet_status: 'SENDING',
@@ -351,7 +349,7 @@ describe('MarkingsOnTimesheetJob', () => {
       date: '01/01/2022',
       start_time: '09:00',
       finish_time: '12:00',
-      work_class: WorkClass.PRODUCTION,
+      is_billable: true,
       project_id: 'any-project-id',
       user_id: userOwner.id,
     })

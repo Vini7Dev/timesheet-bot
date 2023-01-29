@@ -1,7 +1,5 @@
 type OnTimesheetStatus = 'SENT' | 'SENDING' | 'NOT_SENT' | 'ERROR'
 
-type WorkClass = 'PRODUCTION' | 'ABSENCE'
-
 interface IMarkingData {
   id: string
   on_timesheet_id?: string
@@ -13,7 +11,7 @@ interface IMarkingData {
   finish_time: string
   start_interval_time: string
   finish_interval_time: string
-  work_class: WorkClass
+  is_billable: boolean
   user_id: string
   project_id: string
   deleted_at?: string

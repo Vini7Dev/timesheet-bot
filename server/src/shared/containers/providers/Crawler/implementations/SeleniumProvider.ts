@@ -2,7 +2,6 @@ import { Builder, By, until, WebDriver } from 'selenium-webdriver'
 import webdriver from 'selenium-webdriver'
 import chrome from 'selenium-webdriver/chrome'
 import chromedriver from 'chromedriver'
-import { WorkClass } from '@prisma/client'
 
 import { formatDateString } from '@utils/formatDateString'
 import { delay } from '@utils/delay'
@@ -36,7 +35,7 @@ interface IFillFormInputElements {
 
 interface IBuildMarkingDescriptionProps {
   description: string
-  workClass: WorkClass
+  isBillable: boolean
 }
 
 const NON_BILLABLE_TEXT = '(NON-BILLABLE)'
@@ -129,9 +128,9 @@ export class SeleniumProvider implements ICrawler {
 
   private buildMarkingDescription({
     description,
-    workClass,
+    isBillable,
   }: IBuildMarkingDescriptionProps): string {
-    if (workClass === 'PRODUCTION') {
+    if (isBillable) {
       return description
     }
 
@@ -220,7 +219,7 @@ export class SeleniumProvider implements ICrawler {
 
         const description = this.buildMarkingDescription({
           description: marking.description,
-          workClass: marking.work_class
+          isBillable: marking.is_billable
         })
 
         await this.fillFormInputElements([
@@ -330,7 +329,7 @@ export class SeleniumProvider implements ICrawler {
 
         const description = this.buildMarkingDescription({
           description: marking.description,
-          workClass: marking.work_class
+          isBillable: marking.is_billable
         })
 
         await this.fillFormInputElements([

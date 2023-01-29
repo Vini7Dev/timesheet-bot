@@ -34,7 +34,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
     finish_time,
     start_interval_time,
     finish_interval_time,
-    work_class,
+    is_billable,
     project
   },
   beforeUpdate,
@@ -48,7 +48,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
 
   const [dateUpdated, setDateUpdated] = useState(formatDatePad(date))
 
-  const [isBillable, setIsBillable] = useState(work_class === 'PRODUCTION')
+  const [isBillable, setIsBillable] = useState(is_billable)
   const [descriptionUpdated, setDescriptionUpdated] = useState(description)
   const [startTimeUpdated, setStartTimeUpdated] = useState(start_time)
   const [finishTimeUpdated, setFinishTimeUpdated] = useState(finish_time)
@@ -70,7 +70,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       project_id: projectUpdated.id,
       description: descriptionUpdated,
       date: dateUpdated,
-      work_class: isBillable ? 'PRODUCTION' : 'ABSENCE',
+      is_billable: isBillable,
       start_time: startTimeUpdated,
       finish_time: finishTimeUpdated,
       start_interval_time: startIntervalTimeUpdated,
@@ -90,7 +90,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
           /^\d{4}-\d{2}-\d{2}$/,
           'O formato da data deve ser DD/MM/YYYY'
         ).required('A data é obrigatória!'),
-      work_class: Yup.string()
+      is_billable: Yup.boolean()
         .required('Deve informar se é billable ou não!'),
       start_time: Yup.string()
         .matches(

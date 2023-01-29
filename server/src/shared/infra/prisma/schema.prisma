@@ -55,7 +55,7 @@ model Markings {
   finish_time          String
   start_interval_time  String?
   finish_interval_time String?
-  work_class           WorkClass         @default(PRODUCTION)
+  is_billable          Boolean          @default(true)
   user_id              String?
   project_id           String?
   created_at           DateTime          @default(now())
@@ -75,9 +75,4 @@ enum OnTimesheetStatus {
   SENDING
   SENT
   ERROR
-}
-
-enum WorkClass {
-  PRODUCTION
-  ABSENCE
 }
