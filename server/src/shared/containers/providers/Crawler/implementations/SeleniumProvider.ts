@@ -2,6 +2,7 @@ import { Builder, By, until, WebDriver } from 'selenium-webdriver'
 import webdriver from 'selenium-webdriver'
 import chrome from 'selenium-webdriver/chrome'
 import chromedriver from 'chromedriver'
+import { WorkClass } from '@prisma/client'
 
 import { formatDateString } from '@utils/formatDateString'
 import { delay } from '@utils/delay'
@@ -32,6 +33,13 @@ interface IFillFormInputElements {
   selector: string
   value: string
 }
+
+interface IBuildMarkingDescriptionProps {
+  description: string
+  workClass: WorkClass
+}
+
+const NON_BILLABLE_TEXT = '(NON-BILLABLE)'
 
 const {
   browserWindowRect,
@@ -119,6 +127,17 @@ export class SeleniumProvider implements ICrawler {
     return 'editHora()'
   }
 
+  private buildMarkingDescription({
+    description,
+    workClass,
+  }: IBuildMarkingDescriptionProps): string {
+    if (workClass === 'PRODUCTION') {
+      return description
+    }
+
+    return `${description} ${NON_BILLABLE_TEXT}`
+  }
+
   public async closeCrawler(): Promise<void> {
     try {
       await this.driver.close()
@@ -190,25 +209,8 @@ export class SeleniumProvider implements ICrawler {
           })
         }])
 
-        if (marking.work_class === 'PRODUCTION') {
-          await this.waitForElementsLoad([{
-            by: 'css', selector: '#idutbms_classe > option[value="63"]'
-          }])
-
-          await this.driver.findElement(
-            By.css('#idutbms_classe > option[value="63"]')
-          ).click()
-        } else {
-          await this.waitForElementsLoad([{
-            by: 'css', selector: '#idutbms_classe > option[value="57"]'
-          }])
-
-          await this.driver.findElement(
-            By.css('#idutbms_classe > option[value="57"]')
-          ).click()
-        }
-
         await this.waitForElementsLoad([
+          { by: 'css', selector: '#idutbms_classe > option[value="63"]' },
           { by: 'id', selector: 'narrativa_principal' },
           { by: 'id', selector: 'hora' },
           { by: 'id', selector: 'hora_fim' },
@@ -216,12 +218,17 @@ export class SeleniumProvider implements ICrawler {
           { by: 'id', selector: 'intervalo_hr_final' },
         ])
 
+        const description = this.buildMarkingDescription({
+          description: marking.description,
+          workClass: marking.work_class
+        })
+
         await this.fillFormInputElements([
           { by: 'id', selector: 'hora', value: marking.start_time },
           { by: 'id', selector: 'intervalo_hr_inicial', value: marking.start_interval_time ?? '00:00' },
           { by: 'id', selector: 'intervalo_hr_final', value: marking.finish_interval_time ?? '00:00' },
           { by: 'id', selector: 'hora_fim', value: marking.finish_time },
-          { by: 'id', selector: 'narrativa_principal', value: marking.description },
+          { by: 'id', selector: 'narrativa_principal', value: description },
         ])
 
         // Submit form
@@ -312,25 +319,8 @@ export class SeleniumProvider implements ICrawler {
           },
         ])
 
-        if (marking.work_class === 'PRODUCTION') {
-          await this.waitForElementsLoad([{
-            by: 'css', selector: '#idutbms_classe > option[value="63"]'
-          }])
-
-          await this.driver.findElement(
-            By.css('#idutbms_classe > option[value="63"]')
-          ).click()
-        } else {
-          await this.waitForElementsLoad([{
-            by: 'css', selector: '#idutbms_classe > option[value="57"]'
-          }])
-
-          await this.driver.findElement(
-            By.css('#idutbms_classe > option[value="57"]')
-          ).click()
-        }
-
         await this.waitForElementsLoad([
+          { by: 'css', selector: '#idutbms_classe > option[value="63"]' },
           { by: 'id', selector: 'narrativa_principal' },
           { by: 'id', selector: 'hora' },
           { by: 'id', selector: 'hora_fim' },
@@ -338,12 +328,17 @@ export class SeleniumProvider implements ICrawler {
           { by: 'id', selector: 'intervalo_hr_final' },
         ])
 
+        const description = this.buildMarkingDescription({
+          description: marking.description,
+          workClass: marking.work_class
+        })
+
         await this.fillFormInputElements([
           { by: 'id', selector: 'hora', value: marking.start_time },
           { by: 'id', selector: 'intervalo_hr_inicial', value: marking.start_interval_time ?? '00:00' },
           { by: 'id', selector: 'intervalo_hr_final', value: marking.finish_interval_time ?? '00:00' },
           { by: 'id', selector: 'hora_fim', value: marking.finish_time },
-          { by: 'id', selector: 'narrativa_principal', value: marking.description },
+          { by: 'id', selector: 'narrativa_principal', value: description },
         ])
 
         // Submit form

@@ -140,9 +140,18 @@ export default {
     } catch {
       await crawlerProvider.closeCrawler()
 
-      updatedMarkingsToClient = markings.map(marking => ({
-        id: marking.id,
-        on_timesheet_status: 'NOT_SENT',
+      const updatedMarkingsStatus = await markingsRepository.updateManyTimesheetStatus({
+        markingsStatus: markings.map(marking => ({
+          marking_id: marking.id,
+          on_timesheet_id: marking.on_timesheet_id,
+          on_timesheet_status: 'NOT_SENT',
+          timesheet_error: marking?.timesheet_error
+        }))
+      })
+
+      updatedMarkingsToClient = updatedMarkingsStatus.markingsStatus.map(marking => ({
+        id: marking.marking_id,
+        on_timesheet_status: marking.on_timesheet_status,
         timesheet_error: marking.timesheet_error,
       }))
     } finally {
