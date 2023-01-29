@@ -66,6 +66,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
   const [finishTime, setFinishTime] = useState(finish_time)
 
   const wrapperRef = useRef(null)
+
   useOutsideAlerter({
     ref: editingMarkingTime ? wrapperRef : {},
     callback: () => {
@@ -107,7 +108,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
       finish_time: newFinishTime,
       is_billable: newIsBillable
     })
-  }, [project.id, description, is_billable, startTime, finishTime, onUpdate, date, id])
+  }, [project.id, description, is_billable, start_time, finish_time, onUpdate, date, id])
 
   const toggleIsBillable = useCallback(() => {
     setIsBillable(!isBillable)

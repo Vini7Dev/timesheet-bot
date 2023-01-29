@@ -195,7 +195,7 @@ export const Markings: React.FC = () => {
         }
       }
     })
-  }, [])
+  }, [client, handleGetUserMarkings])
 
   return (
     <PageContainer>
