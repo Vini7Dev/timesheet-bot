@@ -23,7 +23,8 @@ export const groupMarkingsByDate = (
           startTime: marking.start_time,
           finishTime: marking.finish_time,
           startIntervalTime: marking.start_interval_time,
-          finishIntervalTime: marking.finish_interval_time
+          finishIntervalTime: marking.finish_interval_time,
+          deleted_at: marking.deleted_at
         })
       })
     } else {
@@ -34,7 +35,8 @@ export const groupMarkingsByDate = (
         startTime: marking.start_time,
         finishTime: marking.finish_time,
         startIntervalTime: marking.start_interval_time,
-        finishIntervalTime: marking.finish_interval_time
+        finishIntervalTime: marking.finish_interval_time,
+        deleted_at: marking.deleted_at
       })
     }
   }

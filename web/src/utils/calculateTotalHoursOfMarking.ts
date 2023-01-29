@@ -4,6 +4,7 @@ interface ICalculateTotalHoursOfMarkingProps {
   finishTime: string
   startIntervalTime?: string
   finishIntervalTime?: string
+  deleted_at?: string
 }
 
 export const calculateTotalHoursOfMarking = ({
@@ -11,8 +12,13 @@ export const calculateTotalHoursOfMarking = ({
   startTime,
   finishTime,
   startIntervalTime,
-  finishIntervalTime
+  finishIntervalTime,
+  deleted_at
 }: ICalculateTotalHoursOfMarkingProps): number => {
+  if (deleted_at) {
+    return 0
+  }
+
   const startTimeDate = new Date(`${date}T${startTime}:00`).getTime()
   const finishTimeDate = new Date(`${date}T${finishTime}:00`).getTime()
 
