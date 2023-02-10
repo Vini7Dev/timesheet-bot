@@ -196,6 +196,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
     todayDate.setMinutes(parseInt(minutes))
 
     changeStartTime(todayDate.getTime())
+    setChangeStartInputValue('')
   }, [changeStartInputValue, changeStartTime, timerRunning])
 
   useEffect(() => {

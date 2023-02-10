@@ -43,7 +43,7 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
 
   const [timerMarking, setTimerMarking] = useState<ITimerMarkingData>({
     description: '',
-    isBillable: false
+    isBillable: true
   })
 
   const updateTimerMarkingData = useCallback(({
@@ -132,6 +132,10 @@ export const TimerProvider: React.FC<any> = ({ children }) => {
     setTimerRunning(false)
 
     clearMarkingBkpFromSessionStorage()
+    setTimerMarking({
+      description: '',
+      isBillable: true
+    })
   }, [clearMarkingBkpFromSessionStorage, timerInterval])
 
   const changeStartTime = useCallback((newStartTime: number) => {

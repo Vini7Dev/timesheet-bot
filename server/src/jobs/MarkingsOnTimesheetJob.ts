@@ -137,7 +137,9 @@ export default {
         timesheet_error: marking.timesheet_error,
       }))
 
-    } catch {
+    } catch(err) {
+      console.error(err)
+
       await crawlerProvider.closeCrawler()
 
       const updatedMarkingsStatus = await markingsRepository.updateManyTimesheetStatus({
