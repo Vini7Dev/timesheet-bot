@@ -13,8 +13,8 @@ export const PaginationContainer = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 38px;
-      height: 38px;
+      width: 2.375rem;
+      height: 2.375rem;
       color: #C6D2D9;
       background-color: #1D272C;
       border: 1px solid #12191d;
@@ -26,7 +26,7 @@ export const PaginationContainer = styled.div`
     }
 
     .pagination-input {
-      width: 58px;
+      width: 3.625rem;
       margin: 0 0.5rem;
 
 
@@ -41,7 +41,7 @@ export const PaginationContainer = styled.div`
     align-items: center;
 
     & > div {
-      width: 76px;
+      width: 4.75rem;
     }
 
     span {

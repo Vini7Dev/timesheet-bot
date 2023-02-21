@@ -12,6 +12,9 @@ import { Button } from '../Button'
 import { CustomPopup } from '../CustomPopup'
 import { yupFormValidator } from '../../utils/yupFormValidator'
 import { PopupContentContainer, TopBarContainer } from './styles'
+import { FiMenu } from 'react-icons/fi'
+import { useNavigation } from '../../hooks/navigation'
+import { useRuntime } from '../../hooks/runtime'
 
 interface IUpdateUserResponse {
   updateUser: {
@@ -25,6 +28,8 @@ interface IUpdateUserResponse {
 export const TopBar: React.FC = () => {
   const toast = useToast()
   const client = useApolloClient()
+  const { toggleMobileNavigationIsOpen } = useNavigation()
+  const { isMobile } = useRuntime()
   const { user, signOut, updateUserData } = useAuth()
 
   const [showUserPopup, setShowUserPopup] = useState(false)
@@ -131,6 +136,17 @@ export const TopBar: React.FC = () => {
   return (
     <TopBarContainer backgroundColor={user ? '#12191D' : 'transparent'} >
       <div id="top-bar-content">
+        {
+          isMobile && (
+            <button
+              id="toggle-mobile-navigation-menu"
+              onClick={toggleMobileNavigationIsOpen}
+            >
+              <FiMenu size={22} color="#90A4AE" />
+            </button>
+          )
+        }
+
         <Link to="/" id="top-bar-multify-link">
           <img src={MultifyLogo} alt="Multify" id="top-bar-multify-logo" />
         </Link>

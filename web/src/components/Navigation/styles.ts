@@ -1,6 +1,10 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export const NavigationContainer = styled.aside`
+interface INavigationContainerProps {
+  mobileNavigationIsOpen: boolean
+}
+
+export const NavigationContainer = styled.aside<INavigationContainerProps>`
   width: 100%;
   height: 1.25rem;
 
@@ -8,48 +12,59 @@ export const NavigationContainer = styled.aside`
     position: fixed;
     top: 5rem;
     width: 100%;
+    overflow-y: auto;
     background-color: #1D272C;
     box-shadow: 1px 0 #12191D;
     z-index: 10;
 
-    #toggle-mobile-navigation-menu {
-      position: absolute;
-      top: -3.125rem;
-      left: 0.75rem;
-      border: none;
-      background-color: transparent;
-    }
+    ${({ mobileNavigationIsOpen }) => mobileNavigationIsOpen && css`height: calc(100vh - 5rem);`}
 
-    #left-navigation-list {
-      display: block;
-      width: 100%;
-      list-style: none;
-
-      .left-navigation-item {
-        display: flex;
-        align-items: center;
-        height: 3.125rem;
-        padding-left: 1.125rem;
-        width: 100%;
-
-        a {
-          font-family: 'Roboto', sans-serif;
-          font-size: 0.75rem;
-          color: #90A4AE;
-          text-decoration: none;
-          text-transform: uppercase;
-          display: flex;
-          align-items: center;
-
-          svg {
-            margin-right: 0.5rem;
-          }
-        }
+    .left-navigation-group {
+      .left-navitagion-group-name {
+        display: block;
+        text-align: center;
+        padding: 0.5rem;
+        font-family: 'Roboto', sans-serif;
+        font-size: 0.85rem;
+        color: #C6D2D9;
+        text-decoration: none;
+        text-transform: uppercase;
+        background-color: #12191D;
+        border-bottom: 1px solid #607D8B;
       }
 
-      .left-navigation-item-select {
-        background-color: #12191D;
-        border: 1px solid #607D8B;
+      .left-navigation-list {
+        display: block;
+        width: 100%;
+        list-style: none;
+
+        .left-navigation-item {
+          display: flex;
+          align-items: center;
+          height: 3.125rem;
+          width: 100%;
+
+          a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 0 1.125rem;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.75rem;
+            color: #90A4AE;
+            text-decoration: none;
+            text-transform: uppercase;
+
+            svg {
+              margin-right: 0.5rem;
+            }
+          }
+        }
+
+        .left-navigation-item-select {
+          background-color: #12191D;
+        }
       }
     }
   }
@@ -60,12 +75,8 @@ export const NavigationContainer = styled.aside`
     #left-navigation-bar {
       position: fixed;
       top: 5rem;
-      height: 100%;
       width: 9.375rem;
-
-      #toggle-mobile-navigation-menu {
-        display: none;
-      }
+      height: calc(100vh - 5rem);
     }
   }
 `

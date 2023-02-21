@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { IconType } from 'react-icons'
-import { FiClipboard, FiClock, FiMenu, FiUsers } from 'react-icons/fi'
+import React, { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { IconType } from 'react-icons'
 
 import { NavigationContainer } from './styles'
+import { useRuntime } from '../../hooks/runtime'
+import { useNavigation } from '../../hooks/navigation'
+import { navigationGroupsList } from '../../utils/navigationGroupsList'
 
 interface INavigationOptionProps {
   url: string
@@ -11,50 +13,41 @@ interface INavigationOptionProps {
   icon: IconType
 }
 
+interface INavigationGroupProps {
+  groupName: string
+  options: INavigationOptionProps[]
+}
+
 export const Navigation: React.FC = () => {
-  const [mobileNavigationIsOpen, setMobileNavigationIsOpen] = useState(false)
+  const {
+    mobileNavigationIsOpen
+  } = useNavigation()
 
-  const [navigationOptions] = useState<INavigationOptionProps[]>([
-    { url: '/', text: 'Marcações', icon: FiClock },
-    { url: '/projects', text: 'Projetos', icon: FiClipboard },
-    { url: '/customers', text: 'Clientes', icon: FiUsers }
-  ])
+  const { isMobile } = useRuntime()
 
-  const toggleMobileNavigationIsOpen = useCallback(() => {
-    setMobileNavigationIsOpen(!mobileNavigationIsOpen)
-  }, [mobileNavigationIsOpen])
+  const [navigationGroups] = useState<INavigationGroupProps[]>(navigationGroupsList)
 
-  useEffect(() => {
-    const handleWindowResize = (): void => {
-      if (window.innerWidth > 696) {
-        setMobileNavigationIsOpen(true)
-      }
+  const handleShowNavigationList = useCallback(() => {
+    if (isMobile) {
+      return mobileNavigationIsOpen
     }
 
-    handleWindowResize()
-
-    window.addEventListener('resize', handleWindowResize)
-
-    return () => {
-      window.removeEventListener('resize', handleWindowResize)
-    }
-  }, [])
+    return true
+  }, [isMobile, mobileNavigationIsOpen])
 
   return (
-    <NavigationContainer>
+    <NavigationContainer mobileNavigationIsOpen={mobileNavigationIsOpen}>
       <nav id="left-navigation-bar">
-        <button
-          id="toggle-mobile-navigation-menu"
-          onClick={toggleMobileNavigationIsOpen}
-        >
-          <FiMenu size={22} color="#90A4AE" />
-        </button>
-
         {
-          mobileNavigationIsOpen && (
-            <ul id="left-navigation-list">
+          handleShowNavigationList() && navigationGroups.map(({
+            groupName,
+            options
+          }, index) => (
+            <div key={index} className="left-navigation-group">
+              <strong className="left-navitagion-group-name">{groupName}</strong>
+              <ul className="left-navigation-list">
               {
-                navigationOptions.map(({ text, url, icon: Icon }, index) => (
+                options.map(({ text, url, icon: Icon }, index) => (
                   <li
                     key={index}
                     className={`left-navigation-item ${
@@ -63,14 +56,25 @@ export const Navigation: React.FC = () => {
                         : ''
                     }`}
                   >
-                    <Link to={url}>
-                      <Icon size={18} /> {text}
-                    </Link>
+                    {
+                      url.includes('http')
+                        ? (
+                        <a href={url} target="_blank" rel="noreferrer">
+                          <Icon size={18} /> {text}
+                        </a>
+                          )
+                        : (
+                        <Link to={url}>
+                          <Icon size={18} /> {text}
+                        </Link>
+                          )
+                    }
                   </li>
                 ))
               }
-            </ul>
-          )
+              </ul>
+            </div>
+          ))
         }
       </nav>
     </NavigationContainer>

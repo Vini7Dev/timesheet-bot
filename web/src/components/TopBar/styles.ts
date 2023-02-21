@@ -17,9 +17,13 @@ export const TopBarContainer = styled.div<ITopBarContainerProps>`
     align-items: center;
     height: 5rem;
     padding: 1.25rem;
-    padding-left: 3.125rem;
     background-color: ${({ backgroundColor }) => backgroundColor};
     z-index: 10;
+
+    #toggle-mobile-navigation-menu {
+      border: none;
+      background-color: transparent;
+    }
 
     #top-bar-multify-link #top-bar-multify-logo {
       height: 3.125rem;
@@ -123,6 +127,10 @@ export const PopupContentContainer = styled.div`
       }
 
       #popup-content-container {
+        #toggle-mobile-navigation-menu {
+          display: none;
+        }
+
         #popup-user-info-name {
           font-size: 2rem;
           margin: -0.15rem 0 0.5rem;
