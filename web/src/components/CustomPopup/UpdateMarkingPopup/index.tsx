@@ -14,6 +14,7 @@ import { Button } from '../../Button'
 import { Input } from '../../Input'
 import { SelectPopup } from '../../SelectPopup'
 import { UpdateMarkingPopupForm } from './styles'
+import { formatTimeInputValue } from '../../../utils/formatTimeInputValue'
 
 interface IUpdateMarkingPopupProps {
   disabledEditingMarking: boolean
@@ -71,10 +72,10 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       description: descriptionUpdated,
       date: dateUpdated,
       is_billable: isBillable,
-      start_time: startTimeUpdated,
-      finish_time: finishTimeUpdated,
-      start_interval_time: startIntervalTimeUpdated,
-      finish_interval_time: finishIntervalTimeUpdated
+      start_time: formatTimeInputValue(startTimeUpdated),
+      finish_time: formatTimeInputValue(finishTimeUpdated),
+      start_interval_time: formatTimeInputValue(startIntervalTimeUpdated),
+      finish_interval_time: formatTimeInputValue(finishIntervalTimeUpdated)
     }
 
     const schema = Yup.object().shape({
@@ -118,8 +119,8 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
       schema,
       data: {
         ...markingData,
-        start_interval_time: startIntervalTimeUpdated || '00:00',
-        finish_interval_time: finishIntervalTimeUpdated || '00:00'
+        start_interval_time: formatTimeInputValue(startIntervalTimeUpdated || '00:00'),
+        finish_interval_time: formatTimeInputValue(finishIntervalTimeUpdated || '00:00')
       },
       addToast: toast.addToast
     })
@@ -305,6 +306,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={startTimeUpdated}
               onChange={(e) => setStartTimeUpdated(e.target.value)}
+              onBlur={(e) => setStartTimeUpdated(formatTimeInputValue(e.target.value))}
               disabled={disabledEditingMarking}
             />
             <span className="marking-time-inputs-divisor">:</span>
@@ -318,6 +320,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={finishTimeUpdated}
               onChange={(e) => setFinishTimeUpdated(e.target.value)}
+              onBlur={(e) => setFinishTimeUpdated(formatTimeInputValue(e.target.value))}
               disabled={disabledEditingMarking}
             />
           </div>
@@ -337,6 +340,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={startIntervalTimeUpdated}
               onChange={(e) => setStartIntervalTimeUpdated(e.target.value)}
+              onBlur={(e) => setStartIntervalTimeUpdated(formatTimeInputValue(e.target.value))}
               disabled={disabledEditingMarking}
             />
             <span className="marking-time-inputs-divisor">:</span>
@@ -350,6 +354,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={finishIntervalTimeUpdated}
               onChange={(e) => setFinishIntervalTimeUpdated(e.target.value)}
+              onBlur={(e) => setFinishIntervalTimeUpdated(formatTimeInputValue(e.target.value))}
               disabled={disabledEditingMarking}
             />
           </div>

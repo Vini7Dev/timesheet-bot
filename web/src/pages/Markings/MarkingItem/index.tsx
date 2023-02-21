@@ -8,6 +8,7 @@ import { Input } from '../../../components/Input'
 import { SelectPopup } from '../../../components/SelectPopup'
 import { MarkingItemContainer } from './styles'
 import { formatDatePad } from '../../../utils/formatPad'
+import { formatTimeInputValue } from '../../../utils/formatTimeInputValue'
 
 interface IUpdateMarkingProps {
   date: string
@@ -187,6 +188,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               style={{ textAlign: 'center', width: '4.375rem' }}
               value={startTime}
               onChange={(e) => setStarTime(e.target.value)}
+              onBlur={(e) => setStarTime(formatTimeInputValue(e.target.value))}
               onFocus={() => setEditingMarkingTime(true)}
               disabled={timesheetDeletionIsPending}
             />
@@ -197,6 +199,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               style={{ textAlign: 'center', width: '4.375rem' }}
               value={finishTime}
               onChange={(e) => setFinishTime(e.target.value)}
+              onBlur={(e) => setFinishTime(formatTimeInputValue(e.target.value))}
               onFocus={() => setEditingMarkingTime(true)}
               disabled={timesheetDeletionIsPending}
             />

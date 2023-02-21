@@ -22,6 +22,7 @@ import { UpdateMarkingPopup } from '../../components/CustomPopup/UpdateMarkingPo
 import { SendToTimesheetPopup } from '../../components/CustomPopup/SendToTimesheetPopup'
 import { MarkingItem } from './MarkingItem'
 import { MainContent, PageContainer } from './styles'
+import { formatTimeInputValue } from '../../utils/formatTimeInputValue'
 
 interface IGetUserMarkingsResponse {
   markingsByUserId: IMarkingData[]
@@ -122,8 +123,8 @@ export const Markings: React.FC = () => {
       project_id,
       date,
       description,
-      start_time,
-      finish_time,
+      start_time: formatTimeInputValue(start_time ?? ''),
+      finish_time: formatTimeInputValue(finish_time ?? ''),
       is_billable
     }
 

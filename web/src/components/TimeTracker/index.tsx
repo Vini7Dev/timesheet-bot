@@ -13,6 +13,7 @@ import { Input } from '../Input'
 import { Button } from '../Button'
 import { SelectPopup } from '../SelectPopup'
 import { TimerTrackerContainer } from './styles'
+import { formatTimeInputValue } from '../../utils/formatTimeInputValue'
 
 interface ITimeTrackerProps {
   beforeCreateMarking?: () => void
@@ -166,11 +167,13 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
   }, [handleCreateMarking, stopTimer])
 
   const handleChangeStartTime = useCallback(() => {
-    if (!timerRunning || !changeStartInputValue) {
+    const formattedChangeStartInputValue = formatTimeInputValue(changeStartInputValue)
+
+    if (!timerRunning || !formattedChangeStartInputValue) {
       return
     }
 
-    if (!changeStartInputValue?.includes(':')) {
+    if (!formattedChangeStartInputValue?.includes(':')) {
       toast.addToast({
         type: 'error',
         message: 'Fomato inválido!'
@@ -179,7 +182,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
       return
     }
 
-    const [hours, minutes] = changeStartInputValue.split(':')
+    const [hours, minutes] = formattedChangeStartInputValue.split(':')
 
     if (!hours || !minutes) {
       toast.addToast({
