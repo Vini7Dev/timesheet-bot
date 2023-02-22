@@ -123,8 +123,8 @@ export const Markings: React.FC = () => {
       project_id,
       date,
       description,
-      start_time: formatTimeInputValue(start_time ?? ''),
-      finish_time: formatTimeInputValue(finish_time ?? ''),
+      start_time: start_time && formatTimeInputValue(start_time),
+      finish_time: finish_time && formatTimeInputValue(finish_time),
       is_billable
     }
 
