@@ -267,7 +267,6 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
 
         <div id="timer-count-container">
           <Input
-            disabled
             placeholder="00:00"
             inputStyle="high"
             value={timerRunning ? getFormattedTimer() : '00:00'}

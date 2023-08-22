@@ -166,9 +166,9 @@ export class SeleniumProvider implements ICrawler {
     await this.driver.findElement(By.id('password_sem_md5')).sendKeys(password)
     await this.driver.findElement(By.css('#login_portal > div:nth-child(6) > button')).click()
 
-    await this.waitForElementsLoad([{
-      by: 'css', selector: '#main_menu > li:nth-child(5)'
-    }])
+    await this.waitForElementsLoad([{ by: 'css', selector: '.calendar' }])
+
+    await this.driver.get(timesheetUrls.oldVersion)
   }
 
   public async saveTimesheetTasks({

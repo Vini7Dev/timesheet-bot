@@ -306,7 +306,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={startTimeUpdated}
               onChange={(e) => setStartTimeUpdated(e.target.value)}
-              onBlur={(e) => setStartTimeUpdated(formatTimeInputValue(e.target.value))}
+              onBlur={(e) => setStartTimeUpdated(formatTimeInputValue(e.target.value) as string)}
               disabled={disabledEditingMarking}
             />
             <span className="marking-time-inputs-divisor">:</span>
@@ -320,7 +320,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={finishTimeUpdated}
               onChange={(e) => setFinishTimeUpdated(e.target.value)}
-              onBlur={(e) => setFinishTimeUpdated(formatTimeInputValue(e.target.value))}
+              onBlur={(e) => setFinishTimeUpdated(formatTimeInputValue(e.target.value) as string)}
               disabled={disabledEditingMarking}
             />
           </div>
@@ -340,7 +340,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={startIntervalTimeUpdated}
               onChange={(e) => setStartIntervalTimeUpdated(e.target.value)}
-              onBlur={(e) => setStartIntervalTimeUpdated(formatTimeInputValue(e.target.value))}
+              onBlur={(e) => setStartIntervalTimeUpdated(formatTimeInputValue(e.target.value) as string)}
               disabled={disabledEditingMarking}
             />
             <span className="marking-time-inputs-divisor">:</span>
@@ -354,7 +354,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
               }}
               value={finishIntervalTimeUpdated}
               onChange={(e) => setFinishIntervalTimeUpdated(e.target.value)}
-              onBlur={(e) => setFinishIntervalTimeUpdated(formatTimeInputValue(e.target.value))}
+              onBlur={(e) => setFinishIntervalTimeUpdated(formatTimeInputValue(e.target.value) as string)}
               disabled={disabledEditingMarking}
             />
           </div>

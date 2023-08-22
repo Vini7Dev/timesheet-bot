@@ -188,7 +188,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               style={{ textAlign: 'center', width: '4.375rem' }}
               value={startTime}
               onChange={(e) => setStarTime(e.target.value)}
-              onBlur={(e) => setStarTime(formatTimeInputValue(e.target.value))}
+              onBlur={(e) => setStarTime(formatTimeInputValue(e.target.value) as string)}
               onFocus={() => setEditingMarkingTime(true)}
               disabled={timesheetDeletionIsPending}
             />
@@ -199,7 +199,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
               style={{ textAlign: 'center', width: '4.375rem' }}
               value={finishTime}
               onChange={(e) => setFinishTime(e.target.value)}
-              onBlur={(e) => setFinishTime(formatTimeInputValue(e.target.value))}
+              onBlur={(e) => setFinishTime(formatTimeInputValue(e.target.value) as string)}
               onFocus={() => setEditingMarkingTime(true)}
               disabled={timesheetDeletionIsPending}
             />

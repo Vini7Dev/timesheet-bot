@@ -15,6 +15,7 @@ export const crawlerConfig = {
   driverTimeout: CRAWLER_TIMEOUT_IN_SECONDS * 1000,
   urls: {
     timesheetUrls: {
+      oldVersion: `${TIMESHEET_BASE_URL}/timesheet/multidados/module/calendario/index.php`,
       login: () => `${TIMESHEET_BASE_URL}/login.php`,
       markings: ({
         CMD = 'listar',

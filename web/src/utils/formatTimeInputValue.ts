@@ -2,7 +2,11 @@ const FIRST_INDEX_OF_TIME_INPUT_VALUE = 0
 const INDEX_OF_MIDDLE_TIME_INPUT_VALUE = 2
 const MAX_SIZE_OF_TIME_INPUT_VALUE = 5
 
-export const formatTimeInputValue = (inputValue: string): string => {
+export const formatTimeInputValue = (inputValue?: string): string | undefined => {
+  if (!inputValue) {
+    return
+  }
+
   const inputValueFormatted = inputValue
     .substring(FIRST_INDEX_OF_TIME_INPUT_VALUE, MAX_SIZE_OF_TIME_INPUT_VALUE)
     .replace(':', '')
