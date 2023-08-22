@@ -4,16 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
+    "db:prisma": "prisma migrate dev && prisma generate",
+    "production": "npm-run-all -s db:prisma -p production:*",
+    "production:server": "node dist/shared/infra/apollo/server.js",
+    "production:queue": "node dist/shared/infra/bull/queue.js",
     "dev": "npm-run-all -p dev:*",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
     "dev:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
-
-    "production": "npm-run-all -s db:prisma -p production:*",
-    "production:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
-    "production:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
-
-    "db:prisma": "prisma migrate dev && prisma generate",
-
     "test": "jest --forceExit"
   },
   "prisma": {
@@ -23,6 +21,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.10",
+    "@babel/node": "^7.22.10",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
+    "@babel/preset-typescript": "^7.22.5",
     "@types/chromedriver": "^81.0.1",
     "@types/jest": "^29.1.2",
     "@types/jsonwebtoken": "^8.5.9",
@@ -30,6 +35,8 @@
     "@types/selenium-webdriver": "^4.1.5",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "eslint": "^8.24.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",

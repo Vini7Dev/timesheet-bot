@@ -16,6 +16,8 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build
+
 USER app
 
 EXPOSE 4003
