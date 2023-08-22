@@ -8,10 +8,9 @@
     "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
     "dev:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
 
-    "production": "npm-run-all -s db:prisma production:start",
-    "production:start": "npm-run-all -p production:start:*",
-    "production:start:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
-    "production:start:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
+    "production": "npm-run-all -s db:prisma -p production:*",
+    "production:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/apollo/server.ts",
+    "production:queue": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/shared/infra/bull/queue.ts",
 
     "db:prisma": "prisma migrate dev && prisma generate",
 
