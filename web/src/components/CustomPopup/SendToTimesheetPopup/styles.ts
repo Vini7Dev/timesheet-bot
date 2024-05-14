@@ -18,6 +18,11 @@ export const SendToTimesheetPopupContainer = styled.div`
     color: #C6D2D9;
   }
 
+  #popup-list-container {
+    overflow-y: scroll;
+    max-height: 200px;
+  }
+
   .popup-marking-container {
     display: flex;
     padding: 0.625rem 0;
