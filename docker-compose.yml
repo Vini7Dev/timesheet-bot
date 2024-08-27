@@ -10,6 +10,9 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=timesheet-bot
+    networks:
+      - timesheet-bot
 
   cache:
     image: redis:alpine
@@ -18,15 +21,28 @@ services:
     volumes:
       - redis:/var/lib/docker/volumes
 
-  backend:
+  server:
     depends_on:
       - database
       - cache
     build: ./server
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@192.168.0.3:5432/timesheet-bot?schema=public
     ports:
       - 4003:4003
+    networks:
+      - timesheet-bot
+
+  web:
+    depends_on:
+      - server
+    build: ./web
+    ports:
+      - 3000:3000
+    networks:
+      - timesheet-bot
+
+networks:
+  timesheet-bot:
+    driver: bridge
 
 volumes:
   postgres:

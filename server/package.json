@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
     "db:prisma": "prisma migrate dev && prisma generate",
-    "production": "npm-run-all -s db:prisma -p production:*",
+    "production": "npm-run-all -p production:*",
+    "production_prisma": "npm-run-all -s db:prisma -p production:*",
     "production:server": "node dist/shared/infra/apollo/server.js",
     "production:queue": "node dist/shared/infra/bull/queue.js",
     "dev": "npm-run-all -p dev:*",

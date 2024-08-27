@@ -1,6 +1,6 @@
 FROM node:20-alpine3.19
 
-WORKDIR /server
+WORKDIR /web
 
 COPY package*.json ./
 
@@ -8,12 +8,10 @@ RUN yarn
 
 COPY . .
 
-RUN mv ./.env.prod ./.env
-
 RUN yarn build
 
 # RUN rm -rf ./src
 
-EXPOSE 4003
+EXPOSE 3000
 
-CMD ["yarn", "production_prisma"]
+CMD ["yarn", "production"]

@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
     "target": "es6",
     "module": "commonjs",
     "lib": ["es6"],
@@ -8,8 +10,6 @@
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": "./src",
-    "outDir": "./dist",
     "paths": {
       "@configs/*": ["configs/*"],
       "@jobs/*": ["jobs/*"],
