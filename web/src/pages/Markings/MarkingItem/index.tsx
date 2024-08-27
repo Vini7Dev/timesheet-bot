@@ -109,6 +109,7 @@ export const MarkingItem: React.FC<IMarkingItemProps> = ({
       finish_time: newFinishTime,
       is_billable: newIsBillable
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id, description, is_billable, start_time, finish_time, onUpdate, date, id])
 
   const toggleIsBillable = useCallback(() => {

@@ -82,7 +82,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     }
 
     setSearchLoading(false)
-  }, [client])
+  }, [client, toast])
 
   const handleGetCustomers = useCallback(async (search?: string) => {
     setSearchLoading(true)
@@ -109,7 +109,7 @@ export const SelectPopup: React.FC<ISelectPopupProps> = ({
     }
 
     setSearchLoading(false)
-  }, [client])
+  }, [client, toast])
 
   const handleReloadList = useCallback(async () => {
     if (popupType === 'customers') {

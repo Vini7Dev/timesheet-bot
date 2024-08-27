@@ -107,7 +107,7 @@ export const Markings: React.FC = () => {
     }
 
     setLoadingMarkings(false)
-  }, [client, markingsPage, markingsPerPage])
+  }, [client, markingsPage, markingsPerPage, toast])
 
   const handleUpdateMarking = useCallback(async ({
     date,
@@ -177,7 +177,7 @@ export const Markings: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetUserMarkings])
+  }, [client, handleGetUserMarkings, toast])
 
   useEffect(() => {
     handleGetUserMarkings()

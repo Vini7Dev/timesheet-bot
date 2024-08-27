@@ -139,7 +139,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
       setCreateMarkingIsLoading(false)
       return false
     }
-  }, [beforeCreateMarking, client, getFormattedNowTime, getFormattedStartTime, toast.addToast, timerMarking])
+  }, [beforeCreateMarking, client, getFormattedNowTime, getFormattedStartTime, toast, timerMarking])
 
   const toggleProjectPopupIsOpen = useCallback(() => {
     setProjectPopupIsOpen(!projectPopupIsOpen)
@@ -200,7 +200,7 @@ export const TimeTracker: React.FC<ITimeTrackerProps> = ({
 
     changeStartTime(todayDate.getTime())
     setChangeStartInputValue('')
-  }, [changeStartInputValue, changeStartTime, timerRunning])
+  }, [changeStartInputValue, changeStartTime, timerRunning, toast])
 
   useEffect(() => {
     const titleElement = document.querySelector('title')

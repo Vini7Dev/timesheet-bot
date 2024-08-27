@@ -89,7 +89,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
     }
 
     setCreateIsLoading(false)
-  }, [afterSubmit, client, code, customerId, name, toast.addToast])
+  }, [afterSubmit, client, code, customerId, name, toast])
 
   const handleGetCustomers = useCallback(async () => {
     try {
@@ -108,7 +108,7 @@ export const CreateProjectPopup: React.FC<ICreateProjectPopupProps> = ({
         message: err.message
       })
     }
-  }, [client])
+  }, [client, toast])
 
   useEffect(() => {
     handleGetCustomers()

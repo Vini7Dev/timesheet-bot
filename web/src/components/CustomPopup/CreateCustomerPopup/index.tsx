@@ -73,7 +73,7 @@ export const CreateCustomerPopup: React.FC<ICreateCustomerPopupProps> = ({
     }
 
     setCreateIsLoading(false)
-  }, [afterSubmit, client, code, name, toast.addToast])
+  }, [afterSubmit, client, code, name, toast])
 
   return (
     <CreateCustomerForm>

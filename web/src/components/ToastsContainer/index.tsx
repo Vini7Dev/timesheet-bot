@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { FiCheckCircle, FiInfo, FiXCircle } from 'react-icons/fi'
 import { useToast } from '../../hooks/toast'
 

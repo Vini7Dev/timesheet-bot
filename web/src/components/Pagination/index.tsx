@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { Input } from '../Input'
 
@@ -32,7 +32,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
     }
 
     onChangeInputPage(newPage)
-  }, [onChangeInputPage])
+  }, [currentPage, onChangeInputPage])
 
   const handleChangeToNextPage = useCallback(() => {
     onNextPage(currentPage + 1)

@@ -80,7 +80,7 @@ export const Customers: React.FC = () => {
     }
 
     setLoadingCustomers(false)
-  }, [client, customersPage, customersPerPage])
+  }, [client, customersPage, customersPerPage, toast])
 
   const handleReloadCustomers = useCallback(async () => {
     handleGetCustomers()
@@ -112,7 +112,7 @@ export const Customers: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetCustomers])
+  }, [client, handleGetCustomers, toast])
 
   const handleUpdateCustomer = useCallback(async ({
     customer_id,
@@ -161,7 +161,7 @@ export const Customers: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetCustomers, toast.addToast])
+  }, [client, handleGetCustomers, toast])
 
   useEffect(() => {
     handleGetCustomers()

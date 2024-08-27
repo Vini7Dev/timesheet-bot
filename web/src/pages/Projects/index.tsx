@@ -109,7 +109,7 @@ export const Projects: React.FC = () => {
     }
 
     setLoadingProjects(false)
-  }, [client, projectsPage, projectsPerPage])
+  }, [client, projectsPage, projectsPerPage, toast])
 
   const handleDeleteProject = useCallback(async (id: string) => {
     try {
@@ -135,7 +135,7 @@ export const Projects: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetProjects])
+  }, [client, handleGetProjects, toast])
 
   const handleReloadProjects = useCallback(async () => {
     handleGetProjects()
@@ -193,7 +193,7 @@ export const Projects: React.FC = () => {
         message: err.message
       })
     }
-  }, [client, handleGetProjects, toast.addToast])
+  }, [client, handleGetProjects, toast])
 
   useEffect(() => {
     handleGetProjects()

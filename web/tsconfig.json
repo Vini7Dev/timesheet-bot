@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
     "target": "es2022",
     "lib": [
       "dom",
@@ -20,7 +22,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src", "**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -153,7 +153,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
     }
 
     setUpdateMarkingIsLoading(false)
-  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast.addToast])
+  }, [beforeUpdate, client, dateUpdated, descriptionUpdated, finishIntervalTimeUpdated, finishTimeUpdated, id, isBillable, projectUpdated.id, startIntervalTimeUpdated, startTimeUpdated, toast])
 
   const handleDeleteMarking = useCallback(async () => {
     try {
@@ -179,7 +179,7 @@ export const UpdateMarkingPopup: React.FC<IUpdateMarkingPopupProps> = ({
         message: err.message
       })
     }
-  }, [beforeDelete, client, id])
+  }, [beforeDelete, client, id, toast])
 
   return (
     <UpdateMarkingPopupForm

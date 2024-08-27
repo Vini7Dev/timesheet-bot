@@ -131,7 +131,7 @@ export const TopBar: React.FC = () => {
     }
 
     setUpdateUserLoading(false)
-  }, [client, currentPassword, newEmail, newName, newPassword, newUsername, toggleEditingUserData, updateUserData, user])
+  }, [client, currentPassword, newEmail, newName, newPassword, newUsername, toast, toggleEditingUserData, updateUserData, user])
 
   return (
     <TopBarContainer backgroundColor={user ? '#12191D' : 'transparent'} >
